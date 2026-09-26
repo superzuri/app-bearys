@@ -388,7 +388,7 @@ html,body{width:100%;min-width:0;max-width:100%;overflow-x:hidden}
   <button class="menu-card" onclick="openPage('history')"><div class="menu-icon">📖</div><span class="menu-card-title">Historial</span><span class="menu-card-description">Todo el movimiento</span></button>
  </div>
 
- <div class="section-header"><h2>Un poquito de cariño ♡</h2><span>Para hoy</span></div>
+ <div class="section-header"><h2>Un poquito de cariño</h2><span>Para hoy</span></div>
  <div class="phrase-card">
   <div class="phrase-top"><div class="phrase-label"><div class="phrase-label-icon">💌</div><span>Una frase para hoy</span></div><span class="phrase-number" id="phraseNumber">1 / 8</span></div>
   <p class="phrase-text" id="phraseText">“Hoy también cuenta cada pequeño esfuerzo.”</p>
@@ -1083,7 +1083,7 @@ function selectActivityMode(mode){
   title.textContent=mode==="abre"?"🌅 Actividades de apertura":"🌙 Actividades de cierre";
   const list=bearysActivityData[mode]||[];
   if(!list.length){
-    items.innerHTML='<div class="empty-activities"><div>🧸</div><strong>Aún no hay actividades</strong><small>Cuando me pases las actividades reales, las ponemos aquí.</small></div>';
+    items.innerHTML='<div class="empty-activities"><div>🧸</div><strong>Aún no hay actividades</strong><small>Aquí irán ls actividades de abre para empezar.</small></div>';
     return;
   }
   items.innerHTML=list.map((item,i)=>{
