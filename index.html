@@ -1,1103 +1,1855 @@
 <!DOCTYPE html>
+
 <html lang="es">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#fff4f8" id="metaThemeColor">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+<meta name="theme-color" content="#ff76a9">
+
 <title>Beary's Coffee Shop</title>
+
 <style>
-/* BEARY'S COFFEE SHOP — UI BASE */
+
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{scroll-behavior:smooth;background-color:var(--bg)}
+
+html{scroll-behavior:smooth}
+
 button,input,textarea{font:inherit}
+
 button{border:0}
+
 button.tap-feedback{animation:tapPulse .22s ease}
+
 @keyframes tapPulse{50%{transform:scale(.96)}}
 
 :root{
+
 --bg:#fff4f8;--bg2:#ffe6ef;--surface:#fffafb;--surface2:rgba(255,250,252,.94);
+
 --text:#452c38;--muted:#987684;--pink:#ff79ad;--pink2:#ed4f8a;
+
 --pinksoft:#ffdce9;--border:#f4cbdc;--shadow:0 14px 35px rgba(187,83,125,.13);
+
 --pink-glow:rgba(255,121,173,.20);
+
 --nav:rgba(255,255,255,.94);--success:#51c88a;--danger:#ef6289;
+
 }
+
 body.dark{
+
 --bg:#171216;--bg2:#21171d;--surface:#281d24;--surface2:rgba(40,29,36,.94);
+
 --text:#fff0f6;--muted:#bda5af;--pink:#ff82b2;--pink2:#ff6aa3;
+
 --pinksoft:#422733;--border:#48323d;--shadow:0 16px 38px rgba(0,0,0,.28);
+
 --nav:rgba(30,22,27,.95);--success:#67d69b;--danger:#ff779d;
+
 }
+
 body{
-min-height:100dvh;background:var(--bg);color:var(--text);
+
+min-height:100vh;background:var(--bg);color:var(--text);
+
 font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+
 transition:.3s;padding-bottom:calc(92px + env(safe-area-inset-bottom))
+
 }
+
 .app{width:min(100%,620px);margin:auto;padding:0 15px}
 
-/* TOPBAR CORREGIDA PARA ISLA DINÁMICA */
 .topbar{
-position:sticky;top:0;z-index:100;
-min-height:calc(65px + env(safe-area-inset-top));
-padding-top:calc(env(safe-area-inset-top) + 8px);
-padding-bottom:12px;
-padding-left:max(15px, env(safe-area-inset-left));
-padding-right:max(15px, env(safe-area-inset-right));
-margin:0 -15px;
-display:flex;align-items:center;justify-content:space-between;
-background:color-mix(in srgb,var(--bg) 84%,transparent);
-backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-border-bottom:1px solid var(--border)
+
+height:78px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;
+
+margin:0 -15px;padding:0 15px;background:color-mix(in srgb,var(--bg) 84%,transparent);
+
+backdrop-filter:blur(20px);border-bottom:1px solid var(--border)
+
 }
+
 .brand{display:flex;align-items:center;gap:10px}
+
 .brand-logo{
+
 width:47px;height:47px;display:grid;place-items:center;border-radius:17px;
+
 background:linear-gradient(145deg,var(--surface),var(--pinksoft));box-shadow:0 12px 30px rgba(255,105,160,.2);font-size:26px
+
 }
+
 .brand-name{display:block;font-size:18px;font-weight:900;letter-spacing:-.7px;color:var(--text)}
+
 .brand-subtitle{display:block;margin-top:4px;font-size:9px;letter-spacing:1.1px;color:var(--pink2);font-weight:850}
+
 .theme-toggle{
+
 width:44px;height:44px;display:grid;place-items:center;border-radius:15px;background:var(--surface);
+
 color:var(--text);box-shadow:var(--shadow);cursor:pointer;font-size:18px
+
 }
-.page{display:none;padding-top:16px;animation:pageIn .3s ease}
+
+.page{display:none;padding-top:20px;animation:pageIn .3s ease}
+
 .page.active{display:block}
+
 @keyframes pageIn{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
 
 /* HOME */
+
 .hero{
+
 min-height:295px;position:relative;overflow:hidden;padding:27px 23px;border-radius:32px;color:white;
+
 background:linear-gradient(135deg,#ff70a7,#ff91ba 55%,#ffb9d2);box-shadow:0 24px 55px rgba(255,94,150,.23)
+
 }
+
 .hero:before{content:"";position:absolute;width:300px;height:300px;border-radius:50%;right:-145px;top:-150px;background:rgba(255,255,255,.1)}
+
 .hero:after{content:"";position:absolute;width:180px;height:180px;border-radius:50%;left:-105px;bottom:-125px;background:rgba(255,255,255,.07)}
+
 .hero-star{position:absolute;opacity:.8;animation:twinkle 2.6s infinite}
+
 .hero-star:nth-child(1){top:17%;right:39%}.hero-star:nth-child(2){top:49%;right:13%;animation-delay:.7s}.hero-star:nth-child(3){top:10%;left:51%;animation-delay:1.2s}
+
 @keyframes twinkle{50%{transform:scale(1.5);opacity:1}}
+
 .hero-content{position:relative;z-index:3}
+
 .hero-label{font-size:9px;font-weight:850;letter-spacing:1.8px}
+
 .hero-title{margin-top:8px;font-size:33px;line-height:1.02;letter-spacing:-1.4px}
+
 .hero-description{margin-top:12px;max-width:290px;font-size:11px;line-height:1.6;opacity:.92}
+
 .hero-bear{position:absolute;right:17px;top:73px;z-index:2;font-size:88px;filter:drop-shadow(0 12px 8px rgba(50,10,30,.14));animation:float 3.4s ease-in-out infinite}
+
 @keyframes float{50%{transform:translateY(-8px) rotate(2deg)}}
+
 .hero-button{
+
 position:relative;z-index:5;margin-top:20px;padding:11px 16px;border-radius:14px;color:white;
+
 background:rgba(255,255,255,.17);border:1px solid rgba(255,255,255,.35);font-size:11px;font-weight:800;cursor:pointer
+
 }
+
 .section-header{display:flex;align-items:flex-end;justify-content:space-between;margin:26px 3px 12px}
+
 .section-header h2{font-size:17px}.section-header span{color:var(--muted);font-size:9px;font-weight:650}
+
 .menu-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}
+
 .menu-card{
+
 min-height:135px;position:relative;overflow:hidden;text-align:left;padding:16px;border-radius:23px;
+
 border:1px solid var(--border);background:var(--surface2);box-shadow:var(--shadow);color:var(--text);cursor:pointer
+
 }
+
 .menu-card:before{content:"";position:absolute;width:90px;height:90px;border-radius:50%;right:-38px;bottom:-38px;background:var(--bg2)}
+
 .menu-card:active{transform:scale(.965)}
+
 .menu-icon{width:48px;height:48px;display:grid;place-items:center;border-radius:16px;background:var(--bg2);font-size:23px;margin-bottom:13px}
+
 .menu-card-title,.menu-card-description{position:relative;z-index:2;display:block}
+
 .menu-card-title{font-size:14px;font-weight:850}.menu-card-description{margin-top:4px;color:var(--muted);font-size:10px;line-height:1.35}
+
 .phrase-card{
+
 position:relative;overflow:hidden;padding:20px;border-radius:24px;background:linear-gradient(135deg,var(--surface),var(--bg2));
+
 border:1px solid var(--border);box-shadow:var(--shadow)
+
 }
+
 .phrase-top,.phrase-bottom{display:flex;align-items:center;justify-content:space-between}
+
 .phrase-label{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:850}
+
 .phrase-label-icon{width:32px;height:32px;display:grid;place-items:center;border-radius:11px;background:var(--pinksoft)}
+
 .phrase-number{font-size:9px;color:var(--muted);font-weight:700}
+
 .phrase-text{margin-top:14px;font-size:14px;line-height:1.55;font-weight:700;max-width:90%;transition:.15s}
+
 .phrase-bottom{margin-top:17px}.phrase-bear{font-size:24px}
+
 .phrase-button{padding:8px 12px;border-radius:12px;background:var(--pinksoft);color:var(--pink2);font-size:9px;font-weight:850;cursor:pointer}
+
 .status-card{
+
 display:flex;align-items:center;justify-content:space-between;padding:16px;border-radius:22px;
+
 border:1px solid var(--border);background:var(--surface);box-shadow:var(--shadow)
+
 }
+
 .status-content{display:flex;align-items:center;gap:11px}.status-icon{width:45px;height:45px;display:grid;place-items:center;border-radius:15px;background:var(--bg2);font-size:20px}
+
 .status-title{display:block;font-size:12px;font-weight:850}.status-description{display:block;margin-top:3px;color:var(--muted);font-size:10px}
+
 .status-dot{width:11px;height:11px;border-radius:50%;background:var(--success);box-shadow:0 0 0 5px color-mix(in srgb,var(--success) 20%,transparent)}
 
 /* INNER + INVENTORY */
+
 .inner-header{display:flex;align-items:center;gap:11px;margin-bottom:18px}
+
 .back-button{width:43px;height:43px;display:grid;place-items:center;border-radius:14px;background:var(--surface);color:var(--text);box-shadow:var(--shadow);font-size:18px;cursor:pointer}
+
 .inner-title h1{font-size:24px;letter-spacing:-.8px}.inner-title p{margin-top:3px;color:var(--muted);font-size:10px}
+
 .inventory-hero{
+
 padding:17px;border-radius:24px;background:linear-gradient(135deg,var(--surface),var(--bg2));
+
 border:1px solid var(--border);box-shadow:var(--shadow);margin-bottom:14px
+
 }
+
 .inventory-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+
 .inventory-top strong{font-size:13px}.inventory-top span{font-size:10px;color:var(--muted)}
+
 .progress-track{height:8px;background:var(--pinksoft);border-radius:99px;margin-top:12px;overflow:hidden}
+
 .progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--pink),#ffb1cd);border-radius:99px;transition:.35s}
+
 .inventory-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px}
+
 .inv-stat{padding:10px 7px;border-radius:14px;background:var(--bg2);text-align:center}
+
 .inv-stat b{display:block;font-size:15px}.inv-stat small{font-size:8px;color:var(--muted)}
+
 .inventory-search{
+
 width:100%;padding:14px 16px;border-radius:17px;border:1px solid var(--border);outline:0;
+
 background:var(--surface);color:var(--text);box-shadow:var(--shadow);margin-bottom:12px
+
 }
+
 .inventory-search:focus{border-color:var(--pink)}
+
 .inventory-area{
+
 background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:13px;margin-bottom:14px;box-shadow:var(--shadow)
+
 }
+
 .inventory-area-title{display:flex;align-items:center;justify-content:space-between;padding:4px 3px 11px;border-bottom:2px dashed var(--border);margin-bottom:3px}
+
 .inventory-area-title h2{font-size:15px}.inventory-area-title span{font-size:9px;color:var(--muted)}
+
 .product-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 4px;border-bottom:1px solid var(--border);min-height:58px}
+
 .product-row:last-child{border-bottom:0}
+
 .product-info{min-width:0;flex:1}.product-name{font-size:12px;font-weight:650;line-height:1.25}.product-meta{font-size:9px;color:var(--muted);margin-top:3px}
+
 .product-controls{display:flex;align-items:center;gap:6px}.traffic{width:10px;height:10px;border-radius:50%;background:#aaa}
+
 .traffic.green{background:var(--success);box-shadow:0 0 7px rgba(81,200,138,.55)}
+
 .traffic.yellow{background:#e7bc51;box-shadow:0 0 7px rgba(231,188,81,.55)}
+
 .traffic.red{background:var(--danger);box-shadow:0 0 7px rgba(239,98,137,.55)}
+
 .quantity{width:64px;padding:8px 4px;border:2px solid var(--border);border-radius:12px;outline:0;text-align:center;background:var(--surface);color:var(--text);font-size:14px}
+
 .quantity:focus{border-color:var(--pink)}
+
 .inventory-actions{display:flex;gap:9px;margin:15px 0}
+
 .inv-btn{flex:1;padding:13px 10px;border-radius:16px;font-size:11px;font-weight:850;cursor:pointer;box-shadow:var(--shadow)}
+
 .inv-btn.primary{background:linear-gradient(135deg,#75483d,#5e3931);color:#fff}.inv-btn.secondary{background:var(--pinksoft);color:var(--pink2)}
+
 .result-box{width:100%;min-height:130px;resize:vertical;border:1px solid var(--border);border-radius:18px;padding:13px;background:var(--surface);color:var(--text);outline:0;font-family:ui-monospace,monospace;font-size:12px;line-height:1.5}
+
 .inventory-message{text-align:center;min-height:20px;font-size:10px;font-weight:800;color:var(--pink2);margin:8px 0}
+
 .empty-module{
+
 min-height:360px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;
+
 border-radius:30px;border:1px solid var(--border);background:var(--surface);box-shadow:var(--shadow)
+
 }
+
 .empty-icon{width:88px;height:88px;display:grid;place-items:center;border-radius:29px;background:var(--bg2);font-size:48px;margin-bottom:18px}
+
 .empty-module h2{font-size:19px}.empty-module p{max-width:280px;margin-top:8px;color:var(--muted);font-size:11px;line-height:1.6}
+
 .bottom-nav{
+
 position:fixed;left:50%;bottom:calc(9px + env(safe-area-inset-bottom));transform:translateX(-50%);
+
 z-index:200;width:min(590px,calc(100% - 18px));height:70px;display:grid;grid-template-columns:repeat(5,1fr);gap:3px;
-padding:6px;border-radius:25px;border:1px solid var(--border);background:var(--nav);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+
+padding:6px;border-radius:25px;border:1px solid var(--border);background:var(--nav);backdrop-filter:blur(24px);
+
 box-shadow:0 18px 55px rgba(65,25,45,.2)
+
 }
+
 .nav-button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border-radius:18px;background:transparent;color:var(--muted);cursor:pointer}
+
 .nav-icon{font-size:19px}.nav-label{font-size:8px;font-weight:700}.nav-button.active{color:var(--pink2);background:var(--bg2)}
+
 .toast{position:fixed;z-index:500;left:50%;bottom:92px;transform:translate(-50%,18px);opacity:0;padding:11px 16px;border-radius:99px;background:#35262d;color:white;font-size:11px;pointer-events:none;transition:.25s}
+
 .toast.show{opacity:1;transform:translate(-50%,0)}
+
 .bear-pop{position:fixed;left:50%;top:50%;z-index:999;transform:translate(-50%,-50%) scale(.6);opacity:0;pointer-events:none;text-align:center;transition:.25s}
+
 .bear-pop.show{opacity:1;transform:translate(-50%,-50%) scale(1)}.bear-pop .bear{font-size:78px}
-.bear-pop div:last-child{margin-top:5px;padding:10px 16px;border-radius:18px;background:var(--surface);color:var(--text);font-weight:850;box-shadow:var(--shadow)}
-@media(max-width:370px){.app{padding:0 11px}.topbar{margin:0 -11px;padding-left:11px;padding-right:11px}.hero{padding:23px 19px}.hero-title{font-size:29px}.hero-bear{right:5px;font-size:74px}.menu-grid{gap:8px}.menu-card{min-height:125px;padding:13px}}
+
+.bear-pop div:last-child{margin-top:5px;padding:10px 16px;border-radius:18px;background:var(--surface);color:var(--text);font-weight:850}
+
+@media(max-width:370px){.app{padding:0 11px}.topbar{margin:0 -11px;padding:0 11px}.hero{padding:23px 19px}.hero-title{font-size:29px}.hero-bear{right:5px;font-size:74px}.menu-grid{gap:8px}.menu-card{min-height:125px;padding:13px}}
 
 .name-overlay{
- position:fixed;inset:0;z-index:900;display:none;align-items:center;justify-content:center;
- padding:20px;background:rgba(30,12,22,.55);backdrop-filter:blur(10px)
+
+position:fixed;inset:0;z-index:900;display:none;align-items:center;justify-content:center;
+
+padding:20px;background:rgba(30,12,22,.55);backdrop-filter:blur(10px)
+
 }
+
 .name-overlay.show{display:flex}
+
 .name-modal{
- width:min(100%,390px);padding:25px;border-radius:30px;background:var(--surface);
- border:1px solid var(--border);box-shadow:0 30px 80px rgba(0,0,0,.25);text-align:center;
- animation:modalIn .3s ease
+
+width:min(100%,390px);padding:25px;border-radius:30px;background:var(--surface);
+
+border:1px solid var(--border);box-shadow:0 30px 80px rgba(0,0,0,.25);text-align:center;
+
+animation:modalIn .3s ease
+
 }
+
 @keyframes modalIn{from{opacity:0;transform:translateY(15px) scale(.96)}to{opacity:1;transform:none}}
+
 .name-bear{font-size:58px;animation:float 3s ease-in-out infinite}
+
 .name-modal h2{margin-top:8px;font-size:21px}.name-modal p{margin:7px auto 17px;color:var(--muted);font-size:11px;line-height:1.5}
+
 .name-input{
- width:100%;padding:14px 16px;border-radius:16px;border:2px solid var(--border);
- outline:0;background:var(--bg);color:var(--text);text-align:center;font-weight:750
+
+width:100%;padding:14px 16px;border-radius:16px;border:2px solid var(--border);
+
+outline:0;background:var(--bg);color:var(--text);text-align:center;font-weight:750
+
 }
+
 .name-input:focus{border-color:var(--pink)}
+
 .name-save{
- width:100%;margin-top:10px;padding:14px;border-radius:16px;cursor:pointer;
- color:white;background:linear-gradient(135deg,var(--pink),var(--pink2));font-weight:850
+
+width:100%;margin-top:10px;padding:14px;border-radius:16px;cursor:pointer;
+
+color:white;background:linear-gradient(135deg,var(--pink),var(--pink2));font-weight:850
+
 }
+
 .name-change{margin-top:9px;padding:7px 10px;border-radius:12px;background:transparent;color:var(--muted);font-size:9px;cursor:pointer}
+
 .welcome-name{font-weight:900}
+
 .copy-bear-animation{display:inline-block;animation:copyBearBounce .65s ease-in-out infinite alternate}
+
 @keyframes copyBearBounce{
- from{transform:translateY(4px) rotate(-7deg)}
- to{transform:translateY(-13px) rotate(7deg)}
+
+from{transform:translateY(4px) rotate(-7deg)}
+
+to{transform:translateY(-13px) rotate(7deg)}
+
 }
 
-/* BEARY'S — CAPA VISUAL / ROSA BEBÉ */
+/* ROSA BEBÉ */
+
 body:not(.dark){
-  background:
-    radial-gradient(circle at 7% 5%,rgba(255,188,214,.30),transparent 22%),
-    radial-gradient(circle at 96% 20%,rgba(255,213,229,.35),transparent 24%),
-    linear-gradient(180deg,#fff7fa 0%,#fff1f6 52%,#fff8fb 100%);
-}
-body:not(.dark) .topbar{
-  background:rgba(255,247,250,.82);
-  box-shadow:0 8px 30px rgba(205,103,143,.06);
-}
-body:not(.dark) .brand-logo{
-  background:linear-gradient(145deg,#fff,#ffe0eb);
-  box-shadow:0 12px 30px rgba(255,105,160,.18);
-}
-body:not(.dark) .menu-card,
-body:not(.dark) .phrase-card,
-body:not(.dark) .status-card,
-body:not(.dark) .inventory-area,
-body:not(.dark) .inventory-hero{
-  box-shadow:0 13px 35px rgba(194,91,132,.09);
-}
-body:not(.dark) .menu-card:hover{
-  border-color:#efadc7;
-  box-shadow:0 16px 38px rgba(255,105,160,.15);
-}
-body:not(.dark) .bottom-nav{
-  box-shadow:0 18px 55px rgba(168,72,111,.16);
-}
-body:not(.dark) .inventory-search:focus,
-body:not(.dark) .quantity:focus{
-  box-shadow:0 0 0 4px rgba(255,121,173,.12);
-}
-.pastel-sparkle{
-  position:fixed;
-  pointer-events:none;
-  z-index:-1;
-  width:7px;height:7px;border-radius:50%;
-  background:#ffc5db;
-  opacity:.35;
+
+background:
+
+radial-gradient(circle at 7% 5%,rgba(255,188,214,.30),transparent 22%),
+
+radial-gradient(circle at 96% 20%,rgba(255,213,229,.35),transparent 24%),
+
+linear-gradient(180deg,#fff7fa 0%,#fff1f6 52%,#fff8fb 100%);
+
 }
 
-/* BEARY'S 2.1 — GLOW + MOBILE POLISH */
-.brand-date{
- display:block;margin-top:3px;font-size:8px;font-weight:750;
- color:var(--muted);letter-spacing:.25px;text-transform:lowercase
+body:not(.dark) .topbar{background:rgba(255,247,250,.82);box-shadow:0 8px 30px rgba(205,103,143,.06)}
+
+body:not(.dark) .brand-logo{background:linear-gradient(145deg,#fff,#ffe0eb);box-shadow:0 12px 30px rgba(255,105,160,.18)}
+
+body:not(.dark) .menu-card,
+
+body:not(.dark) .phrase-card,
+
+body:not(.dark) .status-card,
+
+body:not(.dark) .inventory-area,
+
+body:not(.dark) .inventory-hero{box-shadow:0 13px 35px rgba(194,91,132,.09)}
+
+body:not(.dark) .menu-card:hover{border-color:#efadc7;box-shadow:0 16px 38px rgba(255,105,160,.15)}
+
+body:not(.dark) .bottom-nav{box-shadow:0 18px 55px rgba(168,72,111,.16)}
+
+body:not(.dark) .inventory-search:focus,
+
+body:not(.dark) .quantity:focus{box-shadow:0 0 0 4px rgba(255,121,173,.12)}
+
+.pastel-sparkle{
+
+position:fixed;pointer-events:none;z-index:-1;width:7px;height:7px;border-radius:50%;
+
+background:#ffc5db;opacity:.35
+
 }
-.home-quick-actions{
- display:flex;justify-content:center;gap:8px;margin-top:9px
-}
+
+/* GLOW + MOBILE POLISH */
+
+.brand-date{display:block;margin-top:3px;font-size:8px;font-weight:750;color:var(--muted);letter-spacing:.25px;text-transform:lowercase}
+
+.home-quick-actions{display:flex;justify-content:center;gap:8px;margin-top:9px}
+
 .home-quick-actions button{
- padding:8px 12px;border-radius:13px;background:var(--surface);
- color:var(--muted);border:1px solid var(--border);font-size:9px;font-weight:800;
- box-shadow:0 7px 18px rgba(120,50,80,.06);cursor:pointer
+
+padding:8px 12px;border-radius:13px;background:var(--surface);
+
+color:var(--muted);border:1px solid var(--border);font-size:9px;font-weight:800;
+
+box-shadow:0 7px 18px rgba(120,50,80,.06);cursor:pointer
+
 }
-.settings-card{
- padding:15px;margin-bottom:12px;border-radius:22px;background:var(--surface);
- border:1px solid var(--border);box-shadow:var(--shadow)
-}
+
+.settings-card{padding:15px;margin-bottom:12px;border-radius:22px;background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow)}
+
 .settings-profile{display:flex;align-items:center;gap:10px}
+
 .settings-avatar{width:48px;height:48px;display:grid;place-items:center;border-radius:16px;background:var(--bg2);font-size:25px}
+
 .settings-profile>div:nth-child(2){flex:1;min-width:0}
+
 .settings-profile strong{display:block;font-size:13px}.settings-profile span{display:block;margin-top:3px;color:var(--muted);font-size:9px}
+
 .settings-profile button{padding:8px 10px;border-radius:11px;background:var(--pinksoft);color:var(--pink2);font-size:9px;font-weight:850;cursor:pointer}
+
 .settings-title{font-size:12px;font-weight:900;margin-bottom:7px}
+
 .setting-row{
- width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;
- padding:13px 2px;border-top:1px solid var(--border);background:transparent;color:var(--text);
- text-align:left;cursor:pointer
+
+width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;
+
+padding:13px 2px;border-top:1px solid var(--border);background:transparent;color:var(--text);
+
+text-align:left;cursor:pointer
+
 }
+
 .setting-row span:first-child{min-width:0}.setting-row b{display:block;font-size:11px}.setting-row small{display:block;margin-top:3px;color:var(--muted);font-size:8px;line-height:1.35}
+
 .setting-row>span:last-child{flex-shrink:0;color:var(--pink2);font-weight:900}
+
 .setting-row.static{cursor:default}
+
 .mini-toggle{padding:6px 10px;border-radius:99px;background:var(--pink);color:white;font-size:8px;font-weight:900;cursor:pointer}
+
 .mini-toggle.off{background:var(--muted)}
+
 .danger-card{border-color:color-mix(in srgb,var(--danger) 30%,var(--border))}
+
 .danger-button{width:100%;padding:11px;border-radius:13px;background:color-mix(in srgb,var(--danger) 12%,transparent);color:var(--danger);font-size:10px;font-weight:850;cursor:pointer}
+
 body.animations-off *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 
-.menu-card,.phrase-card,.status-card,.inventory-area,.inventory-hero,.settings-card{
- transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease
-}
-.menu-card:hover,.settings-card:hover{
- transform:translateY(-2px);
-}
+.menu-card,.phrase-card,.status-card,.inventory-area,.inventory-hero,.settings-card{transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
+
+.menu-card:hover,.settings-card:hover{transform:translateY(-2px)}
+
 body.dark .menu-card:hover,
+
 body.dark .phrase-card:hover,
+
 body.dark .status-card:hover,
+
 body.dark .inventory-area:hover,
-body.dark .inventory-hero:hover{
- box-shadow:0 0 0 1px rgba(255,130,178,.12),0 0 28px rgba(255,91,157,.13),var(--shadow)
-}
+
+body.dark .inventory-hero{box-shadow:0 0 0 1px rgba(255,130,178,.12),0 0 28px rgba(255,91,157,.13),var(--shadow)}
+
 body:not(.dark) .menu-card:hover,
+
 body:not(.dark) .phrase-card:hover,
+
 body:not(.dark) .status-card:hover,
+
 body:not(.dark) .inventory-area:hover,
-body:not(.dark) .inventory-hero:hover{
- box-shadow:0 0 0 1px rgba(255,155,193,.12),0 0 25px rgba(255,121,173,.10),var(--shadow)
-}
+
+body:not(.dark) .inventory-hero{box-shadow:0 0 0 1px rgba(255,155,193,.12),0 0 25px rgba(255,121,173,.10),var(--shadow)}
+
 body.dark .hero{box-shadow:0 20px 55px rgba(255,76,150,.18),0 0 35px rgba(255,76,150,.08)}
+
 body.dark .bottom-nav{box-shadow:0 18px 55px rgba(0,0,0,.42),0 0 25px rgba(255,92,158,.08)}
+
 body:not(.dark) .bottom-nav{box-shadow:0 18px 55px rgba(168,72,111,.13),0 0 22px rgba(255,121,173,.07)}
+
 @media(max-width:420px){
- .brand-name{font-size:16px}
- .brand-date{font-size:7.5px}
- .home-quick-actions button{font-size:8px;padding:7px 10px}
+
+.brand-name{font-size:16px}
+
+.brand-date{font-size:7.5px}
+
+.home-quick-actions button{font-size:8px;padding:7px 10px}
+
 }
 
-.activity-switch{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-.activity-tab{min-height:88px;border:1px solid var(--border);border-radius:22px;background:var(--surface);color:var(--muted);box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;transition:.25s}
-.activity-tab:first-child{font-size:25px}.activity-tab:nth-child(2){font-size:25px}
-.activity-tab span{font-size:13px;font-weight:900;color:var(--text)}.activity-tab small{font-size:8px;color:var(--muted);font-weight:700}
-.activity-tab.active{background:linear-gradient(145deg,var(--pinksoft),var(--surface));border-color:var(--pink);color:var(--pink2);box-shadow:0 0 0 1px rgba(255,121,173,.10),0 12px 30px rgba(255,121,173,.13)}
-.activity-panel{animation:pageIn .25s ease}.activity-panel-head{display:flex;align-items:center;justify-content:space-between;padding:15px 16px;margin-bottom:11px;border-radius:20px;background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow)}
-.activity-panel-head b{display:block;font-size:14px}.activity-panel-head span{display:block;margin-top:3px;font-size:9px;color:var(--muted)}.activity-progress{min-width:45px;text-align:center;padding:8px;border-radius:12px;background:var(--bg2);color:var(--pink2);font-size:10px;font-weight:900}
-.empty-module.compact{min-height:300px}
-body.dark .activity-tab.active{box-shadow:0 0 0 1px rgba(255,130,178,.12),0 0 30px rgba(255,91,157,.14)}
+/* =========================================================
 
-/* BEARY'S 2.2 — iPhone Polish */
+   RESPONSIVE MOBILE FINAL
+
+========================================================= */
+
+html{
+
+width:100%;min-width:100%;max-width:100%;overflow-x:hidden;
+
+-webkit-text-size-adjust:100%;text-size-adjust:100%;
+
+}
+
+body{
+
+width:100%;min-width:100%;max-width:100%;
+
+min-height:100dvh;min-height:100svh;overflow-x:hidden;
+
+padding-bottom:calc(94px + env(safe-area-inset-bottom));
+
+}
+
+.app{
+
+width:100%;max-width:620px;min-height:100dvh;min-height:100svh;
+
+margin:0 auto;padding-left:15px;padding-right:15px;
+
+}
+
+.topbar{
+
+width:calc(100% + 30px);margin-left:-15px;margin-right:-15px;
+
+min-height:calc(65px + env(safe-area-inset-top));height:auto;
+
+padding-top:calc(env(safe-area-inset-top) + 8px);padding-bottom:12px;
+
+padding-left:max(15px,env(safe-area-inset-left));
+
+padding-right:max(15px,env(safe-area-inset-right));
+
+box-sizing:border-box;
+
+}
+
+.page{width:100%;min-width:0;min-height:calc(100dvh - 78px);padding-bottom:28px}
+
+.page *{max-width:100%;box-sizing:border-box}
+
+.hero,.inventory-hero,.inventory-search,.inventory-area,.inventory-actions,
+
+.result-box,.empty-module,.settings-card{width:100%;min-width:0}
+
+.inventory-search,.quantity,.result-box,.name-input,input,textarea,select{font-size:16px !important}
+
+.inventory-actions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:9px}
+
+.inv-btn{width:100%;min-width:0}
+
+.product-row{width:100%;min-width:0}
+
+.product-info{min-width:0;flex:1 1 auto}
+
+.product-name{min-width:0;overflow-wrap:anywhere;word-break:break-word}
+
+.product-controls{flex:0 0 auto}
+
+.quantity{width:74px;min-width:0}
+
+.bottom-nav{
+
+position:fixed;z-index:2000;left:50%;transform:translateX(-50%);
+
+bottom:max(7px,calc(7px + env(safe-area-inset-bottom)));
+
+width:min(calc(100% - 16px),590px);min-width:0;box-sizing:border-box;
+
+padding:6px;padding-bottom:max(6px,env(safe-area-inset-bottom));
+
+}
+
+.nav-button{min-width:0}.nav-label{white-space:nowrap}
+
+.name-overlay{
+
+padding:max(16px,env(safe-area-inset-top))
+
+max(16px,env(safe-area-inset-right))
+
+max(16px,env(safe-area-inset-bottom))
+
+max(16px,env(safe-area-inset-left));
+
+}
+
+.name-modal{width:min(100%,390px);max-height:calc(100dvh - 32px);overflow:auto}
+
 @media (max-width:620px){
-  body{overflow-x:hidden;}
-  .app{width:100%;max-width:none;padding-left:14px;padding-right:14px;}
-  .topbar{margin-left:-14px;margin-right:-14px;padding-left:14px;padding-right:14px;}
-  .page{min-height:calc(100dvh - 78px);padding-bottom:12px;}
-  .hero{min-height:300px;}
-  .bottom-nav{width:calc(100% - 14px);bottom:calc(7px + env(safe-area-inset-bottom));}
+
+.app{max-width:none;padding-left:12px;padding-right:12px}
+
+.topbar{
+
+width:calc(100% + 24px);margin-left:-12px;margin-right:-12px;
+
+padding-left:max(12px,env(safe-area-inset-left));
+
+padding-right:max(12px,env(safe-area-inset-right));
+
 }
 
-html,body{width:100%;min-width:0;max-width:100%;overflow-x:hidden}
-.bottom-nav{padding-bottom:max(8px,env(safe-area-inset-bottom))}
-.activity-choice{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:15px 0}
-.activity-choice-card{min-height:145px;padding:18px 10px;border:1px solid var(--border);border-radius:24px;background:var(--surface);color:var(--text);box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.activity-choice-card:active{transform:scale(.97)}
-.activity-big-icon{font-size:38px}
-.activity-choice-card strong{font-size:14px}.activity-choice-card small{font-size:9px;color:var(--muted);text-align:center}
-.activity-list-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 0}
-.activity-list-head button{padding:8px 10px;border:0;border-radius:12px;background:var(--pinksoft);color:var(--pink2);font-size:9px;font-weight:850}
-.activity-item{display:flex;align-items:center;gap:11px;padding:13px;margin:7px 0;border:1px solid var(--border);border-radius:17px;background:var(--surface)}
-.activity-item input{width:21px;height:21px;accent-color:var(--pink)}
-.empty-activities{text-align:center;padding:35px 20px;border:1px dashed var(--border);border-radius:22px;color:var(--muted)}
-.empty-activities div{font-size:42px;margin-bottom:8px}.empty-activities strong{display:block;color:var(--text);font-size:12px}.empty-activities small{display:block;margin-top:5px;font-size:9px;line-height:1.5}
-.brand-date{display:block;margin-top:3px;font-size:8px;font-weight:750;color:var(--muted);letter-spacing:.25px}
-@media(max-width:380px){.activity-choice{gap:8px}.activity-choice-card{min-height:132px}.activity-big-icon{font-size:32px}}
+.hero{min-height:clamp(285px,43dvh,360px)}
+
+.hero-title{max-width:70%}
+
+.hero-bear{right:8px}
+
+.menu-grid{width:100%;grid-template-columns:repeat(2,minmax(0,1fr))}
+
+.bottom-nav{width:calc(100% - 16px);max-width:none}
+
+}
+
+@media (max-width:420px){
+
+.brand{min-width:0;flex:1}
+
+.brand>div:last-child{min-width:0}
+
+.brand-name{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.brand-subtitle{white-space:nowrap}
+
+.theme-toggle{flex:0 0 44px}
+
+.hero{padding-left:19px;padding-right:19px}
+
+.hero-title{font-size:29px;max-width:72%}
+
+.hero-description{max-width:62%}
+
+.hero-bear{right:3px;font-size:74px}
+
+.menu-grid{gap:8px}.menu-card{min-height:125px;padding:13px}
+
+.menu-card-title{font-size:13px}.menu-card-description{font-size:9px}
+
+}
+
+@media (max-width:370px){
+
+.app{padding-left:9px;padding-right:9px}
+
+.topbar{
+
+width:calc(100% + 18px);margin-left:-9px;margin-right:-9px;
+
+padding-left:max(9px,env(safe-area-inset-left));
+
+padding-right:max(9px,env(safe-area-inset-right));
+
+}
+
+.brand-name{font-size:14px}.brand-subtitle{font-size:7px}
+
+.theme-toggle{width:40px;height:40px;flex-basis:40px}
+
+.hero{padding:22px 16px}.hero-title{font-size:27px;max-width:70%}
+
+.hero-description{font-size:10px;max-width:64%}.hero-bear{font-size:66px;right:-2px}
+
+.inventory-actions{grid-template-columns:1fr}.quantity{width:70px}
+
+.product-name{font-size:11px}.product-meta{font-size:8px}
+
+.bottom-nav{width:calc(100% - 10px)}.nav-icon{font-size:17px}.nav-label{font-size:7px}
+
+}
+
+@media (max-width:340px){
+
+.app{padding-left:7px;padding-right:7px}
+
+.topbar{width:calc(100% + 14px);margin-left:-7px;margin-right:-7px}
+
+.menu-grid{gap:6px}.menu-card{padding:11px 9px}
+
+.menu-icon{width:42px;height:42px;font-size:20px}
+
+.inner-title h1{font-size:21px}.bottom-nav{width:calc(100% - 8px)}
+
+}
+
+@media (min-height:800px) and (max-width:620px){.hero{min-height:320px}}
+
+@media (min-width:621px){.bottom-nav{bottom:18px}}
+
+@supports (-webkit-touch-callout:none){
+
+html,body{min-height:-webkit-fill-available}.app{min-height:-webkit-fill-available}
+
+}
+
+/* Evita el mini-zoom automático de Safari al enfocar campos */
+
+input,textarea,select{
+
+font-size:16px !important;-webkit-text-size-adjust:100%;
+
+}
+
+input[type="number"],input[type="search"],input[type="text"]{
+
+font-size:16px !important;
+
+}
+
 </style>
+
 </head>
+
 <body>
+
 <div class="app">
 
 <header class="topbar">
- <div class="brand">
-  <div class="brand-logo">🐻</div>
-  <div>
-   <span class="brand-name">Beary's Coffee Shop ☕</span>
-   <span class="brand-subtitle">Tu mini centro de trabajo</span>
-   <span class="brand-date" id="brandDate">Cargando fecha...</span>
-  </div>
- </div>
- <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
+
+<div class="brand">
+
+<div class="brand-logo">🐻</div>
+
+<div>
+
+<span class="brand-name">Beary's Coffee Shop ☕</span>
+
+<span class="brand-subtitle">Tu mini centro de trabajo</span>
+
+<span class="brand-date" id="brandDate">Cargando fecha...</span>
+
+</div>
+
+</div>
+
+<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
+
 </header>
 
 <section class="page active" id="homePage">
- <div class="hero">
-  <span class="hero-star">✦</span><span class="hero-star">✧</span><span class="hero-star">✦</span>
-  <div class="hero-content">
-   <div class="hero-label">BIENVENIDO A BEARY'S ☕</div>
-   <h1 class="hero-title">Hola, <span class="welcome-name" id="welcomeName">amigo</span><br>🧸♡</h1>
-   <p class="hero-description">Qué bueno verte por aquí. Vamos a dejar todo listo para sobrevivir al rush.</p>
-   <button class="hero-button" onclick="showToast('🧸 ¡Que tengas un día increíble!')">Comenzar mi día →</button>
-  </div>
-  <div class="hero-bear">🧸</div>
- </div>
 
- <div class="section-header"><h2>¿Qué vamos a hacer?</h2><span>Menú principal</span></div>
- <div class="menu-grid">
-  <button class="menu-card" onclick="openPage('inventory')"><div class="menu-icon">📦</div><span class="menu-card-title">Inventario</span><span class="menu-card-description">Productos y existencias</span></button>
-  <button class="menu-card" onclick="openPage('opening')"><div class="menu-icon">🌅</div><span class="menu-card-title">Apertura</span><span class="menu-card-description">Preparar el turno</span></button>
-  <button class="menu-card" onclick="openPage('closing')"><div class="menu-icon">🌙</div><span class="menu-card-title">Cierre</span><span class="menu-card-description">Terminar el turno</span></button>
-  <button class="menu-card" onclick="openPage('cleaning')"><div class="menu-icon">🧼</div><span class="menu-card-title">Limpieza</span><span class="menu-card-description">Todo limpio y en orden</span></button>
-  <button class="menu-card" onclick="openPage('recipes')"><div class="menu-icon">☕</div><span class="menu-card-title">Recetario</span><span class="menu-card-description">Recetas de bebidas</span></button>
-  <button class="menu-card" onclick="openPage('history')"><div class="menu-icon">📖</div><span class="menu-card-title">Historial</span><span class="menu-card-description">Todo el movimiento</span></button>
- </div>
+<div class="hero">
 
- <div class="section-header"><h2>Un poquito de cariño</h2><span>Para hoy</span></div>
- <div class="phrase-card">
-  <div class="phrase-top"><div class="phrase-label"><div class="phrase-label-icon">💌</div><span>Una frase para hoy</span></div><span class="phrase-number" id="phraseNumber">1 / 8</span></div>
-  <p class="phrase-text" id="phraseText">“Hoy también cuenta cada pequeño esfuerzo.”</p>
-  <div class="phrase-bottom"><div class="phrase-bear">🧸</div><button class="phrase-button" onclick="nextPhrase()">Otra frase ♡</button></div>
- </div>
+<span class="hero-star">✦</span><span class="hero-star">✧</span><span class="hero-star">✦</span>
 
- <div class="section-header"><h2>Estado de Beary's</h2></div>
- <div class="status-card">
-  <div class="status-content"><div class="status-icon">✨</div><div><span class="status-title">Todo listo para comenzar</span><span class="status-description">Tu espacio Beary's está preparado.</span></div></div>
-  <div class="status-dot"></div>
- </div>
- <div class="home-quick-actions">
-  <button onclick="changeName()">✏️ Mi nombre</button>
-  <button onclick="openSettings()">⚙️ Ajustes</button>
- </div>
+<div class="hero-content">
+
+<div class="hero-label">BIENVENIDO A BEARY'S ☕</div>
+
+<h1 class="hero-title">Hola, <span class="welcome-name" id="welcomeName">amigo</span><br>🧸♡</h1>
+
+<p class="hero-description">Qué bueno verte por aquí. Vamos a dejar todo listo para sobrevivir al rush.</p>
+
+<button class="hero-button" onclick="showToast('🧸 ¡Que tengas un día increíble!')">Comenzar mi día →</button>
+
+</div>
+
+<div class="hero-bear">🧸</div>
+
+</div>
+
+<div class="section-header"><h2>¿Qué vamos a hacer?</h2><span>Menú principal</span></div>
+
+<div class="menu-grid">
+
+<button class="menu-card" onclick="openPage('inventory')"><div class="menu-icon">📦</div><span class="menu-card-title">Inventario</span><span class="menu-card-description">Productos y existencias</span></button>
+
+<button class="menu-card" onclick="openPage('opening')"><div class="menu-icon">🌅</div><span class="menu-card-title">Apertura</span><span class="menu-card-description">Preparar el turno</span></button>
+
+<button class="menu-card" onclick="openPage('closing')"><div class="menu-icon">🌙</div><span class="menu-card-title">Cierre</span><span class="menu-card-description">Terminar el turno</span></button>
+
+<button class="menu-card" onclick="openPage('cleaning')"><div class="menu-icon">🧼</div><span class="menu-card-title">Limpieza</span><span class="menu-card-description">Todo limpio y en orden</span></button>
+
+<button class="menu-card" onclick="openPage('recipes')"><div class="menu-icon">☕</div><span class="menu-card-title">Recetario</span><span class="menu-card-description">Recetas de bebidas</span></button>
+
+<button class="menu-card" onclick="openPage('history')"><div class="menu-icon">📖</div><span class="menu-card-title">Historial</span><span class="menu-card-description">Todo el movimiento</span></button>
+
+</div>
+
+<div class="section-header"><h2>Un poquito de cariño ♡</h2><span>Para hoy</span></div>
+
+<div class="phrase-card">
+
+<div class="phrase-top"><div class="phrase-label"><div class="phrase-label-icon">💌</div><span>Una frase para hoy</span></div><span class="phrase-number" id="phraseNumber">1 / 8</span></div>
+
+<p class="phrase-text" id="phraseText">“Hoy también cuenta cada pequeño esfuerzo.”</p>
+
+<div class="phrase-bottom"><div class="phrase-bear">🧸</div><button class="phrase-button" onclick="nextPhrase()">Otra frase ♡</button></div>
+
+</div>
+
+<div class="section-header"><h2>Estado de Beary's</h2></div>
+
+<div class="status-card">
+
+<div class="status-content"><div class="status-icon">✨</div><div><span class="status-title">Todo listo para comenzar</span><span class="status-description">Tu espacio Beary's está preparado.</span></div></div>
+
+<div class="status-dot"></div>
+
+</div>
+
+<div class="home-quick-actions">
+
+<button onclick="changeName()">✏️ Mi nombre</button>
+
+<button onclick="openSettings()">⚙️ Ajustes</button>
+
+</div>
+
 </section>
 
 <section class="page" id="settingsPage">
- <div class="inner-header">
-  <button class="back-button" onclick="goHome()">←</button>
-  <div class="inner-title"><h1>Ajustes ⚙️</h1><p>Personaliza tu Beary's</p></div>
- </div>
 
- <div class="settings-card">
-  <div class="settings-profile">
-   <div class="settings-avatar">🧸</div>
-   <div><strong id="settingsName">Tu nombre</strong><span>Este dispositivo</span></div>
-   <button onclick="changeName()">Editar</button>
-  </div>
- </div>
+<div class="inner-header">
 
- <div class="settings-card">
-  <div class="settings-title">🎨 Apariencia</div>
-  <button class="setting-row" onclick="toggleTheme()">
-   <span><b id="appearanceTitle">Modo claro</b><small>Cambia entre rosa bebé y modo noche</small></span>
-   <span id="settingsThemeIcon">☀️</span>
-  </button>
-  <div class="setting-row">
-   <span><b>✨ Animaciones</b><small>Brillos y transiciones de Beary's</small></span>
-   <button class="mini-toggle on" id="animationToggle" onclick="toggleAnimations(event)">ON</button>
-  </div>
- </div>
+<button class="back-button" onclick="goHome()">←</button>
 
- <div class="settings-card">
-  <div class="settings-title">📱 Aplicación</div>
-  <div class="setting-row static"><span><b>Versión</b><small>Base Beary's Coffee Shop</small></span><span>0.2</span></div>
-  <div class="setting-row static"><span><b>Datos locales</b><small>Nombre e inventario guardados en este dispositivo</small></span><span>💾</span></div>
- </div>
+<div class="inner-title"><h1>Ajustes ⚙️</h1><p>Personaliza tu Beary's</p></div>
 
- <div class="settings-card danger-card">
-  <div class="settings-title">🧹 Zona de limpieza</div>
-  <button class="danger-button" onclick="clearLocalData()">Borrar datos de este dispositivo</button>
- </div>
+</div>
+
+<div class="settings-card">
+
+<div class="settings-profile">
+
+<div class="settings-avatar">🧸</div>
+
+<div><strong id="settingsName">Tu nombre</strong><span>Este dispositivo</span></div>
+
+<button onclick="changeName()">Editar</button>
+
+</div>
+
+</div>
+
+<div class="settings-card">
+
+<div class="settings-title">🎨 Apariencia</div>
+
+<button class="setting-row" onclick="toggleTheme()">
+
+<span><b id="appearanceTitle">Modo claro</b><small>Cambia entre rosa bebé y modo noche</small></span>
+
+<span id="settingsThemeIcon">☀️</span>
+
+</button>
+
+<div class="setting-row">
+
+<span><b>✨ Animaciones</b><small>Brillos y transiciones de Beary's</small></span>
+
+<button class="mini-toggle on" id="animationToggle" onclick="toggleAnimations(event)">ON</button>
+
+</div>
+
+</div>
+
+<div class="settings-card">
+
+<div class="settings-title">📱 Aplicación</div>
+
+<div class="setting-row static"><span><b>Versión</b><small>Base Beary's Coffee Shop</small></span><span>2.1</span></div>
+
+<div class="setting-row static"><span><b>Datos locales</b><small>Nombre e inventario guardados en este dispositivo</small></span><span>💾</span></div>
+
+</div>
+
+<div class="settings-card danger-card">
+
+<div class="settings-title">🧹 Zona de limpieza</div>
+
+<button class="danger-button" onclick="clearLocalData()">Borrar datos de este dispositivo</button>
+
+</div>
+
 </section>
 
 <section class="page" id="inventoryPage">
- <div class="inner-header">
-  <button class="back-button" onclick="goHome()">←</button>
-  <div class="inner-title"><h1>Inventario 📦</h1><p>Inventario diario de Beary's</p></div>
- </div>
 
- <div class="inventory-hero">
-  <div class="inventory-top"><strong>Progreso del inventario</strong><span id="inventoryProgressText">0% completo</span></div>
-  <div class="progress-track"><div class="progress-fill" id="inventoryProgress"></div></div>
-  <div class="inventory-stats">
-   <div class="inv-stat"><b id="statTotal">0</b><small>Productos</small></div>
-   <div class="inv-stat"><b id="statComplete">0</b><small>Completos</small></div>
-   <div class="inv-stat"><b id="statLow">0</b><small>Faltantes</small></div>
-  </div>
- </div>
+<div class="inner-header">
 
- <input id="inventorySearch" class="inventory-search" type="search" placeholder="🔎 Buscar producto..." autocomplete="off">
- <div id="inventoryAreas"></div>
+<button class="back-button" onclick="goHome()">←</button>
 
- <div class="inventory-actions">
-  <button class="inv-btn primary" onclick="generateInventoryList()">📋 Generar y copiar lista</button>
-  <button class="inv-btn secondary" onclick="newInventoryList()">🧹 Nueva lista</button>
- </div>
- <div class="inventory-message" id="inventoryMessage"></div>
- <textarea id="inventoryResult" class="result-box" readonly placeholder="Aquí aparecerá tu lista de faltantes..."></textarea>
+<div class="inner-title"><h1>Inventario 📦</h1><p>Inventario diario de Beary's</p></div>
+
+</div>
+
+<div class="inventory-hero">
+
+<div class="inventory-top"><strong>Progreso del inventario</strong><span id="inventoryProgressText">0% completo</span></div>
+
+<div class="progress-track"><div class="progress-fill" id="inventoryProgress"></div></div>
+
+<div class="inventory-stats">
+
+<div class="inv-stat"><b id="statTotal">0</b><small>Productos</small></div>
+
+<div class="inv-stat"><b id="statComplete">0</b><small>Completos</small></div>
+
+<div class="inv-stat"><b id="statLow">0</b><small>Faltantes</small></div>
+
+</div>
+
+</div>
+
+<input id="inventorySearch" class="inventory-search" type="search" placeholder="🔎 Buscar producto..." autocomplete="off">
+
+<div id="inventoryAreas"></div>
+
+<div class="inventory-actions">
+
+<button class="inv-btn primary" onclick="generateInventoryList()">📋 Generar y copiar lista</button>
+
+<button class="inv-btn secondary" onclick="newInventoryList()">🧹 Nueva lista</button>
+
+</div>
+
+<div class="inventory-message" id="inventoryMessage"></div>
+
+<textarea id="inventoryResult" class="result-box" readonly placeholder="Aquí aparecerá tu lista de faltantes..."></textarea>
+
 </section>
 
-<section class="page" id="activitiesPage">
- <div class="inner-header"><button class="back-button" onclick="goHome()">←</button><div class="inner-title"><h1>Actividades ✅</h1><p>Elige qué parte del turno quieres revisar</p></div></div>
- <div class="activity-switch" role="tablist" aria-label="Tipo de actividades">
-  <button id="activityOpenBtn" class="activity-tab active" onclick="selectActivityType('opening')">🌅<span>Abre</span><small>Inicio del turno</small></button>
-  <button id="activityCloseBtn" class="activity-tab" onclick="selectActivityType('closing')">🌙<span>Cierre</span><small>Final del turno</small></button>
- </div>
- <div class="activity-panel" id="activityOpeningPanel">
-  <div class="activity-panel-head"><div><b>Apertura</b><span>Checklist de apertura</span></div><div class="activity-progress">0%</div></div>
-  <div class="empty-module compact"><div class="empty-icon">🌅</div><h2>Actividades de apertura</h2><p>Aquí irán las actividades necesarias para comenzar el turno.</p></div>
- </div>
- <div class="activity-panel" id="activityClosingPanel" style="display:none">
-  <div class="activity-panel-head"><div><b>Cierre</b><span>Checklist de cierre</span></div><div class="activity-progress">0%</div></div>
-  <div class="empty-module compact"><div class="empty-icon">🌙</div><h2>Actividades de cierre</h2><p>Aquí irán las tareas necesarias para dejar Beary's listo para el siguiente día.</p></div>
- </div>
+<section class="page" id="openingPage">
+
+<div class="inner-header"><button class="back-button" onclick="goHome()">←</button><div class="inner-title"><h1>Apertura 🌅</h1><p>Actividades para comenzar</p></div></div>
+
+<div class="empty-module"><div class="empty-icon">🌅</div><h2>Checklist de apertura</h2><p>Aquí construiremos las actividades reales de apertura y las organizaremos por turno.</p></div>
+
+</section>
+
+<section class="page" id="closingPage">
+
+<div class="inner-header"><button class="back-button" onclick="goHome()">←</button><div class="inner-title"><h1>Cierre 🌙</h1><p>Actividades para terminar</p></div></div>
+
+<div class="empty-module"><div class="empty-icon">🌙</div><h2>Checklist de cierre</h2><p>Aquí pondremos todas las tareas necesarias para dejar Beary's listo para el siguiente día.</p></div>
+
 </section>
 
 <section class="page" id="cleaningPage">
- <div class="inner-header"><button class="back-button" onclick="goHome()">←</button><div class="inner-title"><h1>Limpieza 🧼</h1><p>Mantener todo en orden</p></div></div>
- <div class="empty-module"><div class="empty-icon">🧼</div><h2>Lista de limpieza</h2><p>La checklist de limpieza será nuestro siguiente módulo.</p></div>
+
+<div class="inner-header"><button class="back-button" onclick="goHome()">←</button><div class="inner-title"><h1>Limpieza 🧼</h1><p>Mantener todo en orden</p></div></div>
+
+<div class="empty-module"><div class="empty-icon">🧼</div><h2>Lista de limpieza</h2><p>La checklist de limpieza será nuestro siguiente módulo.</p></div>
+
 </section>
 
 <section class="page" id="recipesPage">
- <div class="inner-header"><button class="back-button" onclick="goHome()">←</button><div class="inner-title"><h1>Recetario ☕</h1><p>Bebidas y preparación</p></div></div>
- <div class="empty-module"><div class="empty-icon">☕</div><h2>Recetario de Beary's</h2><p>Aquí guardaremos recetas, ingredientes, cantidades y preparación de cada bebida.</p></div>
+
+<div class="inner-header"><button class="back-button" onclick="goHome()">←</button><div class="inner-title"><h1>Recetario ☕</h1><p>Bebidas y preparación</p></div></div>
+
+<div class="empty-module"><div class="empty-icon">☕</div><h2>Recetario de Beary's</h2><p>Aquí guardaremos recetas, ingredientes, cantidades y preparación de cada bebida.</p></div>
+
 </section>
 
 <section class="page" id="historyPage">
- <div class="inner-header"><button class="back-button" onclick="goHome()">←</button><div class="inner-title"><h1>Historial 📖</h1><p>Todo el movimiento</p></div></div>
- <div class="empty-module"><div class="empty-icon">📖</div><h2>Historial de Beary's</h2><p>Aquí quedará registrado el movimiento de la aplicación cuando conectemos la base de datos.</p></div>
+
+<div class="inner-header"><button class="back-button" onclick="goHome()">←</button><div class="inner-title"><h1>Historial 📖</h1><p>Todo el movimiento</p></div></div>
+
+<div class="empty-module"><div class="empty-icon">📖</div><h2>Historial de Beary's</h2><p>Aquí quedará registrado el movimiento de la aplicación cuando conectemos la base de datos.</p></div>
+
 </section>
+
 </div>
 
 <nav class="bottom-nav">
- <button class="nav-button active" onclick="goHome()"><span class="nav-icon">🏠</span><span class="nav-label">Inicio</span></button>
- <button class="nav-button" onclick="openPage('inventory')"><span class="nav-icon">📦</span><span class="nav-label">Inventario</span></button>
- <button class="nav-button" onclick="openPage('activities')"><span class="nav-icon">✅</span><span class="nav-label">Actividades</span></button>
- <button class="nav-button" onclick="openPage('recipes')"><span class="nav-icon">☕</span><span class="nav-label">Recetas</span></button>
- <button class="nav-button" onclick="openPage('history')"><span class="nav-icon">☰</span><span class="nav-label">Más</span></button>
+
+<button class="nav-button active" onclick="goHome()"><span class="nav-icon">⌂</span><span class="nav-label">Inicio</span></button>
+
+<button class="nav-button" onclick="openPage('inventory')"><span class="nav-icon">📦</span><span class="nav-label">Inventario</span></button>
+
+<button class="nav-button" onclick="openPage('opening')"><span class="nav-icon">✓</span><span class="nav-label">Actividades</span></button>
+
+<button class="nav-button" onclick="openPage('recipes')"><span class="nav-icon">☕</span><span class="nav-label">Recetas</span></button>
+
+<button class="nav-button" onclick="openPage('history')"><span class="nav-icon">☰</span><span class="nav-label">Más</span></button>
+
 </nav>
 
 <div class="toast" id="toast"></div>
+
 <div class="bear-pop" id="bearPop"><div class="bear copy-bear-animation">🐻</div><div>¡Lista copiada! ✨</div></div>
 
 <div class="name-overlay" id="nameOverlay">
- <div class="name-modal">
-  <div class="name-bear">🧸</div>
-  <h2>¡Bienvenido a Beary's! ☕</h2>
-  <p>Primero dime cómo te gustaría que te llamemos. Tu nombre se guardará <b>solo en este dispositivo</b>.</p>
-  <input id="nameInput" class="name-input" maxlength="24" autocomplete="name" placeholder="Escribe tu nombre...">
-  <button class="name-save" onclick="saveName()">Guardar mi nombre ♡</button>
-  <button class="name-change" onclick="closeNameModal()">Ahora no</button>
- </div>
+
+<div class="name-modal">
+
+<div class="name-bear">🧸</div>
+
+<h2>¡Bienvenido a Beary's! ☕</h2>
+
+<p>Primero dime cómo te gustaría que te llamemos. Tu nombre se guardará <b>solo en este dispositivo</b>.</p>
+
+<input id="nameInput" class="name-input" maxlength="24" autocomplete="name" placeholder="Escribe tu nombre...">
+
+<button class="name-save" onclick="saveName()">Guardar mi nombre ♡</button>
+
+<button class="name-change" onclick="closeNameModal()">Ahora no</button>
+
+</div>
+
 </div>
 
 <script>
+
 function loadName(){
- const saved=localStorage.getItem("bearyUserName");
- if(saved){
-  document.getElementById("welcomeName").textContent=saved;
- }else{
-  setTimeout(()=>document.getElementById("nameOverlay").classList.add("show"),450);
- }
+
+const saved=localStorage.getItem("bearyUserName");
+
+if(saved){
+
+document.getElementById("welcomeName").textContent=saved;
+
+}else{
+
+setTimeout(()=>document.getElementById("nameOverlay").classList.add("show"),450);
+
 }
+
+}
+
 function saveName(){
- const input=document.getElementById("nameInput");
- const name=input.value.trim();
- if(!name){input.focus();showToast("🧸 Escribe tu nombre primero");return}
- localStorage.setItem("bearyUserName",name);
- document.getElementById("welcomeName").textContent=name;
- syncSettingsUI();
- document.getElementById("nameOverlay").classList.remove("show");
- showToast("☕ ¡Bienvenido, "+name+"!");
+
+const input=document.getElementById("nameInput");
+
+const name=input.value.trim();
+
+if(!name){input.focus();showToast("🧸 Escribe tu nombre primero");return}
+
+localStorage.setItem("bearyUserName",name);
+
+document.getElementById("welcomeName").textContent=name;
+
+syncSettingsUI();
+
+document.getElementById("nameOverlay").classList.remove("show");
+
+showToast("☕ ¡Bienvenido, "+name+"!");
+
 }
+
 function closeNameModal(){
- document.getElementById("nameOverlay").classList.remove("show");
- if(!localStorage.getItem("bearyUserName")) document.getElementById("welcomeName").textContent="amigo";
+
+document.getElementById("nameOverlay").classList.remove("show");
+
+if(!localStorage.getItem("bearyUserName"))document.getElementById("welcomeName").textContent="amigo";
+
 }
+
 function changeName(){
- const old=localStorage.getItem("bearyUserName")||"";
- document.getElementById("nameInput").value=old;
- document.getElementById("nameOverlay").classList.add("show");
- setTimeout(()=>document.getElementById("nameInput").focus(),80);
+
+const old=localStorage.getItem("bearyUserName")||"";
+
+document.getElementById("nameInput").value=old;
+
+document.getElementById("nameOverlay").classList.add("show");
+
+setTimeout(()=>document.getElementById("nameInput").focus(),80);
+
 }
+
 document.getElementById("nameInput").addEventListener("keydown",e=>{if(e.key==="Enter")saveName()});
 
-/* DATE / SETTINGS / PERSONALIZATION */
+/* DATE / SETTINGS */
+
 const weekdayShort=["dom","lun","mar","mié","jue","vie","sáb"];
+
 const monthShort=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
 
 function updateBrandDate(){
- const now=new Date();
- const date=`${weekdayShort[now.getDay()]} ${now.getDate()} de ${monthShort[now.getMonth()]}`;
- const el=document.getElementById("brandDate");
- if(el) el.textContent=date;
+
+const now=new Date();
+
+const date=`${weekdayShort[now.getDay()]} ${now.getDate()} de ${monthShort[now.getMonth()]}`;
+
+document.getElementById("brandDate").textContent=date;
+
 }
 
 function syncSettingsUI(){
- const name=localStorage.getItem("bearyUserName")||"Sin nombre";
- const settingsName=document.getElementById("settingsName");
- if(settingsName)settingsName.textContent=name;
- const dark=document.body.classList.contains("dark");
- const title=document.getElementById("appearanceTitle");
- const icon=document.getElementById("settingsThemeIcon");
- if(title)title.textContent=dark?"Modo noche":"Modo claro";
- if(icon)icon.textContent=dark?"🌙":"☀️";
- const animOn=localStorage.getItem("bearyAnimations")!=="off";
- document.body.classList.toggle("animations-off",!animOn);
- const toggle=document.getElementById("animationToggle");
- if(toggle){toggle.textContent=animOn?"ON":"OFF";toggle.classList.toggle("off",!animOn);toggle.classList.toggle("on",animOn)}
- 
- // Sincroniza la barra de estado de iOS con el tema actual
- const metaTheme = document.getElementById("metaThemeColor");
- if(metaTheme) metaTheme.setAttribute("content", dark ? "#171216" : "#fff4f8");
+
+const name=localStorage.getItem("bearyUserName")||"Sin nombre";
+
+const settingsName=document.getElementById("settingsName");
+
+if(settingsName)settingsName.textContent=name;
+
+const dark=document.body.classList.contains("dark");
+
+const title=document.getElementById("appearanceTitle");
+
+const icon=document.getElementById("settingsThemeIcon");
+
+if(title)title.textContent=dark?"Modo noche":"Modo claro";
+
+if(icon)icon.textContent=dark?"🌙":"☀️";
+
+const animOn=localStorage.getItem("bearyAnimations")!=="off";
+
+document.body.classList.toggle("animations-off",!animOn);
+
+const toggle=document.getElementById("animationToggle");
+
+if(toggle){toggle.textContent=animOn?"ON":"OFF";toggle.classList.toggle("off",!animOn);toggle.classList.toggle("on",animOn)}
+
 }
 
 function openSettings(){
- openPage("settings");
- syncSettingsUI();
+
+openPage("settings");
+
+syncSettingsUI();
+
 }
 
 function toggleAnimations(event){
- if(event)event.stopPropagation();
- const off=localStorage.getItem("bearyAnimations")==="off";
- localStorage.setItem("bearyAnimations",off?"on":"off");
- syncSettingsUI();
- showToast(off?"✨ Animaciones activadas":"🫧 Animaciones desactivadas");
+
+if(event)event.stopPropagation();
+
+const off=localStorage.getItem("bearyAnimations")==="off";
+
+localStorage.setItem("bearyAnimations",off?"on":"off");
+
+syncSettingsUI();
+
+showToast(off?"✨ Animaciones activadas":"🫧 Animaciones desactivadas");
+
 }
 
 function clearLocalData(){
- if(!confirm("¿Borrar el nombre y las cantidades guardadas en este dispositivo?"))return;
- Object.keys(localStorage).filter(k=>k.startsWith("bearyInv_")).forEach(k=>localStorage.removeItem(k));
- localStorage.removeItem("bearyUserName");
- showToast("🧹 Datos locales borrados");
- setTimeout(()=>location.reload(),650);
+
+if(!confirm("¿Borrar el nombre y las cantidades guardadas en este dispositivo?"))return;
+
+Object.keys(localStorage).filter(k=>k.startsWith("bearyInv_")).forEach(k=>localStorage.removeItem(k));
+
+localStorage.removeItem("bearyUserName");
+
+showToast("🧹 Datos locales borrados");
+
+setTimeout(()=>location.reload(),650);
+
 }
 
 function updateDateEveryMinute(){
- updateBrandDate();
- setInterval(updateBrandDate,60000);
-}
 
-function selectActivityType(type){
- const opening=type==='opening';
- document.getElementById('activityOpeningPanel').style.display=opening?'block':'none';
- document.getElementById('activityClosingPanel').style.display=opening?'none':'block';
- document.getElementById('activityOpenBtn').classList.toggle('active',opening);
- document.getElementById('activityCloseBtn').classList.toggle('active',!opening);
- localStorage.setItem('bearyActivityType',type);
-}
-function openActivities(){
- openPage('activities');
- selectActivityType(localStorage.getItem('bearyActivityType')||'opening');
+updateBrandDate();
+
+setInterval(updateBrandDate,60000);
+
 }
 
 function openPage(page){
- document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
- if(page==='opening'||page==='closing')page='activities';
- const target=document.getElementById(page+"Page");
- if(target)target.classList.add("active");
- window.scrollTo({top:0,behavior:"smooth"});
- updateNavigation(page);
- if(page==="inventory")updateStats();
+
+document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+
+const target=document.getElementById(page+"Page");
+
+if(target)target.classList.add("active");
+
+window.scrollTo({top:0,behavior:"smooth"});
+
+updateNavigation(page);
+
+if(page==="inventory")updateInventoryStats();
+
 }
+
 function goHome(){
- document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
- document.getElementById("homePage").classList.add("active");
- window.scrollTo({top:0,behavior:"smooth"});
- updateNavigation("home");
+
+document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+
+document.getElementById("homePage").classList.add("active");
+
+window.scrollTo({top:0,behavior:"smooth"});
+
+updateNavigation("home");
+
 }
+
 function updateNavigation(page){
- const b=document.querySelectorAll(".nav-button");b.forEach(x=>x.classList.remove("active"));
- if(page==="home")b[0].classList.add("active");
- else if(page==="inventory")b[1].classList.add("active");
- else if(["activities","opening","closing","cleaning"].includes(page))b[2].classList.add("active");
- else if(page==="recipes")b[3].classList.add("active");else if(page==="history")b[4].classList.add("active");
+
+const b=document.querySelectorAll(".nav-button");b.forEach(x=>x.classList.remove("active"));
+
+if(page==="home")b[0].classList.add("active");
+
+else if(page==="inventory")b[1].classList.add("active");
+
+else if(["opening","closing","cleaning"].includes(page))b[2].classList.add("active");
+
+else if(page==="recipes")b[3].classList.add("active");else if(page==="history")b[4].classList.add("active");
+
 }
+
 function toggleTheme(){
- document.body.classList.toggle("dark");
- const dark=document.body.classList.contains("dark");
- document.getElementById("themeToggle").textContent=dark?"☀️":"🌙";
- localStorage.setItem("bearyTheme",dark?"dark":"light");
- syncSettingsUI();
- showToast(dark?"🌙 Modo noche activado":"☀️ Modo claro activado");
+
+document.body.classList.toggle("dark");
+
+const dark=document.body.classList.contains("dark");
+
+document.getElementById("themeToggle").textContent=dark?"☀️":"🌙";
+
+localStorage.setItem("bearyTheme",dark?"dark":"light");
+
+syncSettingsUI();
+
+showToast(dark?"🌙 Modo noche activado":"☀️ Modo claro activado");
+
 }
+
 if(localStorage.getItem("bearyTheme")==="dark"){document.body.classList.add("dark");document.getElementById("themeToggle").textContent="☀️"}
 
 const phrases=[
-"“Hoy también cuenta cada pequeño esfuerzo.”","“Un café preparado con cariño siempre sabe diferente.”",
+
+"“Hoy también cuenta cada pequeño esfuerzo.”","“Un latte preparado con cariño siempre sabe diferente.”",
+
 "“No tienes que hacerlo perfecto, solo hacerlo con cariño.”","“Cada pequeño detalle hace especial a Beary's.”",
-"“Respira, prepara tu área y disfruta el momento.”","“Detrás de cada buenos chilaquiles hay alguien que puso atención.”",
+
+"“Respira, prepara tu area y disfruta el momento.”","“Detrás de cada buenos chilaquiles hay alguien que puso atención.”",
+
 "“Hoy puede ser un día bonito, incluso en los días pesados.”","“Hazlo con calma, con cariño y con una sonrisa. 🧸”"
+
 ];
+
 let currentPhrase=0;
+
 function nextPhrase(){
- currentPhrase=(currentPhrase+1)%phrases.length;
- const t=document.getElementById("phraseText");t.style.opacity="0";
- setTimeout(()=>{t.textContent=phrases[currentPhrase];document.getElementById("phraseNumber").textContent=`${currentPhrase+1} / ${phrases.length}`;t.style.opacity="1"},150);
+
+currentPhrase=(currentPhrase+1)%phrases.length;
+
+const t=document.getElementById("phraseText");t.style.opacity="0";
+
+setTimeout(()=>{t.textContent=phrases[currentPhrase];document.getElementById("phraseNumber").textContent=`${currentPhrase+1} / ${phrases.length}`;t.style.opacity="1"},150);
+
 }
 
 /* INVENTARIO */
+
 const products=[
-{ nombre:"Jabón de trastes", objetivo:1, group:"bodega" },
-{ nombre:"Jabón de manos", objetivo:1, group:"bodega" },
-{ nombre:"Guantes para Baño", objetivo:1, group:"bodega" },
-{ nombre:"Guantes para horno", objetivo:1, group:"bodega" },
-{ nombre:"Esponja de carita", objetivo:3, group:"bodega" },
-{ nombre:"Esponja para vasos", objetivo:3, group:"bodega" },
-{ nombre:"Fibra de acero", objetivo:1, group:"bodega" },
-{ nombre:"Fibra verde", objetivo:1, group:"bodega" },
-{ nombre:"Piedra pómez", objetivo:1, group:"bodega" },
-{ nombre:"Fabuloso", objetivo:1, group:"bodega" },
-{ nombre:"Kalan", objetivo:1, group:"bodega" },
-{ nombre:"Cloro", objetivo:1, group:"bodega" },
-{ nombre:"Ajax de baño", objetivo:1, group:"bodega" },
-{ nombre:"Ajax limón", objetivo:1, group:"bodega" },
-{ nombre:"Aromatizante", objetivo:1, group:"bodega" },
-{ nombre:"Windex", objetivo:1, group:"bodega" },
-{ nombre:"Drano", objetivo:1, group:"bodega" },
-{ nombre:"Mechudo", objetivo:1, group:"bodega" },
-{ nombre:"Palitos de madera", objetivo:1, group:"bodega" },
-{ nombre:"Cafiza", objetivo:1, group:"bodega" },
-{ nombre:"Tenedores desechables", objetivo:2, group:"bodega" },
-{ nombre:"Cucharas desechables", objetivo:2, group:"bodega" },
-{ nombre:"Popotes", objetivo:1, group:"bodega" },
-{ nombre:"Bolsas chicas de basura", objetivo:2, group:"bodega" },
-{ nombre:"Bolsas grandes de basura", objetivo:1, group:"bodega" },
-{ nombre:"Mangas", objetivo:7, group:"bodega" },
-{ nombre:"Papel de baño", objetivo:8, group:"bodega" },
-{ nombre:"Café", objetivo:2, group:"bodega" },
-{ nombre:"Vasos de 16 oz", objetivo:4, group:"bodega" },
-{ nombre:"Vasos de 12 oz", objetivo:5, group:"bodega" },
-{ nombre:"Vasos transparentes", objetivo:5, group:"bodega" },
-{ nombre:"Vasos de 10 oz", objetivo:1, group:"bodega" },
-{ nombre:"Vasos de espresso", objetivo:1, group:"bodega" },
-{ nombre:"Tapas Negras", objetivo:3, group:"bodega" },
-{ nombre:"Tapas Domo", objetivo:2, group:"bodega" },
-{ nombre:"Tapas Planas", objetivo:2, group:"bodega" },
-{ nombre:"Tapas de Espresso", objetivo:1, group:"bodega" },
-{ nombre:"Azúcar", objetivo:1, group:"bodega" },
-{ nombre:"Splenda", objetivo:1, group:"bodega" },
-{ nombre:"Stevia", objetivo:1, group:"bodega" },
-{ nombre:"Guantes", objetivo:1, group:"bodega" },
-{ nombre:"Servilletas", objetivo:2, group:"bodega" },
-{ nombre:"Servitoallas", objetivo:2, group:"bodega" },
-{ nombre:"Sanitas", objetivo:3, group:"bodega" },
-{ nombre:"Azúcar mascabado", objetivo:1, group:"bodega" },
-{ nombre:"Charolas chicas", objetivo:1, group:"bodega" },
-{ nombre:"Charolas grandes", objetivo:1, group:"bodega" },
-{ nombre:"Mangas desechables", objetivo:4, group:"bodega" },
-{ nombre:"Bolsas para pollo y cochinita", objetivo:3, group:"bodega" },
-{ nombre:"Rejillas", objetivo:30, group:"bodega" },
-{ nombre:"Totopos", objetivo:16, group:"bodega" },
-{ nombre:"Frijoles", objetivo:1, group:"bodega" },
-{ nombre:"Té de frutos", objetivo:1, group:"bodega" },
-{ nombre:"Té fresa/vainilla", objetivo:1, group:"bodega" },
-{ nombre:"Té verde", objetivo:1, group:"bodega" },
-{ nombre:"Té Earl Grey", objetivo:1, group:"bodega" },
-{ nombre:"Té English", objetivo:1, group:"bodega" },
-{ nombre:"Té mango/fresa", objetivo:1, group:"bodega" },
-{ nombre:"Té limón", objetivo:1, group:"bodega" },
-{ nombre:"Té limón/jengibre", objetivo:1, group:"bodega" },
-{ nombre:"Té manzanilla", objetivo:1, group:"bodega" },
-{ nombre:"Té manzanilla/vainilla", objetivo:1, group:"bodega" },
-{ nombre:"Té de granada", objetivo:1, group:"bodega" },
-{ nombre:"Helado de cookie and cream", objetivo:10, group:"bodega" },
-{ nombre:"Helado de vainilla", objetivo:4, group:"bodega" },
-{ nombre:"Helado de chocolate", objetivo:4, group:"bodega" },
-{ nombre:"Helado de fresa", objetivo:10, group:"bodega" },
-{ nombre:"Frutos rojos para waffles", objetivo:1, group:"bodega" },
-{ nombre:"Harina de waffles", objetivo:1, group:"bodega" },
-{ nombre:"Jamón", objetivo:2, group:"bodega" },
-{ nombre:"Tocino en trozos", objetivo:2, group:"bodega" },
-{ nombre:"Tocino en tiras", objetivo:1, group:"bodega" },
-{ nombre:"Jitomate", objetivo:20, group:"bodega" },
-{ nombre:"Cebolla", objetivo:4, group:"bodega" },
-{ nombre:"Lechuga", objetivo:3, group:"bodega" },
-{ nombre:"Limón", objetivo:10, group:"bodega" },
-{ nombre:"Chile serrano", objetivo:20, group:"bodega" },
-{ nombre:"Manzana", objetivo:4, group:"bodega" },
-{ nombre:"Relleno de dulce de leche", objetivo:2, group:"bodega" },
-{ nombre:"Relleno de chocolate", objetivo:2, group:"bodega" },
-{ nombre:"Relleno de mascarpone", objetivo:2, group:"bodega" },
-{ nombre:"Relleno de frutos rojos", objetivo:2, group:"bodega" },
-{ nombre:"Salsa verde", objetivo:10, group:"bodega" },
-{ nombre:"Salsa roja", objetivo:10, group:"bodega" },
-{ nombre:"Cochinita", objetivo:2, group:"bodega" },
-{ nombre:"Pollo", objetivo:2, group:"bodega" },
-{ nombre:"Crema", objetivo:2, group:"bodega" },
-{ nombre:"Crema batida", objetivo:2, group:"bodega" },
-{ nombre:"Papas", objetivo:2, group:"bodega" },
 
-{ nombre:"Coca", objetivo:7, group:"bebidas" },
-{ nombre:"Coca zero", objetivo:5, group:"bebidas" },
-{ nombre:"Coca light", objetivo:5, group:"bebidas" },
-{ nombre:"Sprite", objetivo:4, group:"bebidas" },
-{ nombre:"Mundet", objetivo:4, group:"bebidas" },
-{ nombre:"Flanes", objetivo:5, group:"bebidas" },
-{ nombre:"Bolsas de pan", objetivo:1, group:"bebidas" },
-{ nombre:"Bolsas grandes", objetivo:40, group:"bebidas" },
-{ nombre:"Agua Santa María", objetivo:7, group:"bebidas" },
-{ nombre:"Topochico", objetivo:6, group:"bebidas" },
-{ nombre:"Vasos para porciones (llevar)", objetivo:1, group:"bebidas" },
-{ nombre:"Tapas para porciones (llevar)", objetivo:1, group:"bebidas" },
-{ nombre:"Papel encerado", objetivo:1, group:"bebidas" },
-{ nombre:"Turín", objetivo:1, group:"bebidas" },
-{ nombre:"Chai", objetivo:1, group:"bebidas" },
-{ nombre:"Chai Mango", objetivo:1, group:"bebidas" },
-{ nombre:"Taro", objetivo:1, group:"bebidas" },
-{ nombre:"Matcha", objetivo:1, group:"bebidas" },
-{ nombre:"Galleta Oreo", objetivo:3, group:"bebidas" },
-{ nombre:"Suavicremas", objetivo:2, group:"bebidas" },
-{ nombre:"Galleta Lotus", objetivo:4, group:"bebidas" },
-{ nombre:"Chocolate Abuelita", objetivo:3, group:"bebidas" },
-{ nombre:"Chocolate de decoración", objetivo:1, group:"bebidas" },
-{ nombre:"Café descafeinado", objetivo:1, group:"bebidas" },
-{ nombre:"Cajeta", objetivo:4, group:"bebidas" },
-{ nombre:"Crema Lotus", objetivo:1, group:"bebidas" },
-{ nombre:"Nutella", objetivo:4, group:"bebidas" },
-{ nombre:"Tarjetas de lealtad", objetivo:1, group:"bebidas" },
-{ nombre:"Etiquetas", objetivo:1, group:"bebidas" },
+["Jabón de trastes",1,"bodega"],["Jabón de manos",1,"bodega"],["Guantes para Baño",1,"bodega"],["Guantes para horno",1,"bodega"],
 
-{ nombre:"Mayonesa", objetivo:1, group:"comida" },
-{ nombre:"Chiles en vinagre", objetivo:1, group:"comida" },
-{ nombre:"Mostaza", objetivo:1, group:"comida" },
-{ nombre:"Papaya", objetivo:1, group:"comida" },
-{ nombre:"Aguacate", objetivo:18, group:"comida" },
-{ nombre:"Salsa Maggi", objetivo:1, group:"comida" },
-{ nombre:"Salsa inglesa", objetivo:1, group:"comida" },
-{ nombre:"Salsa matcha", objetivo:1, group:"comida" },
-{ nombre:"Salsa Valentina", objetivo:1, group:"comida" },
-{ nombre:"Catsup", objetivo:1, group:"comida" },
-{ nombre:"Granola", objetivo:1, group:"comida" },
-{ nombre:"Miel", objetivo:1, group:"comida" },
-{ nombre:"Maple", objetivo:1, group:"comida" },
-{ nombre:"Sal", objetivo:1, group:"comida" },
-{ nombre:"Pam", objetivo:1, group:"comida" },
-{ nombre:"Aceite Nutrioli", objetivo:1, group:"comida" },
-{ nombre:"Galletas de cortesia", objetivo:1, group:"comida" },
-{ nombre:"Galletas de Limón", objetivo:5, group:"comida" },
-{ nombre:"Galletas de Pistache", objetivo:5, group:"comida" },
-{ nombre:"Huevo", objetivo:3, group:"comida" },
-{ nombre:"Comandas", objetivo:5, group:"comida" },
-{ nombre:"Tartas", objetivo:30, group:"comida" },
-{ nombre:"Leche deslactosada", objetivo:24, group:"comida" },
-{ nombre:"Leche entera", objetivo:15, group:"comida" },
-{ nombre:"Leche light", objetivo:6, group:"comida" },
-{ nombre:"Leche deslactosada light", objetivo:6, group:"comida" },
-{ nombre:"Leche de almendra", objetivo:4, group:"comida" },
-{ nombre:"Leche de coco", objetivo:3, group:"comida" },
-{ nombre:"Leche de avena", objetivo:4, group:"comida" },
-{ nombre:"Leche de soya", objetivo:4, group:"comida" },
-{ nombre:"Concentrado de fresa", objetivo:2, group:"comida" },
-{ nombre:"Concentrado de maracuya", objetivo:2, group:"comida" },
-{ nombre:"Concentrado de mango", objetivo:2, group:"comida" },
-{ nombre:"Vainilla Francesa", objetivo:2, group:"comida" },
-{ nombre:"Vainilla de Fresa", objetivo:1, group:"comida" },
-{ nombre:"Pink lemonade", objetivo:2, group:"comida" },
-{ nombre:"Caramelo", objetivo:1, group:"comida" },
-{ nombre:"Tortillas", objetivo:1, group:"comida" },
-{ nombre:"Chapatas", objetivo:20, group:"comida" },
-{ nombre:"Croissant", objetivo:15, group:"comida" },
-{ nombre:"Trapos limpios", objetivo:50, group:"comida" },
-{ nombre:"Bolsa para trapos", objetivo:1, group:"comida" },
-{ nombre:"Bombas de chocolate", objetivo:3, group:"comida" },
-{ nombre:"Velcro", objetivo:1, group:"comida" },
-{ nombre:"Osos para bebidas", objetivo:1, group:"comida" },
-{ nombre:"Osos grandes", objetivo:10, group:"comida" },
-{ nombre:"Vaso Beary rosa", objetivo:10, group:"comida" },
-{ nombre:"Vaso Beary rojo", objetivo:10, group:"comida" },
-{ nombre:"Limpiador de horno", objetivo:1, group:"comida" },
-{ nombre:"Protector de horno", objetivo:1, group:"comida" },
+["Esponja de carita",3,"bodega"],["Esponja para vasos",3,"bodega"],["Fibra de acero",1,"bodega"],["Fibra verde",1,"bodega"],
+
+["Piedra pómez",1,"bodega"],["Fabuloso",1,"bodega"],["Kalan",1,"bodega"],["Cloro",1,"bodega"],["Ajax de baño",1,"bodega"],
+
+["Ajax limón",1,"bodega"],["Aromatizante",1,"bodega"],["Windex",1,"bodega"],["Drano",1,"bodega"],["Mechudo",1,"bodega"],
+
+["Palitos de madera",1,"bodega"],["Cafiza",1,"bodega"],["Tenedores desechables",2,"bodega"],["Cucharas desechables",2,"bodega"],
+
+["Popotes",1,"bodega"],["Bolsas chicas de basura",2,"bodega"],["Bolsas grandes de basura",1,"bodega"],["Mangas",7,"bodega"],
+
+["Papel de baño",8,"bodega"],["Café",2,"bodega"],["Vasos de 16 oz",4,"bodega"],["Vasos de 12 oz",5,"bodega"],
+
+["Vasos transparentes",5,"bodega"],["Vasos de 10 oz",1,"bodega"],["Vasos de espresso",1,"bodega"],["Tapas Negras",3,"bodega"],
+
+["Tapas Domo",2,"bodega"],["Tapas Planas",2,"bodega"],["Tapas de Espresso",1,"bodega"],["Azúcar",1,"bodega"],["Splenda",1,"bodega"],
+
+["Stevia",1,"bodega"],["Guantes",1,"bodega"],["Servilletas",2,"bodega"],["Servitoallas",2,"bodega"],["Sanitas",3,"bodega"],
+
+["Azúcar mascabado",1,"bodega"],["Charolas chicas",1,"bodega"],["Charolas grandes",1,"bodega"],["Mangas desechables",4,"bodega"],
+
+["Bolsas para pollo y cochinita",3,"bodega"],["Rejillas",30,"bodega"],["Totopos",16,"bodega"],["Frijoles",1,"bodega"],
+
+["Té de frutos",1,"bodega"],["Té fresa/vainilla",1,"bodega"],["Té verde",1,"bodega"],["Té Earl Grey",1,"bodega"],
+
+["Té English",1,"bodega"],["Té mango/fresa",1,"bodega"],["Té limón",1,"bodega"],["Té limón/jengibre",1,"bodega"],
+
+["Té manzanilla",1,"bodega"],["Té manzanilla/vainilla",1,"bodega"],["Té de granada",1,"bodega"],["Helado de cookie and cream",10,"bodega"],
+
+["Helado de vainilla",4,"bodega"],["Helado de chocolate",4,"bodega"],["Helado de fresa",10,"bodega"],["Frutos rojos para waffles",1,"bodega"],
+
+["Harina de waffles",1,"bodega"],["Jamón",2,"bodega"],["Tocino en trozos",2,"bodega"],["Tocino en tiras",1,"bodega"],
+
+["Jitomate",20,"bodega"],["Cebolla",4,"bodega"],["Lechuga",3,"bodega"],["Limón",10,"bodega"],["Chile serrano",20,"bodega"],
+
+["Manzana",4,"bodega"],["Relleno de dulce de leche",2,"bodega"],["Relleno de chocolate",2,"bodega"],["Relleno de mascarpone",2,"bodega"],
+
+["Relleno de frutos rojos",2,"bodega"],["Salsa verde",10,"bodega"],["Salsa roja",10,"bodega"],["Cochinita",2,"bodega"],
+
+["Pollo",2,"bodega"],["Crema",2,"bodega"],["Crema batida",2,"bodega"],["Papas",2,"bodega"],
+
+["Coca",7,"bebidas"],["Coca zero",5,"bebidas"],["Coca light",5,"bebidas"],["Sprite",4,"bebidas"],["Mundet",4,"bebidas"],
+
+["Flanes",5,"bebidas"],["Bolsas de pan",1,"bebidas"],["Bolsas grandes",40,"bebidas"],["Agua Santa María",7,"bebidas"],
+
+["Topochico",6,"bebidas"],["Vasos para porciones (llevar)",1,"bebidas"],["Tapas para porciones (llevar)",1,"bebidas"],
+
+["Papel encerado",1,"bebidas"],["Turín",1,"bebidas"],["Chai",1,"bebidas"],["Chai Mango",1,"bebidas"],["Taro",1,"bebidas"],
+
+["Matcha",1,"bebidas"],["Galleta Oreo",3,"bebidas"],["Suavicremas",2,"bebidas"],["Galleta Lotus",4,"bebidas"],
+
+["Chocolate Abuelita",3,"bebidas"],["Chocolate de decoración",1,"bebidas"],["Café descafeinado",1,"bebidas"],["Cajeta",4,"bebidas"],
+
+["Crema Lotus",1,"bebidas"],["Nutella",4,"bebidas"],["Tarjetas de lealtad",1,"bebidas"],["Etiquetas",1,"bebidas"],
+
+["Mayonesa",1,"comida"],["Chiles en vinagre",1,"comida"],["Mostaza",1,"comida"],["Papaya",1,"comida"],["Aguacate",18,"comida"],
+
+["Salsa Maggi",1,"comida"],["Salsa inglesa",1,"comida"],["Salsa matcha",1,"comida"],["Salsa Valentina",1,"comida"],["Catsup",1,"comida"],
+
+["Granola",1,"comida"],["Miel",1,"comida"],["Maple",1,"comida"],["Sal",1,"comida"],["Pam",1,"comida"],["Aceite Nutrioli",1,"comida"],
+
+["Galletas de cortesia",1,"comida"],["Galletas de Limón",5,"comida"],["Galletas de Pistache",5,"comida"],["Huevo",3,"comida"],
+
+["Comandas",5,"comida"],["Tartas",30,"comida"],["Leche deslactosada",24,"comida"],["Leche entera",15,"comida"],["Leche light",6,"comida"],
+
+["Leche deslactosada light",6,"comida"],["Leche de almendra",4,"comida"],["Leche de coco",3,"comida"],["Leche de avena",4,"comida"],
+
+["Leche de soya",4,"comida"],["Concentrado de fresa",2,"comida"],["Concentrado de maracuya",2,"comida"],["Concentrado de mango",2,"comida"],
+
+["Vainilla Francesa",2,"comida"],["Vainilla de Fresa",1,"comida"],["Pink lemonade",2,"comida"],["Caramelo",1,"comida"],
+
+["Tortillas",1,"comida"],["Chapatas",20,"comida"],["Croissant",15,"comida"],["Trapos limpios",50,"comida"],["Bolsa para trapos",1,"comida"],
+
+["Bombas de chocolate",3,"comida"],["Velcro",1,"comida"],["Osos para bebidas",1,"comida"],["Osos grandes",10,"comida"],
+
+["Vaso Beary rosa",10,"comida"],["Vaso Beary rojo",10,"comida"],["Limpiador de horno",1,"comida"],["Protector de horno",1,"comida"]
+
 ];
 
-const groups={
-bodega:["📦 Bodega, refri y limpieza","📦"],bebidas:["☕ Bebidas","☕"],comida:["🍔 Comida","🍔"]
+const areaNames={
+
+bodega:"Bodega, refri y limpieza",
+
+bebidas:"Bebidas",
+
+comida:"Comida"
+
 };
 
-function key(i){return"bearyInv_"+i}
-function esc(s){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+const areaIcons={
+
+bodega:"🧹",
+
+bebidas:"🥤",
+
+comida:"🍓"
+
+};
+
+const areaColors={
+
+bodega:"gris",
+
+bebidas:"morado",
+
+comida:"comida"
+
+};
+
+function inventoryKey(name){
+
+return "bearyInv_"+name.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]/g,"_");
+
+}
+
+function getQuantity(name){
+
+const value=localStorage.getItem(inventoryKey(name));
+
+return value===null?"":value;
+
+}
+
+function saveQuantity(name,value){
+
+if(value===""){
+
+localStorage.removeItem(inventoryKey(name));
+
+}else{
+
+localStorage.setItem(inventoryKey(name),value);
+
+}
+
+}
 
 function buildInventory(){
-    const box = document.getElementById("inventoryAreas");
-    if(!box) return;
-    box.innerHTML = "";
 
-    Object.keys(groups).forEach(g=>{
-        const list=products.map((p,i)=>({...p,i}))
-            .filter(p=>p.group===g);
+const container=document.getElementById("inventoryAreas");
 
-        const area=document.createElement("div");
-        area.className="inventory-area";
-        area.dataset.group=g;
+const search=document.getElementById("inventorySearch").value.trim().toLowerCase();
 
-        area.innerHTML=`
-            <div class="inventory-area-title">
-                <h2>${groups[g][0]}</h2>
-                <span>${list.length} productos</span>
-            </div>
-        `;
+container.innerHTML="";
 
-        list.forEach(p=>{
-            const saved=localStorage.getItem(key(p.i));
+Object.keys(areaNames).forEach(area=>{
 
-            const row=document.createElement("div");
-            row.className="product-row";
-            row.dataset.name=p.nombre.toLowerCase();
+const filtered=products.filter(p=>{
 
-            row.innerHTML=`
-                <div class="product-info">
-                    <div class="product-name">${esc(p.nombre)}</div>
-                    <div class="product-meta">Meta: ${p.objetivo}</div>
-                </div>
+const matchesArea=p[2]===area;
 
-                <div class="product-controls">
-                    <span class="traffic"></span>
-                    <input
-                        class="quantity"
-                        type="number"
-                        min="0"
-                        step="any"
-                        inputmode="numeric"
-                        data-index="${p.i}"
-                        value="${saved ?? ""}">
-                </div>
-            `;
+const matchesSearch=!search||p[0].toLowerCase().includes(search);
 
-            const input=row.querySelector("input");
-            const dot=row.querySelector(".traffic");
+return matchesArea&&matchesSearch;
 
-            input.addEventListener("input",()=>{
-                localStorage.setItem(key(p.i),input.value);
-                traffic(input,dot,p.objetivo);
-                updateStats();
-            });
-
-            if(saved!==null && saved!==""){
-                traffic(input,dot,p.objetivo);
-            }
-
-            area.appendChild(row);
-        });
-
-        box.appendChild(area);
-    });
-
-    updateStats();
-}
-
-function traffic(input,dot,target){
- dot.className="traffic";
- const v=parseFloat(input.value);
- if(Number.isNaN(v))return;
- if(v>=target)dot.classList.add("green");
- else if(v>=target*.5)dot.classList.add("yellow");
- else dot.classList.add("red");
-}
-
-function updateStats(){
- let filled=0,complete=0,low=0;
- products.forEach((p,i)=>{
-  const el=document.querySelector(`.quantity[data-index="${i}"]`);
-  if(!el||el.value==="")return;
-  filled++;
-  const v=parseFloat(el.value);
-  if(v>=p.objetivo)complete++;
-  else low++;
- });
- const pct=Math.round(filled/products.length*100);
- const elTotal = document.getElementById("statTotal");
- const elComplete = document.getElementById("statComplete");
- const elLow = document.getElementById("statLow");
- const elProgress = document.getElementById("inventoryProgress");
- const elProgressText = document.getElementById("inventoryProgressText");
-
- if(elTotal) elTotal.textContent=products.length;
- if(elComplete) elComplete.textContent=complete;
- if(elLow) elLow.textContent=low;
- if(elProgress) elProgress.style.width=pct+"%";
- if(elProgressText) elProgressText.textContent=pct+"% completo";
-}
-
-document.getElementById("inventorySearch").addEventListener("input",function(){
- const q=this.value.toLowerCase().trim();
- document.querySelectorAll(".inventory-area").forEach(area=>{
-  let n=0;
-  area.querySelectorAll(".product-row").forEach(row=>{const ok=!q||row.dataset.name.includes(q);row.style.display=ok?"flex":"none";if(ok)n++});
-  area.style.display=n?"block":"none";
- });
 });
+
+if(!filtered.length)return;
+
+const section=document.createElement("div");
+
+section.className="inventory-area";
+
+const title=document.createElement("div");
+
+title.className="inventory-area-title";
+
+const h2=document.createElement("h2");
+
+h2.textContent=areaIcons[area]+" "+areaNames[area];
+
+const count=document.createElement("span");
+
+count.textContent=filtered.length+" productos";
+
+title.appendChild(h2);
+
+title.appendChild(count);
+
+section.appendChild(title);
+
+filtered.forEach(product=>{
+
+const name=product[0];
+
+const target=product[1];
+
+const row=document.createElement("div");
+
+row.className="product-row";
+
+const info=document.createElement("div");
+
+info.className="product-info";
+
+const productName=document.createElement("div");
+
+productName.className="product-name";
+
+productName.textContent=name;
+
+const meta=document.createElement("div");
+
+meta.className="product-meta";
+
+meta.textContent="Objetivo: "+target;
+
+info.appendChild(productName);
+
+info.appendChild(meta);
+
+const controls=document.createElement("div");
+
+controls.className="product-controls";
+
+const traffic=document.createElement("span");
+
+traffic.className="traffic";
+
+const input=document.createElement("input");
+
+input.className="quantity";
+
+input.type="number";
+
+input.inputMode="decimal";
+
+input.min="0";
+
+input.step="any";
+
+input.placeholder="Tengo";
+
+input.value=getQuantity(name);
+
+input.setAttribute("aria-label","Cantidad de "+name);
+
+function updateTraffic(){
+
+const value=input.value.trim();
+
+traffic.className="traffic";
+
+if(value===""){
+
+return;
+
+}
+
+const number=parseFloat(value);
+
+if(isNaN(number)){
+
+return;
+
+}
+
+if(number>=target){
+
+traffic.classList.add("green");
+
+}else if(number>0){
+
+traffic.classList.add("yellow");
+
+}else{
+
+traffic.classList.add("red");
+
+}
+
+}
+
+input.addEventListener("input",()=>{
+
+saveQuantity(name,input.value);
+
+updateTraffic();
+
+updateInventoryStats();
+
+});
+
+input.addEventListener("blur",()=>{
+
+saveQuantity(name,input.value);
+
+updateTraffic();
+
+});
+
+updateTraffic();
+
+controls.appendChild(traffic);
+
+controls.appendChild(input);
+
+row.appendChild(info);
+
+row.appendChild(controls);
+
+section.appendChild(row);
+
+});
+
+container.appendChild(section);
+
+});
+
+}
+
+function updateInventoryStats(){
+
+let total=products.length;
+
+let complete=0;
+
+let low=0;
+
+let answered=0;
+
+products.forEach(product=>{
+
+const name=product[0];
+
+const target=product[1];
+
+const value=getQuantity(name);
+
+if(value!==""){
+
+answered++;
+
+const number=parseFloat(value);
+
+if(!isNaN(number)){
+
+if(number>=target){
+
+complete++;
+
+}else{
+
+low++;
+
+}
+
+}
+
+}
+
+});
+
+const percent=total===0?0:Math.round((answered/total)*100);
+
+document.getElementById("statTotal").textContent=total;
+
+document.getElementById("statComplete").textContent=complete;
+
+document.getElementById("statLow").textContent=low;
+
+document.getElementById("inventoryProgress").style.width=percent+"%";
+
+document.getElementById("inventoryProgressText").textContent=percent+"% completo";
+
+}
 
 function generateInventoryList(){
- const faltantes=[];
 
- products.forEach((producto,i)=>{
-  const input=document.querySelector(`.quantity[data-index="${i}"]`);
-  if(!input)return;
+let missing=[];
 
-  const valor=parseFloat(input.value);
+products.forEach(product=>{
 
-  if(Number.isNaN(valor))return;
+const name=product[0];
 
-  if(valor < producto.objetivo){
-   const falta = producto.objetivo - valor;
-   faltantes.push(`${producto.nombre}: ${falta}`);
-  }
- });
+const target=product[1];
 
- const resultado=document.getElementById("inventoryResult");
- const mensaje=document.getElementById("inventoryMessage");
+const value=getQuantity(name);
 
- if(faltantes.length===0){
-  const texto="URGENTES\n\nNo hay faltantes ✨";
-  resultado.value=texto;
-  mensaje.textContent="¡Todo está completo! 🐻";
-  showBear();
-  return;
- }
+if(value==="")return;
 
- const texto="URGENTES\n\n"+faltantes.join("\n");
+const number=parseFloat(value);
 
- resultado.value=texto;
- mensaje.textContent="¡Lista generada y copiada! 🐻☕";
- copyText(texto);
+if(isNaN(number))return;
+
+const difference=target-number;
+
+if(difference>0){
+
+missing.push({
+
+name:name,
+
+amount:difference
+
+});
+
 }
 
-async function copyText(text){
- try{await navigator.clipboard.writeText(text);showBear()}
- catch(e){
-  const t=document.createElement("textarea");
-  t.value=text;
-  t.setAttribute("readonly","");
-  t.style.position="fixed";
-  t.style.opacity="0";
-  document.body.appendChild(t);
-  t.select();
-  try{
-   document.execCommand("copy");
-   showBear();
-  }catch(x){
-   document.getElementById("inventoryMessage").textContent="Lista generada. Cópiala manualmente 🐻";
-  }
-  t.remove();
- }
+});
+
+let result="URGENTES\n\n";
+
+if(missing.length===0){
+
+result+="No hay faltantes urgentes. 🧸☕";
+
+}else{
+
+missing.forEach(item=>{
+
+result+=item.name+": "+formatNumber(item.amount)+"\n";
+
+});
+
 }
 
-function showBear(){const p=document.getElementById("bearPop");p.classList.add("show");setTimeout(()=>p.classList.remove("show"),1600)}
+const textarea=document.getElementById("inventoryResult");
+
+textarea.value=result;
+
+try{
+
+navigator.clipboard.writeText(result).then(()=>{
+
+showBearCopied();
+
+}).catch(()=>{
+
+textarea.select();
+
+document.execCommand("copy");
+
+showBearCopied();
+
+});
+
+}catch(e){
+
+textarea.select();
+
+try{
+
+document.execCommand("copy");
+
+showBearCopied();
+
+}catch(error){
+
+showToast("📋 Lista generada");
+
+}
+
+}
+
+}
+
+function formatNumber(number){
+
+return Number.isInteger(number)?number:number.toFixed(2).replace(/\.?0+$/,"");
+
+}
 
 function newInventoryList(){
- if(!confirm("¿Seguro que quieres limpiar toda la lista actual? 🐻"))return;
- products.forEach((p,i)=>localStorage.removeItem(key(i)));
- document.querySelectorAll(".quantity").forEach(x=>{x.value="";x.parentElement.querySelector(".traffic").className="traffic"});
- document.getElementById("inventoryResult").value="";
- document.getElementById("inventoryMessage").textContent="✨ Lista nueva lista para comenzar 🐻";
- document.getElementById("inventorySearch").value="";
- document.querySelectorAll(".inventory-area").forEach(a=>a.style.display="block");
- document.querySelectorAll(".product-row").forEach(r=>r.style.display="flex");
- updateStats();
-}
 
-let toastTimer;
-function showToast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove("show"),1800)}
+products.forEach(product=>{
+
+localStorage.removeItem(inventoryKey(product[0]));
+
+});
+
+document.getElementById("inventoryResult").value="";
+
+document.getElementById("inventoryMessage").textContent="";
 
 buildInventory();
-loadName();
-updateBrandDate();
-updateDateEveryMinute();
-syncSettingsUI();
-selectActivityType(localStorage.getItem('bearyActivityType')||'opening');
 
-/* MICROINTERACCIONES Y PROTECCIONES */
-(function(){
-  const buttons=document.querySelectorAll("button");
-  buttons.forEach(btn=>{
-    btn.addEventListener("click",()=>{
-      btn.classList.remove("tap-feedback");
-      void btn.offsetWidth;
-      btn.classList.add("tap-feedback");
-    });
-  });
+updateInventoryStats();
 
-  document.addEventListener("keydown",e=>{
-    if(e.key==="Escape"){
-      const modal=document.getElementById("nameOverlay");
-      if(modal && modal.classList.contains("show")) closeNameModal();
-    }
-  });
+showToast("🧹 Inventario listo para comenzar de nuevo");
 
-  document.addEventListener("visibilitychange",()=>{
-    if(!document.hidden && typeof updateStats==="function") updateStats();
-  });
-})();
-
-const bearysActivityData={abre:[],cierre:[]};
-
-function showActivityChoice(){
-  const choice=document.querySelector(".activity-choice");
-  const checklist=document.getElementById("activityChecklist");
-  if(choice)choice.style.display="grid";
-  if(checklist)checklist.style.display="none";
 }
 
-function selectActivityMode(mode){
-  const choice=document.querySelector(".activity-choice");
-  const checklist=document.getElementById("activityChecklist");
-  const title=document.getElementById("activityModeTitle");
-  const items=document.getElementById("activityItems");
-  if(!choice||!checklist||!title||!items)return;
-  choice.style.display="none";
-  checklist.style.display="block";
-  title.textContent=mode==="abre"?"🌅 Actividades de apertura":"🌙 Actividades de cierre";
-  const list=bearysActivityData[mode]||[];
-  if(!list.length){
-    items.innerHTML='<div class="empty-activities"><div>🧸</div><strong>Aún no hay actividades</strong><small>Aquí irán ls actividades de abre para empezar.</small></div>';
-    return;
-  }
-  items.innerHTML=list.map((item,i)=>{
-    const key="bearyActivity_"+mode+"_"+i;
-    const checked=localStorage.getItem(key)==="1"?"checked":"";
-    return '<label class="activity-item"><input type="checkbox" data-key="'+key+'" '+checked+'><span>'+item+'</span></label>';
-  }).join("");
+function showBearCopied(){
+
+const pop=document.getElementById("bearPop");
+
+pop.classList.add("show");
+
+setTimeout(()=>{
+
+pop.classList.remove("show");
+
+},1800);
+
+const message=document.getElementById("inventoryMessage");
+
+message.textContent="¡Lista copiada! 🧸✨";
+
+setTimeout(()=>{
+
+message.textContent="";
+
+},2200);
+
 }
 
-document.addEventListener("change",function(e){
-  if(e.target.matches(".activity-item input")){
-    localStorage.setItem(e.target.dataset.key,e.target.checked?"1":"0");
-  }
+function showToast(message){
+
+const toast=document.getElementById("toast");
+
+toast.textContent=message;
+
+toast.classList.add("show");
+
+clearTimeout(window.toastTimer);
+
+window.toastTimer=setTimeout(()=>{
+
+toast.classList.remove("show");
+
+},2200);
+
+}
+
+document.getElementById("inventorySearch").addEventListener("input",()=>{
+
+buildInventory();
+
 });
+
+document.addEventListener("click",event=>{
+
+const button=event.target.closest("button");
+
+if(!button)return;
+
+button.classList.remove("tap-feedback");
+
+void button.offsetWidth;
+
+button.classList.add("tap-feedback");
+
+setTimeout(()=>{
+
+button.classList.remove("tap-feedback");
+
+},250);
+
+});
+
+document.getElementById("nameOverlay").addEventListener("click",event=>{
+
+if(event.target.id==="nameOverlay"){
+
+closeNameModal();
+
+}
+
+});
+
+function initializeApp(){
+
+updateBrandDate();
+
+updateDateEveryMinute();
+
+loadName();
+
+syncSettingsUI();
+
+buildInventory();
+
+updateInventoryStats();
+
+}
+
+initializeApp();
+
 </script>
+
 </body>
+
 </html>
