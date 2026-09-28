@@ -1,80 +1,126 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-
 <meta charset="UTF-8">
 
 <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no"
 >
 
-<meta name="theme-color" content="#ff78aa">
+<meta name="theme-color" content="#fff4f8" id="themeColor">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 
 <title>Beary's Coffee Shop</title>
 
 <style>
 
 /* =========================================================
-   RESET
+   BASE
 ========================================================= */
 
 *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    -webkit-tap-highlight-color:transparent;
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
 }
 
 html{
-    width:100%;
-    min-width:100%;
-    overflow-x:hidden;
-    scroll-behavior:smooth;
-    -webkit-text-size-adjust:100%;
-    text-size-adjust:100%;
+  width:100%;
+  min-height:100%;
+  background:#fff4f8;
+  color-scheme:light;
+  overflow-x:hidden;
+  -webkit-text-size-adjust:100%;
+}
+
+html.dark{
+  background:#171216;
+  color-scheme:dark;
 }
 
 body{
-    width:100%;
-    min-width:100%;
-    min-height:100vh;
-    min-height:100dvh;
-    overflow-x:hidden;
+  width:100%;
+  min-width:100%;
+  min-height:100dvh;
+  min-height:100svh;
+  overflow-x:hidden;
 
-    font-family:
-        Inter,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
 
-    background:#fff5f9;
-    color:#452c38;
+  background:
+    radial-gradient(
+      circle at 5% 4%,
+      rgba(255,188,214,.35),
+      transparent 24%
+    ),
+    radial-gradient(
+      circle at 96% 20%,
+      rgba(255,213,229,.4),
+      transparent 25%
+    ),
+    linear-gradient(
+      180deg,
+      #fff8fb 0%,
+      #fff0f6 55%,
+      #fff8fb 100%
+    );
 
-    padding-bottom:
-        calc(100px + env(safe-area-inset-bottom));
+  color:#452c38;
 
-    transition:
-        background .3s ease,
-        color .3s ease;
+  transition:
+    background .3s ease,
+    color .3s ease;
+}
+
+html.dark body{
+  background:
+    radial-gradient(
+      circle at 10% 5%,
+      rgba(255,83,151,.07),
+      transparent 25%
+    ),
+    radial-gradient(
+      circle at 90% 20%,
+      rgba(255,116,170,.05),
+      transparent 28%
+    ),
+    linear-gradient(
+      180deg,
+      #171216 0%,
+      #1b1419 55%,
+      #171216 100%
+    );
+
+  color:#fff0f6;
 }
 
 button,
 input,
 textarea,
 select{
-    font:inherit;
+  font:inherit;
 }
 
 button{
-    border:0;
+  border:0;
 }
 
 input,
 textarea,
 select{
-    font-size:16px !important;
+  font-size:16px !important;
+}
+
+button:active{
+  transform:scale(.965);
 }
 
 
@@ -84,118 +130,62 @@ select{
 
 :root{
 
-    --bg:#fff5f9;
-    --bg2:#ffe4ee;
+  --bg:#fff4f8;
+  --surface:#fffafb;
+  --surface2:rgba(255,250,252,.95);
 
-    --surface:#fffafd;
-    --surface2:rgba(255,250,253,.95);
+  --text:#452c38;
+  --muted:#987684;
 
-    --text:#452c38;
-    --muted:#987684;
+  --pink:#ff79ad;
+  --pink2:#ed4f8a;
 
-    --pink:#ff78ac;
-    --pink2:#ed4f8b;
-    --pink3:#ffb4ce;
+  --pinksoft:#ffdce9;
+  --border:#f4cbdc;
 
-    --pinksoft:#ffdce9;
+  --shadow:
+    0 14px 35px rgba(187,83,125,.13);
 
-    --border:#f3cadb;
+  --nav:
+    rgba(255,255,255,.94);
 
-    --shadow:
-        0 14px 35px rgba(187,83,125,.13);
+  --success:#51c88a;
+  --danger:#ef6289;
 
-    --glow:
-        0 0 28px rgba(255,121,173,.16);
-
-    --nav:
-        rgba(255,255,255,.94);
-
-    --success:#50c98a;
-    --warning:#e8bc55;
-    --danger:#ef6289;
-
+  --safe-top:env(safe-area-inset-top);
+  --safe-bottom:env(safe-area-inset-bottom);
+  --safe-left:env(safe-area-inset-left);
+  --safe-right:env(safe-area-inset-right);
 }
 
 
 /* =========================================================
-   DARK MODE
+   DARK
 ========================================================= */
 
-body.dark{
+html.dark{
 
-    --bg:#171216;
-    --bg2:#271a22;
+  --bg:#171216;
+  --surface:#281d24;
+  --surface2:rgba(40,29,36,.96);
 
-    --surface:#281d24;
-    --surface2:rgba(40,29,36,.96);
+  --text:#fff0f6;
+  --muted:#bda5af;
 
-    --text:#fff0f6;
-    --muted:#bda5af;
+  --pink:#ff82b2;
+  --pink2:#ff6aa3;
 
-    --pink:#ff82b2;
-    --pink2:#ff6ba4;
-    --pink3:#ff9fc5;
+  --pinksoft:#422733;
+  --border:#48323d;
 
-    --pinksoft:#432633;
+  --shadow:
+    0 16px 38px rgba(0,0,0,.30);
 
-    --border:#49323e;
+  --nav:
+    rgba(30,22,27,.96);
 
-    --shadow:
-        0 16px 38px rgba(0,0,0,.32);
-
-    --glow:
-        0 0 30px rgba(255,91,157,.16);
-
-    --nav:
-        rgba(30,22,27,.96);
-}
-
-
-/* =========================================================
-   BODY BACKGROUND
-========================================================= */
-
-body:not(.dark){
-
-    background:
-
-        radial-gradient(
-            circle at 5% 5%,
-            rgba(255,188,214,.32),
-            transparent 23%
-        ),
-
-        radial-gradient(
-            circle at 95% 18%,
-            rgba(255,213,229,.38),
-            transparent 25%
-        ),
-
-        linear-gradient(
-            180deg,
-            #fff8fb 0%,
-            #fff0f6 55%,
-            #fff8fb 100%
-        );
-}
-
-body.dark{
-
-    background:
-
-        radial-gradient(
-            circle at 5% 5%,
-            rgba(255,89,150,.08),
-            transparent 25%
-        ),
-
-        radial-gradient(
-            circle at 95% 15%,
-            rgba(255,100,165,.06),
-            transparent 25%
-        ),
-
-        var(--bg);
+  --success:#67d69b;
+  --danger:#ff779d;
 }
 
 
@@ -204,17 +194,24 @@ body.dark{
 ========================================================= */
 
 .app{
+  width:100%;
+  max-width:620px;
+  min-height:100dvh;
+  min-height:100svh;
 
-    width:100%;
-    max-width:620px;
+  margin:0 auto;
 
-    min-height:100vh;
-    min-height:100dvh;
+  padding-left:
+    max(14px,var(--safe-left));
 
-    margin:0 auto;
+  padding-right:
+    max(14px,var(--safe-right));
 
-    padding-left:15px;
-    padding-right:15px;
+  padding-bottom:
+    calc(
+      94px +
+      var(--safe-bottom)
+    );
 }
 
 
@@ -224,42 +221,71 @@ body.dark{
 
 .topbar{
 
-    width:calc(100% + 30px);
+  position:sticky;
+  top:0;
 
-    margin-left:-15px;
-    margin-right:-15px;
+  z-index:1000;
 
-    min-height:78px;
+  width:
+    calc(
+      100% +
+      max(28px,calc(var(--safe-left) + var(--safe-right)))
+    );
 
-    padding:
-        calc(9px + env(safe-area-inset-top))
-        max(15px,env(safe-area-inset-right))
-        12px
-        max(15px,env(safe-area-inset-left));
+  margin-left:
+    calc(
+      -1 * max(14px,var(--safe-left))
+    );
 
-    display:flex;
+  margin-right:
+    calc(
+      -1 * max(14px,var(--safe-right))
+    );
 
-    align-items:center;
-    justify-content:space-between;
+  padding-top:
+    calc(
+      var(--safe-top) + 9px
+    );
 
-    position:sticky;
-    top:0;
+  padding-left:
+    max(14px,var(--safe-left));
 
-    z-index:1000;
+  padding-right:
+    max(14px,var(--safe-right));
 
-    background:
-        color-mix(
-            in srgb,
-            var(--bg) 86%,
-            transparent
-        );
+  padding-bottom:11px;
 
-    backdrop-filter:blur(22px);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
 
-    border-bottom:
-        1px solid var(--border);
+  background:
+    rgba(255,248,251,.90);
 
-    transition:.3s;
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
+
+  border-bottom:
+    1px solid rgba(244,203,220,.8);
+
+  box-shadow:
+    0 8px 30px rgba(205,103,143,.06);
+
+  transition:
+    background .3s ease,
+    border .3s ease;
+}
+
+html.dark .topbar{
+
+  background:
+    rgba(23,18,22,.91);
+
+  border-bottom:
+    1px solid rgba(72,50,61,.8);
+
+  box-shadow:
+    0 8px 30px rgba(0,0,0,.18);
 }
 
 
@@ -268,141 +294,116 @@ body.dark{
 ========================================================= */
 
 .brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
 
-    display:flex;
-    align-items:center;
-
-    gap:10px;
-
-    min-width:0;
+  min-width:0;
 }
 
 .brand-logo{
 
-    width:47px;
-    height:47px;
+  width:46px;
+  height:46px;
 
-    flex:0 0 47px;
+  flex:0 0 46px;
 
-    display:grid;
-    place-items:center;
+  display:grid;
+  place-items:center;
 
-    border-radius:17px;
+  border-radius:16px;
 
-    background:
-        linear-gradient(
-            145deg,
-            var(--surface),
-            var(--pinksoft)
-        );
+  background:
+    linear-gradient(
+      145deg,
+      #ffffff,
+      #ffe0eb
+    );
 
-    box-shadow:
-        0 12px 30px rgba(255,105,160,.2);
+  box-shadow:
+    0 12px 30px rgba(255,105,160,.18);
 
-    font-size:26px;
-
-    animation:
-        softFloat 4s ease-in-out infinite;
+  font-size:25px;
 }
 
-@keyframes softFloat{
+html.dark .brand-logo{
 
-    50%{
-        transform:translateY(-2px);
-    }
+  background:
+    linear-gradient(
+      145deg,
+      #35232c,
+      #422733
+    );
 
+  box-shadow:
+    0 0 25px rgba(255,91,157,.10);
 }
 
 .brand-info{
-    min-width:0;
+  min-width:0;
 }
 
 .brand-name{
 
-    display:block;
+  display:block;
 
-    font-size:18px;
+  color:var(--text);
 
-    font-weight:900;
+  font-size:17px;
+  font-weight:900;
 
-    letter-spacing:-.7px;
+  letter-spacing:-.6px;
 
-    white-space:nowrap;
-
-    overflow:hidden;
-
-    text-overflow:ellipsis;
+  white-space:nowrap;
 }
 
 .brand-subtitle{
 
-    display:block;
+  display:block;
 
-    margin-top:3px;
+  margin-top:2px;
 
-    font-size:9px;
+  color:var(--pink2);
 
-    letter-spacing:1px;
+  font-size:8px;
+  font-weight:850;
 
-    color:var(--pink2);
-
-    font-weight:850;
+  letter-spacing:1px;
 }
 
 .brand-date{
 
-    display:block;
+  display:block;
 
-    margin-top:3px;
+  margin-top:3px;
 
-    font-size:8px;
+  color:var(--muted);
 
-    font-weight:750;
-
-    color:var(--muted);
-
-    text-transform:lowercase;
+  font-size:8px;
+  font-weight:700;
 }
-
-
-/* =========================================================
-   THEME BUTTON
-========================================================= */
 
 .theme-toggle{
 
-    width:44px;
-    height:44px;
+  width:43px;
+  height:43px;
 
-    flex:0 0 44px;
+  flex:0 0 43px;
 
-    display:grid;
-    place-items:center;
+  display:grid;
+  place-items:center;
 
-    border-radius:15px;
+  border-radius:15px;
 
-    background:var(--surface);
+  background:var(--surface);
 
-    color:var(--text);
+  color:var(--text);
 
-    box-shadow:var(--shadow);
+  box-shadow:var(--shadow);
 
-    cursor:pointer;
+  cursor:pointer;
 
-    font-size:18px;
-
-    border:1px solid var(--border);
-
-    transition:.25s;
-}
-
-.theme-toggle:hover{
-
-    box-shadow:
-        var(--shadow),
-        var(--glow);
-
-    transform:translateY(-2px);
+  font-size:18px;
 }
 
 
@@ -412,36 +413,32 @@ body.dark{
 
 .page{
 
-    display:none;
+  display:none;
 
-    width:100%;
+  width:100%;
+  min-width:0;
 
-    min-width:0;
+  padding-top:20px;
+  padding-bottom:28px;
 
-    padding-top:20px;
-
-    padding-bottom:25px;
-
-    animation:
-        pageIn .3s ease;
+  animation:pageIn .3s ease;
 }
 
 .page.active{
-    display:block;
+  display:block;
 }
 
 @keyframes pageIn{
 
-    from{
-        opacity:0;
-        transform:translateY(9px);
-    }
+  from{
+    opacity:0;
+    transform:translateY(8px);
+  }
 
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
-
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
 }
 
 
@@ -451,354 +448,353 @@ body.dark{
 
 .hero{
 
-    min-height:300px;
+  position:relative;
+  overflow:hidden;
 
-    position:relative;
+  min-height:310px;
 
-    overflow:hidden;
+  padding:28px 22px;
 
-    padding:28px 23px;
+  border-radius:31px;
 
-    border-radius:32px;
+  color:white;
 
-    color:white;
+  background:
+    linear-gradient(
+      135deg,
+      #ff70a7,
+      #ff91ba 55%,
+      #ffb9d2
+    );
 
-    background:
-        linear-gradient(
-            135deg,
-            #ff70a7,
-            #ff91ba 55%,
-            #ffb9d2
-        );
+  box-shadow:
+    0 24px 55px rgba(255,94,150,.23);
+}
 
-    box-shadow:
-        0 24px 55px rgba(255,94,150,.23);
+html.dark .hero{
 
+  box-shadow:
+    0 20px 55px rgba(255,76,150,.18),
+    0 0 35px rgba(255,76,150,.08);
 }
 
 .hero:before{
 
-    content:"";
+  content:"";
 
-    position:absolute;
+  position:absolute;
 
-    width:300px;
-    height:300px;
+  width:300px;
+  height:300px;
 
-    border-radius:50%;
+  border-radius:50%;
 
-    right:-145px;
-    top:-150px;
+  right:-145px;
+  top:-150px;
 
-    background:
-        rgba(255,255,255,.1);
+  background:
+    rgba(255,255,255,.10);
 }
 
 .hero:after{
 
-    content:"";
+  content:"";
 
-    position:absolute;
+  position:absolute;
 
-    width:180px;
-    height:180px;
+  width:180px;
+  height:180px;
 
-    border-radius:50%;
+  border-radius:50%;
 
-    left:-105px;
-    bottom:-125px;
+  left:-105px;
+  bottom:-125px;
 
-    background:
-        rgba(255,255,255,.07);
-}
-
-.hero-star{
-
-    position:absolute;
-
-    opacity:.8;
-
-    animation:
-        twinkle 2.6s infinite;
-}
-
-.hero-star:nth-child(1){
-    top:17%;
-    right:39%;
-}
-
-.hero-star:nth-child(2){
-    top:49%;
-    right:13%;
-    animation-delay:.7s;
-}
-
-.hero-star:nth-child(3){
-    top:10%;
-    left:51%;
-    animation-delay:1.2s;
-}
-
-@keyframes twinkle{
-
-    50%{
-        transform:scale(1.5);
-        opacity:1;
-    }
-
+  background:
+    rgba(255,255,255,.07);
 }
 
 .hero-content{
-
-    position:relative;
-
-    z-index:5;
+  position:relative;
+  z-index:4;
 }
 
 .hero-label{
 
-    font-size:9px;
-
-    font-weight:850;
-
-    letter-spacing:1.8px;
+  font-size:9px;
+  font-weight:850;
+  letter-spacing:1.7px;
 }
 
 .hero-title{
 
-    margin-top:8px;
+  margin-top:8px;
 
-    font-size:33px;
+  max-width:72%;
 
-    line-height:1.02;
+  font-size:31px;
+  line-height:1.04;
 
-    letter-spacing:-1.4px;
+  letter-spacing:-1.4px;
 }
 
 .hero-description{
 
-    margin-top:12px;
+  margin-top:12px;
 
-    max-width:290px;
+  max-width:60%;
 
-    font-size:11px;
+  font-size:11px;
+  line-height:1.6;
 
-    line-height:1.6;
-
-    opacity:.92;
+  opacity:.94;
 }
 
 .hero-button{
 
-    position:relative;
+  position:relative;
+  z-index:5;
 
-    z-index:10;
+  margin-top:20px;
 
-    margin-top:20px;
+  padding:11px 16px;
 
-    padding:11px 16px;
+  border-radius:14px;
 
-    border-radius:14px;
+  color:white;
 
-    color:white;
+  background:
+    rgba(255,255,255,.17);
 
-    background:
-        rgba(255,255,255,.18);
+  border:
+    1px solid rgba(255,255,255,.35);
 
-    border:
-        1px solid rgba(255,255,255,.35);
+  font-size:11px;
+  font-weight:800;
 
-    font-size:11px;
-
-    font-weight:800;
-
-    cursor:pointer;
+  cursor:pointer;
 }
 
 .hero-bear{
 
-    position:absolute;
+  position:absolute;
 
-    right:17px;
-    top:78px;
+  right:7px;
+  top:74px;
 
-    z-index:3;
+  z-index:3;
 
-    font-size:88px;
+  font-size:83px;
 
-    filter:
-        drop-shadow(
-            0 12px 8px rgba(50,10,30,.14)
-        );
+  filter:
+    drop-shadow(
+      0 12px 8px
+      rgba(50,10,30,.14)
+    );
 
-    animation:
-        heroBear 3.4s ease-in-out infinite;
+  animation:
+    float 3.4s ease-in-out infinite;
 }
 
-@keyframes heroBear{
+.hero-star{
 
-    50%{
-        transform:
-            translateY(-8px)
-            rotate(2deg);
-    }
+  position:absolute;
 
+  opacity:.8;
+
+  animation:
+    twinkle 2.6s infinite;
+}
+
+.hero-star:nth-child(1){
+  top:17%;
+  right:39%;
+}
+
+.hero-star:nth-child(2){
+  top:49%;
+  right:13%;
+  animation-delay:.7s;
+}
+
+.hero-star:nth-child(3){
+  top:10%;
+  left:51%;
+  animation-delay:1.2s;
+}
+
+@keyframes float{
+
+  50%{
+    transform:
+      translateY(-8px)
+      rotate(2deg);
+  }
+}
+
+@keyframes twinkle{
+
+  50%{
+    transform:scale(1.5);
+    opacity:1;
+  }
 }
 
 
 /* =========================================================
-   SECTION HEADERS
+   SECTIONS
 ========================================================= */
 
 .section-header{
 
-    display:flex;
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
 
-    align-items:flex-end;
-
-    justify-content:space-between;
-
-    margin:
-        26px 3px
-        12px;
+  margin:
+    26px 3px 12px;
 }
 
 .section-header h2{
-    font-size:17px;
+  font-size:17px;
 }
 
 .section-header span{
 
-    color:var(--muted);
+  color:var(--muted);
 
-    font-size:9px;
-
-    font-weight:650;
+  font-size:9px;
+  font-weight:650;
 }
 
 
 /* =========================================================
-   HOME CARDS
+   MENU
 ========================================================= */
 
 .menu-grid{
 
-    display:grid;
+  display:grid;
 
-    grid-template-columns:
-        repeat(2,minmax(0,1fr));
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0,1fr)
+    );
 
-    gap:11px;
+  gap:10px;
 }
 
 .menu-card{
 
-    min-height:135px;
+  position:relative;
+  overflow:hidden;
 
-    position:relative;
+  min-height:136px;
 
-    overflow:hidden;
+  padding:15px;
 
-    text-align:left;
+  text-align:left;
 
-    padding:16px;
+  border:
+    1px solid var(--border);
 
-    border-radius:23px;
+  border-radius:23px;
 
-    border:
-        1px solid var(--border);
+  background:
+    var(--surface2);
 
-    background:
-        var(--surface2);
+  color:var(--text);
 
-    box-shadow:
-        var(--shadow);
+  box-shadow:
+    var(--shadow);
 
-    color:var(--text);
+  cursor:pointer;
 
-    cursor:pointer;
-
-    transition:
-        transform .25s,
-        box-shadow .25s,
-        border-color .25s;
+  transition:
+    transform .25s ease,
+    box-shadow .25s ease,
+    border .25s ease;
 }
 
 .menu-card:before{
 
-    content:"";
+  content:"";
 
-    position:absolute;
+  position:absolute;
 
-    width:90px;
-    height:90px;
+  width:90px;
+  height:90px;
 
-    border-radius:50%;
+  border-radius:50%;
 
-    right:-38px;
-    bottom:-38px;
+  right:-38px;
+  bottom:-38px;
 
-    background:var(--bg2);
+  background:var(--bg);
+
+  opacity:.9;
 }
 
 .menu-card:hover{
 
-    transform:translateY(-3px);
+  transform:translateY(-2px);
 
-    box-shadow:
-        var(--shadow),
-        var(--glow);
-
-    border-color:var(--pink3);
+  box-shadow:
+    0 0 0 1px rgba(255,155,193,.12),
+    0 0 25px rgba(255,121,173,.10),
+    var(--shadow);
 }
 
-.menu-card:active{
-    transform:scale(.965);
+html.dark .menu-card:hover{
+
+  box-shadow:
+    0 0 0 1px rgba(255,130,178,.12),
+    0 0 28px rgba(255,91,157,.13),
+    var(--shadow);
 }
 
 .menu-icon{
 
-    width:48px;
-    height:48px;
+  width:47px;
+  height:47px;
 
-    display:grid;
-    place-items:center;
+  display:grid;
+  place-items:center;
 
-    border-radius:16px;
+  border-radius:16px;
 
-    background:var(--bg2);
+  background:var(--bg2);
 
-    font-size:23px;
+  font-size:23px;
 
-    margin-bottom:13px;
-}
-
-.menu-card-title,
-.menu-card-description{
-
-    position:relative;
-
-    z-index:2;
-
-    display:block;
+  margin-bottom:13px;
 }
 
 .menu-card-title{
 
-    font-size:14px;
+  position:relative;
+  z-index:2;
 
-    font-weight:850;
+  display:block;
+
+  font-size:14px;
+  font-weight:850;
 }
 
 .menu-card-description{
 
-    margin-top:4px;
+  position:relative;
+  z-index:2;
 
-    color:var(--muted);
+  display:block;
 
-    font-size:10px;
+  margin-top:4px;
 
-    line-height:1.35;
+  color:var(--muted);
+
+  font-size:10px;
+  line-height:1.35;
 }
 
 
@@ -808,119 +804,102 @@ body.dark{
 
 .phrase-card{
 
-    position:relative;
+  position:relative;
+  overflow:hidden;
 
-    overflow:hidden;
+  padding:20px;
 
-    padding:20px;
+  border-radius:24px;
 
-    border-radius:24px;
+  background:
+    linear-gradient(
+      135deg,
+      var(--surface),
+      var(--bg2)
+    );
 
-    background:
-        linear-gradient(
-            135deg,
-            var(--surface),
-            var(--bg2)
-        );
+  border:
+    1px solid var(--border);
 
-    border:
-        1px solid var(--border);
-
-    box-shadow:var(--shadow);
-
-    transition:.25s;
-}
-
-.phrase-card:hover{
-
-    box-shadow:
-        var(--shadow),
-        var(--glow);
+  box-shadow:
+    var(--shadow);
 }
 
 .phrase-top,
 .phrase-bottom{
 
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
 }
 
 .phrase-label{
 
-    display:flex;
+  display:flex;
+  align-items:center;
 
-    align-items:center;
+  gap:8px;
 
-    gap:8px;
-
-    font-size:11px;
-
-    font-weight:850;
+  font-size:11px;
+  font-weight:850;
 }
 
 .phrase-label-icon{
 
-    width:32px;
-    height:32px;
+  width:32px;
+  height:32px;
 
-    display:grid;
-    place-items:center;
+  display:grid;
+  place-items:center;
 
-    border-radius:11px;
+  border-radius:11px;
 
-    background:var(--pinksoft);
+  background:var(--pinksoft);
 }
 
 .phrase-number{
 
-    font-size:9px;
+  color:var(--muted);
 
-    color:var(--muted);
-
-    font-weight:700;
+  font-size:9px;
+  font-weight:700;
 }
 
 .phrase-text{
 
-    margin-top:14px;
+  margin-top:14px;
 
-    font-size:14px;
+  max-width:90%;
 
-    line-height:1.55;
+  font-size:14px;
+  line-height:1.55;
+  font-weight:700;
 
-    font-weight:700;
-
-    max-width:90%;
-
-    transition:.15s;
+  transition:.15s;
 }
 
 .phrase-bottom{
-    margin-top:17px;
+  margin-top:17px;
 }
 
 .phrase-bear{
-    font-size:24px;
+  font-size:24px;
 }
 
 .phrase-button{
 
-    padding:8px 12px;
+  padding:8px 12px;
 
-    border-radius:12px;
+  border-radius:12px;
 
-    background:var(--pinksoft);
+  background:var(--pinksoft);
 
-    color:var(--pink2);
+  color:var(--pink2);
 
-    font-size:9px;
+  font-size:9px;
+  font-weight:850;
 
-    font-weight:850;
-
-    cursor:pointer;
+  cursor:pointer;
 }
 
 
@@ -930,121 +909,109 @@ body.dark{
 
 .status-card{
 
-    display:flex;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
 
-    align-items:center;
+  padding:16px;
 
-    justify-content:space-between;
+  border-radius:22px;
 
-    padding:16px;
+  border:
+    1px solid var(--border);
 
-    border-radius:22px;
+  background:var(--surface);
 
-    border:1px solid var(--border);
-
-    background:var(--surface);
-
-    box-shadow:var(--shadow);
+  box-shadow:var(--shadow);
 }
 
 .status-content{
 
-    display:flex;
+  display:flex;
+  align-items:center;
 
-    align-items:center;
-
-    gap:11px;
+  gap:11px;
 }
 
 .status-icon{
 
-    width:45px;
-    height:45px;
+  width:45px;
+  height:45px;
 
-    display:grid;
-    place-items:center;
+  display:grid;
+  place-items:center;
 
-    border-radius:15px;
+  border-radius:15px;
 
-    background:var(--bg2);
+  background:var(--bg2);
 
-    font-size:20px;
+  font-size:20px;
 }
 
 .status-title{
 
-    display:block;
+  display:block;
 
-    font-size:12px;
-
-    font-weight:850;
+  font-size:12px;
+  font-weight:850;
 }
 
 .status-description{
 
-    display:block;
+  display:block;
 
-    margin-top:3px;
+  margin-top:3px;
 
-    color:var(--muted);
+  color:var(--muted);
 
-    font-size:10px;
+  font-size:10px;
 }
 
 .status-dot{
 
-    width:11px;
-    height:11px;
+  width:11px;
+  height:11px;
 
-    border-radius:50%;
+  border-radius:50%;
 
-    background:var(--success);
+  background:var(--success);
 
-    box-shadow:
-        0 0 0 5px
-        color-mix(
-            in srgb,
-            var(--success) 20%,
-            transparent
-        );
+  box-shadow:
+    0 0 0 5px
+    rgba(81,200,138,.20);
 }
-
-
-/* =========================================================
-   QUICK ACTIONS
-========================================================= */
 
 .home-quick-actions{
 
-    display:flex;
+  display:flex;
 
-    justify-content:center;
+  justify-content:center;
 
-    gap:8px;
+  gap:8px;
 
-    margin-top:10px;
+  margin-top:10px;
 }
 
 .home-quick-actions button{
 
-    padding:8px 12px;
+  padding:8px 12px;
 
-    border-radius:13px;
+  border-radius:13px;
 
-    background:var(--surface);
+  background:var(--surface);
 
-    color:var(--muted);
+  color:var(--muted);
 
-    border:1px solid var(--border);
+  border:
+    1px solid var(--border);
 
-    font-size:9px;
+  font-size:9px;
+  font-weight:800;
 
-    font-weight:800;
+  box-shadow:
+    0 7px 18px rgba(120,50,80,.06);
 
-    box-shadow:
-        0 7px 18px rgba(120,50,80,.06);
-
-    cursor:pointer;
+  cursor:pointer;
 }
 
 
@@ -1054,746 +1021,601 @@ body.dark{
 
 .inner-header{
 
-    display:flex;
+  display:flex;
+  align-items:center;
 
-    align-items:center;
+  gap:11px;
 
-    gap:11px;
-
-    margin-bottom:18px;
+  margin-bottom:18px;
 }
 
 .back-button{
 
-    width:43px;
-    height:43px;
+  width:43px;
+  height:43px;
 
-    flex:0 0 43px;
+  flex:0 0 43px;
 
-    display:grid;
-    place-items:center;
+  display:grid;
+  place-items:center;
 
-    border-radius:14px;
+  border-radius:14px;
 
-    background:var(--surface);
+  background:var(--surface);
 
-    color:var(--text);
+  color:var(--text);
 
-    box-shadow:var(--shadow);
+  box-shadow:var(--shadow);
 
-    font-size:18px;
+  font-size:18px;
 
-    cursor:pointer;
+  cursor:pointer;
+}
 
-    border:1px solid var(--border);
+.inner-title{
+  min-width:0;
 }
 
 .inner-title h1{
 
-    font-size:24px;
+  font-size:24px;
 
-    letter-spacing:-.8px;
+  letter-spacing:-.8px;
 }
 
 .inner-title p{
 
-    margin-top:3px;
+  margin-top:3px;
 
-    color:var(--muted);
+  color:var(--muted);
 
-    font-size:10px;
+  font-size:10px;
 }
 
 
 /* =========================================================
-   INVENTORY HERO
+   INVENTORY
 ========================================================= */
 
 .inventory-hero{
 
-    padding:17px;
+  padding:17px;
 
-    border-radius:24px;
+  border-radius:24px;
 
-    background:
-        linear-gradient(
-            135deg,
-            var(--surface),
-            var(--bg2)
-        );
+  background:
+    linear-gradient(
+      135deg,
+      var(--surface),
+      var(--bg2)
+    );
 
-    border:1px solid var(--border);
+  border:
+    1px solid var(--border);
 
-    box-shadow:var(--shadow);
+  box-shadow:var(--shadow);
 
-    margin-bottom:14px;
+  margin-bottom:14px;
 }
 
 .inventory-top{
 
-    display:flex;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
 
-    justify-content:space-between;
-
-    align-items:center;
-
-    gap:10px;
+  gap:10px;
 }
 
 .inventory-top strong{
-    font-size:13px;
+  font-size:13px;
 }
 
 .inventory-top span{
 
-    font-size:10px;
+  color:var(--muted);
 
-    color:var(--muted);
+  font-size:10px;
 }
 
 .progress-track{
 
-    height:8px;
+  height:8px;
 
-    background:var(--pinksoft);
+  margin-top:12px;
 
-    border-radius:99px;
+  overflow:hidden;
 
-    margin-top:12px;
+  border-radius:99px;
 
-    overflow:hidden;
+  background:var(--pinksoft);
 }
 
 .progress-fill{
 
-    height:100%;
+  width:0;
+  height:100%;
 
-    width:0;
+  border-radius:99px;
 
-    background:
-        linear-gradient(
-            90deg,
-            var(--pink),
-            #ffb1cd
-        );
+  background:
+    linear-gradient(
+      90deg,
+      var(--pink),
+      #ffb1cd
+    );
 
-    border-radius:99px;
-
-    transition:.35s;
+  transition:.35s;
 }
 
 .inventory-stats{
 
-    display:grid;
+  display:grid;
 
-    grid-template-columns:
-        repeat(3,1fr);
+  grid-template-columns:
+    repeat(3,minmax(0,1fr));
 
-    gap:7px;
+  gap:7px;
 
-    margin-top:12px;
+  margin-top:12px;
 }
 
 .inv-stat{
 
-    padding:10px 7px;
+  padding:10px 7px;
 
-    border-radius:14px;
+  border-radius:14px;
 
-    background:var(--bg2);
+  background:var(--bg2);
 
-    text-align:center;
+  text-align:center;
 }
 
 .inv-stat b{
 
-    display:block;
+  display:block;
 
-    font-size:15px;
+  font-size:15px;
 }
 
 .inv-stat small{
 
-    font-size:8px;
+  color:var(--muted);
 
-    color:var(--muted);
+  font-size:8px;
 }
-
-
-/* =========================================================
-   SEARCH
-========================================================= */
 
 .inventory-search{
 
-    width:100%;
+  width:100%;
 
-    padding:14px 16px;
+  padding:14px 16px;
 
-    border-radius:17px;
+  margin-bottom:12px;
 
-    border:1px solid var(--border);
+  border:
+    1px solid var(--border);
 
-    outline:0;
+  border-radius:17px;
 
-    background:var(--surface);
+  outline:0;
 
-    color:var(--text);
+  background:var(--surface);
 
-    box-shadow:var(--shadow);
+  color:var(--text);
 
-    margin-bottom:12px;
-
-    appearance:none;
+  box-shadow:var(--shadow);
 }
 
 .inventory-search:focus{
 
-    border-color:var(--pink);
+  border-color:var(--pink);
 
-    box-shadow:
-        0 0 0 4px
-        rgba(255,121,173,.12),
-        var(--shadow);
+  box-shadow:
+    0 0 0 4px
+    rgba(255,121,173,.12);
 }
-
-
-/* =========================================================
-   INVENTORY AREAS
-========================================================= */
 
 .inventory-area{
 
-    background:var(--surface);
+  width:100%;
 
-    border:1px solid var(--border);
+  padding:13px;
 
-    border-radius:24px;
+  margin-bottom:14px;
 
-    padding:13px;
+  border-radius:24px;
 
-    margin-bottom:14px;
+  background:var(--surface);
 
-    box-shadow:var(--shadow);
+  border:
+    1px solid var(--border);
 
-    transition:.25s;
-}
-
-.inventory-area:hover{
-
-    box-shadow:
-        var(--shadow),
-        var(--glow);
+  box-shadow:var(--shadow);
 }
 
 .inventory-area-title{
 
-    display:flex;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
 
-    align-items:center;
+  padding:
+    4px 3px 11px;
 
-    justify-content:space-between;
+  margin-bottom:3px;
 
-    padding:4px 3px 11px;
-
-    border-bottom:
-        2px dashed var(--border);
-
-    margin-bottom:3px;
+  border-bottom:
+    2px dashed var(--border);
 }
 
 .inventory-area-title h2{
-    font-size:15px;
+  font-size:15px;
 }
 
 .inventory-area-title span{
 
-    font-size:9px;
+  color:var(--muted);
 
-    color:var(--muted);
+  font-size:9px;
 }
-
-
-/* =========================================================
-   PRODUCT ROW
-========================================================= */
 
 .product-row{
 
-    display:flex;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
 
-    align-items:center;
+  gap:8px;
 
-    justify-content:space-between;
+  width:100%;
+  min-height:58px;
 
-    gap:8px;
+  padding:9px 4px;
 
-    padding:9px 4px;
-
-    border-bottom:
-        1px solid var(--border);
-
-    min-height:58px;
+  border-bottom:
+    1px solid var(--border);
 }
 
 .product-row:last-child{
-    border-bottom:0;
+  border-bottom:0;
 }
 
 .product-info{
 
-    min-width:0;
+  min-width:0;
 
-    flex:1 1 auto;
+  flex:1 1 auto;
 }
 
 .product-name{
 
-    font-size:12px;
+  font-size:12px;
+  font-weight:650;
+  line-height:1.25;
 
-    font-weight:650;
-
-    line-height:1.25;
-
-    overflow-wrap:anywhere;
+  overflow-wrap:anywhere;
 }
 
 .product-meta{
 
-    font-size:9px;
+  margin-top:3px;
 
-    color:var(--muted);
+  color:var(--muted);
 
-    margin-top:3px;
+  font-size:9px;
 }
 
 .product-controls{
 
-    display:flex;
+  display:flex;
+  align-items:center;
 
-    align-items:center;
+  gap:6px;
 
-    gap:6px;
-
-    flex:0 0 auto;
+  flex:0 0 auto;
 }
 
 .traffic{
 
-    width:10px;
-    height:10px;
+  width:10px;
+  height:10px;
 
-    flex:0 0 10px;
+  flex:0 0 10px;
 
-    border-radius:50%;
+  border-radius:50%;
 
-    background:#aaa;
+  background:#aaa;
 }
 
 .traffic.green{
 
-    background:var(--success);
+  background:var(--success);
 
-    box-shadow:
-        0 0 7px
-        rgba(81,200,138,.55);
+  box-shadow:
+    0 0 7px
+    rgba(81,200,138,.55);
 }
 
 .traffic.yellow{
 
-    background:var(--warning);
+  background:#e7bc51;
 
-    box-shadow:
-        0 0 7px
-        rgba(231,188,81,.55);
+  box-shadow:
+    0 0 7px
+    rgba(231,188,81,.55);
 }
 
 .traffic.red{
 
-    background:var(--danger);
+  background:var(--danger);
 
-    box-shadow:
-        0 0 7px
-        rgba(239,98,137,.55);
+  box-shadow:
+    0 0 7px
+    rgba(239,98,137,.55);
 }
 
 .quantity{
 
-    width:72px;
+  width:72px;
 
-    padding:9px 4px;
+  padding:9px 4px;
 
-    border:
-        2px solid var(--border);
+  border:
+    2px solid var(--border);
 
-    border-radius:12px;
+  border-radius:12px;
 
-    outline:0;
+  outline:0;
 
-    text-align:center;
+  text-align:center;
 
-    background:var(--surface);
+  background:var(--surface);
 
-    color:var(--text);
+  color:var(--text);
 
-    font-size:16px !important;
-
-    appearance:none;
+  font-size:16px !important;
 }
 
 .quantity:focus{
-
-    border-color:var(--pink);
-
-    box-shadow:
-        0 0 0 4px
-        rgba(255,121,173,.12);
+  border-color:var(--pink);
 }
-
-
-/* =========================================================
-   INVENTORY BUTTONS
-========================================================= */
 
 .inventory-actions{
 
-    display:grid;
+  display:grid;
 
-    grid-template-columns:
-        minmax(0,1fr)
-        minmax(0,1fr);
+  grid-template-columns:
+    repeat(2,minmax(0,1fr));
 
-    gap:9px;
+  gap:9px;
 
-    margin:15px 0;
+  margin:15px 0;
 }
 
 .inv-btn{
 
-    width:100%;
+  width:100%;
 
-    padding:13px 10px;
+  padding:13px 10px;
 
-    border-radius:16px;
+  border-radius:16px;
 
-    font-size:11px;
+  font-size:11px;
+  font-weight:850;
 
-    font-weight:850;
+  cursor:pointer;
 
-    cursor:pointer;
-
-    box-shadow:var(--shadow);
-
-    transition:.2s;
-}
-
-.inv-btn:hover{
-    transform:translateY(-2px);
+  box-shadow:var(--shadow);
 }
 
 .inv-btn.primary{
 
-    background:
-        linear-gradient(
-            135deg,
-            #75483d,
-            #5e3931
-        );
+  background:
+    linear-gradient(
+      135deg,
+      #75483d,
+      #5e3931
+    );
 
-    color:#fff;
+  color:white;
 }
 
 .inv-btn.secondary{
 
-    background:var(--pinksoft);
+  background:var(--pinksoft);
 
-    color:var(--pink2);
+  color:var(--pink2);
 }
-
-
-/* =========================================================
-   RESULT
-========================================================= */
 
 .result-box{
 
-    width:100%;
+  width:100%;
 
-    min-height:150px;
+  min-height:130px;
 
-    resize:vertical;
+  resize:vertical;
 
-    border:
-        1px solid var(--border);
+  border:
+    1px solid var(--border);
 
-    border-radius:18px;
+  border-radius:18px;
 
-    padding:13px;
+  padding:13px;
 
-    background:var(--surface);
+  background:var(--surface);
 
-    color:var(--text);
+  color:var(--text);
 
-    outline:0;
+  outline:0;
 
-    font-family:
-        ui-monospace,
-        SFMono-Regular,
-        Menlo,
-        Monaco,
-        Consolas,
-        monospace;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
 
-    font-size:12px !important;
+  font-size:12px !important;
 
-    line-height:1.5;
+  line-height:1.5;
 }
 
 .inventory-message{
 
-    text-align:center;
+  min-height:20px;
 
-    min-height:20px;
+  margin:8px 0;
 
-    font-size:10px;
+  text-align:center;
 
-    font-weight:800;
+  color:var(--pink2);
 
-    color:var(--pink2);
+  font-size:10px;
 
-    margin:8px 0;
+  font-weight:800;
 }
 
 
 /* =========================================================
-   ACTIVITIES
+   ACTIVIDADES
 ========================================================= */
 
 .activity-switch{
 
-    display:grid;
+  display:grid;
 
-    grid-template-columns:
-        repeat(2,minmax(0,1fr));
+  grid-template-columns:
+    repeat(2,minmax(0,1fr));
 
-    gap:8px;
+  gap:8px;
 
-    padding:6px;
+  padding:6px;
 
-    margin-bottom:14px;
+  margin-bottom:14px;
 
-    border-radius:19px;
+  border:
+    1px solid var(--border);
 
-    background:var(--surface);
+  border-radius:20px;
 
-    border:1px solid var(--border);
+  background:var(--surface);
 
-    box-shadow:var(--shadow);
+  box-shadow:var(--shadow);
 }
 
 .activity-tab{
 
-    padding:12px 8px;
+  padding:13px 10px;
 
-    border-radius:14px;
+  border-radius:15px;
 
-    background:transparent;
+  background:transparent;
 
-    color:var(--muted);
+  color:var(--muted);
 
-    font-size:11px;
+  font-size:11px;
+  font-weight:850;
 
-    font-weight:850;
+  cursor:pointer;
 
-    cursor:pointer;
-
-    transition:.25s;
+  transition:.25s;
 }
 
 .activity-tab.active{
 
-    background:
-        linear-gradient(
-            135deg,
-            var(--pink),
-            var(--pink2)
-        );
+  color:white;
 
-    color:white;
+  background:
+    linear-gradient(
+      135deg,
+      var(--pink),
+      var(--pink2)
+    );
 
-    box-shadow:
-        0 8px 20px
-        rgba(237,79,139,.22);
+  box-shadow:
+    0 8px 20px
+    rgba(255,105,160,.22);
 }
 
-.activity-list{
+.activity-card{
 
-    display:flex;
+  padding:16px;
 
-    flex-direction:column;
+  margin-bottom:10px;
 
-    gap:9px;
+  border:
+    1px solid var(--border);
+
+  border-radius:20px;
+
+  background:var(--surface);
+
+  box-shadow:var(--shadow);
+}
+
+.activity-title{
+
+  display:flex;
+  align-items:center;
+
+  gap:10px;
+
+  margin-bottom:12px;
+
+  font-size:14px;
+  font-weight:850;
 }
 
 .activity-item{
 
-    display:flex;
+  display:flex;
+  align-items:center;
 
-    align-items:center;
+  gap:10px;
 
-    gap:11px;
+  padding:11px 0;
 
-    padding:14px;
+  border-top:
+    1px solid var(--border);
 
-    border-radius:18px;
-
-    background:var(--surface);
-
-    border:1px solid var(--border);
-
-    box-shadow:var(--shadow);
-
-    cursor:pointer;
-
-    transition:.2s;
+  cursor:pointer;
 }
 
-.activity-item:active{
-    transform:scale(.985);
+.activity-item input{
+
+  width:20px;
+  height:20px;
+
+  flex:0 0 20px;
+
+  accent-color:var(--pink);
 }
 
-.activity-checkbox{
+.activity-item span{
 
-    width:23px;
-    height:23px;
+  color:var(--text);
 
-    flex:0 0 23px;
-
-    border-radius:8px;
-
-    border:2px solid var(--border);
-
-    display:grid;
-
-    place-items:center;
-
-    color:white;
-
-    font-size:13px;
-
-    transition:.2s;
+  font-size:11px;
+  line-height:1.35;
 }
 
-.activity-item.done .activity-checkbox{
+.activity-item input:checked + span{
 
-    background:var(--success);
+  color:var(--muted);
 
-    border-color:var(--success);
-
-}
-
-.activity-item.done .activity-checkbox::after{
-    content:"✓";
-}
-
-.activity-item.done .activity-text{
-
-    text-decoration:line-through;
-
-    color:var(--muted);
-
-}
-
-.activity-text{
-
-    flex:1;
-
-    font-size:11px;
-
-    font-weight:700;
-
-    line-height:1.4;
-}
-
-.activity-reset{
-
-    width:100%;
-
-    margin-top:14px;
-
-    padding:12px;
-
-    border-radius:15px;
-
-    background:var(--pinksoft);
-
-    color:var(--pink2);
-
-    font-size:10px;
-
-    font-weight:850;
-
-    cursor:pointer;
+  text-decoration:line-through;
 }
 
 .activity-progress{
 
-    padding:15px;
+  margin-top:13px;
 
-    margin-bottom:13px;
+  color:var(--muted);
 
-    border-radius:20px;
+  font-size:9px;
+  font-weight:700;
 
-    background:
-        linear-gradient(
-            135deg,
-            var(--surface),
-            var(--bg2)
-        );
-
-    border:1px solid var(--border);
-
-    box-shadow:var(--shadow);
-}
-
-.activity-progress-top{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    font-size:10px;
-
-    font-weight:800;
-}
-
-.activity-progress-bar{
-
-    height:8px;
-
-    margin-top:10px;
-
-    border-radius:99px;
-
-    background:var(--pinksoft);
-
-    overflow:hidden;
-}
-
-.activity-progress-fill{
-
-    height:100%;
-
-    width:0;
-
-    background:
-        linear-gradient(
-            90deg,
-            var(--pink),
-            var(--pink3)
-        );
-
-    transition:.3s;
+  text-align:center;
 }
 
 
@@ -1803,61 +1625,59 @@ body.dark{
 
 .empty-module{
 
-    min-height:360px;
+  min-height:350px;
 
-    display:flex;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
 
-    flex-direction:column;
+  padding:30px;
 
-    align-items:center;
+  text-align:center;
 
-    justify-content:center;
+  border:
+    1px solid var(--border);
 
-    text-align:center;
+  border-radius:30px;
 
-    padding:30px;
+  background:var(--surface);
 
-    border-radius:30px;
-
-    border:1px solid var(--border);
-
-    background:var(--surface);
-
-    box-shadow:var(--shadow);
+  box-shadow:var(--shadow);
 }
 
 .empty-icon{
 
-    width:88px;
-    height:88px;
+  width:88px;
+  height:88px;
 
-    display:grid;
-    place-items:center;
+  display:grid;
+  place-items:center;
 
-    border-radius:29px;
+  margin-bottom:18px;
 
-    background:var(--bg2);
+  border-radius:29px;
 
-    font-size:48px;
+  background:var(--bg2);
 
-    margin-bottom:18px;
+  font-size:48px;
 }
 
 .empty-module h2{
-    font-size:19px;
+  font-size:19px;
 }
 
 .empty-module p{
 
-    max-width:280px;
+  max-width:280px;
 
-    margin-top:8px;
+  margin-top:8px;
 
-    color:var(--muted);
+  color:var(--muted);
 
-    font-size:11px;
+  font-size:11px;
 
-    line-height:1.6;
+  line-height:1.6;
 }
 
 
@@ -1867,207 +1687,197 @@ body.dark{
 
 .settings-card{
 
-    padding:15px;
+  padding:15px;
 
-    margin-bottom:12px;
+  margin-bottom:12px;
 
-    border-radius:22px;
+  border-radius:22px;
 
-    background:var(--surface);
+  background:var(--surface);
 
-    border:1px solid var(--border);
+  border:
+    1px solid var(--border);
 
-    box-shadow:var(--shadow);
+  box-shadow:var(--shadow);
 }
 
 .settings-profile{
 
-    display:flex;
+  display:flex;
+  align-items:center;
 
-    align-items:center;
-
-    gap:10px;
+  gap:10px;
 }
 
 .settings-avatar{
 
-    width:48px;
-    height:48px;
+  width:48px;
+  height:48px;
 
-    flex:0 0 48px;
+  display:grid;
+  place-items:center;
 
-    display:grid;
-    place-items:center;
+  flex:0 0 48px;
 
-    border-radius:16px;
+  border-radius:16px;
 
-    background:var(--bg2);
+  background:var(--bg2);
 
-    font-size:25px;
+  font-size:25px;
 }
 
-.settings-profile-info{
+.settings-profile>div:nth-child(2){
 
-    flex:1;
-
-    min-width:0;
+  flex:1;
+  min-width:0;
 }
 
 .settings-profile strong{
 
-    display:block;
+  display:block;
 
-    font-size:13px;
+  font-size:13px;
 }
 
 .settings-profile span{
 
-    display:block;
+  display:block;
 
-    margin-top:3px;
+  margin-top:3px;
 
-    color:var(--muted);
+  color:var(--muted);
 
-    font-size:9px;
+  font-size:9px;
 }
 
 .settings-profile button{
 
-    padding:8px 10px;
+  padding:8px 10px;
 
-    border-radius:11px;
+  border-radius:11px;
 
-    background:var(--pinksoft);
+  background:var(--pinksoft);
 
-    color:var(--pink2);
+  color:var(--pink2);
 
-    font-size:9px;
+  font-size:9px;
+  font-weight:850;
 
-    font-weight:850;
-
-    cursor:pointer;
+  cursor:pointer;
 }
 
 .settings-title{
 
-    font-size:12px;
+  margin-bottom:7px;
 
-    font-weight:900;
-
-    margin-bottom:7px;
+  font-size:12px;
+  font-weight:900;
 }
 
 .setting-row{
 
-    width:100%;
+  width:100%;
 
-    display:flex;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
 
-    align-items:center;
+  gap:10px;
 
-    justify-content:space-between;
+  padding:13px 2px;
 
-    gap:10px;
+  border-top:
+    1px solid var(--border);
 
-    padding:13px 2px;
+  background:transparent;
 
-    border-top:1px solid var(--border);
+  color:var(--text);
 
-    background:transparent;
+  text-align:left;
 
-    color:var(--text);
+  cursor:pointer;
+}
 
-    text-align:left;
-
-    cursor:pointer;
+.setting-row span:first-child{
+  min-width:0;
 }
 
 .setting-row b{
 
-    display:block;
+  display:block;
 
-    font-size:11px;
+  font-size:11px;
 }
 
 .setting-row small{
 
-    display:block;
+  display:block;
 
-    margin-top:3px;
+  margin-top:3px;
 
-    color:var(--muted);
+  color:var(--muted);
 
-    font-size:8px;
+  font-size:8px;
 
-    line-height:1.35;
+  line-height:1.35;
 }
 
-.setting-row>span:first-child{
-    min-width:0;
+.setting-row>span:last-child{
+
+  flex-shrink:0;
+
+  color:var(--pink2);
+
+  font-weight:900;
 }
 
-.setting-value{
-
-    flex:0 0 auto;
-
-    color:var(--pink2);
-
-    font-size:16px;
+.setting-row.static{
+  cursor:default;
 }
 
 .mini-toggle{
 
-    padding:6px 10px;
+  padding:6px 10px;
 
-    border-radius:99px;
+  border-radius:99px;
 
-    background:var(--pink);
+  background:var(--pink);
 
-    color:white;
+  color:white;
 
-    font-size:8px;
+  font-size:8px;
+  font-weight:900;
 
-    font-weight:900;
-
-    cursor:pointer;
+  cursor:pointer;
 }
 
 .mini-toggle.off{
-    background:var(--muted);
+  background:var(--muted);
 }
 
 .danger-card{
 
-    border-color:
-        color-mix(
-            in srgb,
-            var(--danger) 30%,
-            var(--border)
-        );
+  border-color:
+    rgba(239,98,137,.3);
 }
 
 .danger-button{
 
-    width:100%;
+  width:100%;
 
-    padding:11px;
+  padding:11px;
 
-    border-radius:13px;
+  border-radius:13px;
 
-    background:
-        color-mix(
-            in srgb,
-            var(--danger) 12%,
-            transparent
-        );
+  background:
+    rgba(239,98,137,.12);
 
-    color:var(--danger);
+  color:var(--danger);
 
-    font-size:10px;
+  font-size:10px;
+  font-weight:850;
 
-    font-weight:850;
-
-    cursor:pointer;
+  cursor:pointer;
 }
 
 
@@ -2077,220 +1887,107 @@ body.dark{
 
 .bottom-nav{
 
-    position:fixed;
+  position:fixed;
 
-    left:50%;
+  left:50%;
+  bottom:
+    max(
+      8px,
+      calc(
+        8px +
+        var(--safe-bottom)
+      )
+    );
 
-    bottom:
-        max(
-            7px,
-            calc(7px + env(safe-area-inset-bottom))
-        );
+  transform:translateX(-50%);
 
-    transform:translateX(-50%);
+  z-index:2000;
 
-    z-index:2000;
+  width:
+    calc(
+      100% -
+      max(
+        16px,
+        calc(
+          var(--safe-left) +
+          var(--safe-right)
+        )
+      )
+    );
 
-    width:
-        min(
-            calc(100% - 16px),
-            590px
-        );
+  max-width:590px;
 
-    height:70px;
+  height:68px;
 
-    display:grid;
+  display:grid;
 
-    grid-template-columns:
-        repeat(5,minmax(0,1fr));
+  grid-template-columns:
+    repeat(5,minmax(0,1fr));
 
-    gap:3px;
+  gap:3px;
 
-    padding:6px;
+  padding:6px;
 
-    border-radius:25px;
+  border:
+    1px solid var(--border);
 
-    border:1px solid var(--border);
+  border-radius:25px;
 
-    background:var(--nav);
+  background:var(--nav);
 
-    backdrop-filter:blur(24px);
+  backdrop-filter:blur(25px);
+  -webkit-backdrop-filter:blur(25px);
 
-    box-shadow:
-        0 18px 55px
-        rgba(65,25,45,.2);
+  box-shadow:
+    0 18px 55px rgba(168,72,111,.16),
+    0 0 22px rgba(255,121,173,.07);
+}
+
+html.dark .bottom-nav{
+
+  box-shadow:
+    0 18px 55px rgba(0,0,0,.42),
+    0 0 25px rgba(255,92,158,.08);
 }
 
 .nav-button{
 
-    min-width:0;
+  min-width:0;
 
-    display:flex;
+  display:flex;
+  flex-direction:column;
 
-    flex-direction:column;
+  align-items:center;
+  justify-content:center;
 
-    align-items:center;
+  gap:3px;
 
-    justify-content:center;
+  border-radius:18px;
 
-    gap:3px;
+  background:transparent;
 
-    border-radius:18px;
+  color:var(--muted);
 
-    background:transparent;
-
-    color:var(--muted);
-
-    cursor:pointer;
-
-    transition:.2s;
-}
-
-.nav-icon{
-    font-size:19px;
-}
-
-.nav-label{
-
-    font-size:8px;
-
-    font-weight:700;
-
-    white-space:nowrap;
+  cursor:pointer;
 }
 
 .nav-button.active{
 
-    color:var(--pink2);
+  color:var(--pink2);
 
-    background:var(--bg2);
+  background:var(--bg2);
 }
 
-
-/* =========================================================
-   TOAST
-========================================================= */
-
-.toast{
-
-    position:fixed;
-
-    z-index:5000;
-
-    left:50%;
-
-    bottom:100px;
-
-    transform:
-        translate(-50%,18px);
-
-    opacity:0;
-
-    padding:11px 16px;
-
-    border-radius:99px;
-
-    background:#35262d;
-
-    color:white;
-
-    font-size:11px;
-
-    pointer-events:none;
-
-    transition:.25s;
+.nav-icon{
+  font-size:19px;
 }
 
-.toast.show{
+.nav-label{
 
-    opacity:1;
+  font-size:8px;
+  font-weight:700;
 
-    transform:
-        translate(-50%,0);
-}
-
-
-/* =========================================================
-   BEAR COPY ANIMATION
-========================================================= */
-
-.bear-pop{
-
-    position:fixed;
-
-    left:50%;
-    top:50%;
-
-    z-index:9999;
-
-    transform:
-        translate(-50%,-50%)
-        scale(.6);
-
-    opacity:0;
-
-    pointer-events:none;
-
-    text-align:center;
-
-    transition:.25s;
-}
-
-.bear-pop.show{
-
-    opacity:1;
-
-    transform:
-        translate(-50%,-50%)
-        scale(1);
-}
-
-.bear-pop .bear{
-
-    font-size:78px;
-}
-
-.bear-pop div:last-child{
-
-    margin-top:5px;
-
-    padding:10px 16px;
-
-    border-radius:18px;
-
-    background:var(--surface);
-
-    color:var(--text);
-
-    font-weight:850;
-
-    box-shadow:var(--shadow);
-}
-
-.copy-bear-animation{
-
-    display:inline-block;
-
-    animation:
-        copyBearBounce .65s
-        ease-in-out
-        infinite
-        alternate;
-}
-
-@keyframes copyBearBounce{
-
-    from{
-        transform:
-            translateY(4px)
-            rotate(-7deg);
-    }
-
-    to{
-        transform:
-            translateY(-13px)
-            rotate(7deg);
-    }
+  white-space:nowrap;
 }
 
 
@@ -2300,366 +1997,283 @@ body.dark{
 
 .name-overlay{
 
-    position:fixed;
+  position:fixed;
 
-    inset:0;
+  inset:0;
 
-    z-index:9000;
+  z-index:5000;
 
-    display:none;
+  display:none;
 
-    align-items:center;
+  align-items:center;
+  justify-content:center;
 
-    justify-content:center;
+  padding:
+    calc(18px + var(--safe-top))
+    18px
+    calc(18px + var(--safe-bottom))
+    18px;
 
-    padding:
-        max(16px,env(safe-area-inset-top))
-        max(16px,env(safe-area-inset-right))
-        max(16px,env(safe-area-inset-bottom))
-        max(16px,env(safe-area-inset-left));
+  background:
+    rgba(30,12,22,.55);
 
-    background:
-        rgba(30,12,22,.55);
-
-    backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
 }
 
 .name-overlay.show{
-    display:flex;
+  display:flex;
 }
 
 .name-modal{
 
-    width:min(100%,390px);
+  width:min(100%,390px);
 
-    padding:25px;
+  padding:25px;
 
-    border-radius:30px;
+  border-radius:30px;
 
-    background:var(--surface);
+  background:var(--surface);
 
-    border:1px solid var(--border);
+  border:
+    1px solid var(--border);
 
-    box-shadow:
-        0 30px 80px rgba(0,0,0,.25);
+  box-shadow:
+    0 30px 80px rgba(0,0,0,.25);
 
-    text-align:center;
+  text-align:center;
 
-    animation:
-        modalIn .3s ease;
+  animation:
+    modalIn .3s ease;
 }
 
 @keyframes modalIn{
 
-    from{
-        opacity:0;
-        transform:
-            translateY(15px)
-            scale(.96);
-    }
+  from{
+    opacity:0;
+    transform:
+      translateY(15px)
+      scale(.96);
+  }
 
-    to{
-        opacity:1;
-        transform:none;
-    }
+  to{
+    opacity:1;
+    transform:none;
+  }
 }
 
 .name-bear{
 
-    font-size:58px;
+  font-size:58px;
 
-    animation:
-        softFloat 3s ease-in-out infinite;
+  animation:
+    float 3s ease-in-out infinite;
 }
 
 .name-modal h2{
 
-    margin-top:8px;
+  margin-top:8px;
 
-    font-size:21px;
+  font-size:21px;
 }
 
 .name-modal p{
 
-    margin:7px auto 17px;
+  margin:7px auto 17px;
 
-    color:var(--muted);
+  color:var(--muted);
 
-    font-size:11px;
+  font-size:11px;
 
-    line-height:1.5;
+  line-height:1.5;
 }
 
 .name-input{
 
-    width:100%;
+  width:100%;
 
-    padding:14px 16px;
+  padding:14px 16px;
 
-    border-radius:16px;
+  border:
+    2px solid var(--border);
 
-    border:2px solid var(--border);
+  border-radius:16px;
 
-    outline:0;
+  outline:0;
 
-    background:var(--bg);
+  background:var(--bg);
 
-    color:var(--text);
+  color:var(--text);
 
-    text-align:center;
+  text-align:center;
 
-    font-weight:750;
+  font-weight:750;
 }
 
 .name-input:focus{
-    border-color:var(--pink);
+  border-color:var(--pink);
 }
 
 .name-save{
 
-    width:100%;
+  width:100%;
 
-    margin-top:10px;
+  margin-top:10px;
 
-    padding:14px;
+  padding:14px;
 
-    border-radius:16px;
+  border-radius:16px;
 
-    cursor:pointer;
+  color:white;
 
-    color:white;
+  background:
+    linear-gradient(
+      135deg,
+      var(--pink),
+      var(--pink2)
+    );
 
-    background:
-        linear-gradient(
-            135deg,
-            var(--pink),
-            var(--pink2)
-        );
+  font-weight:850;
 
-    font-weight:850;
+  cursor:pointer;
 }
 
 .name-change{
 
-    margin-top:9px;
+  margin-top:9px;
 
-    padding:7px 10px;
+  padding:7px 10px;
 
-    border-radius:12px;
+  border-radius:12px;
 
-    background:transparent;
+  background:transparent;
 
-    color:var(--muted);
+  color:var(--muted);
 
-    font-size:9px;
+  font-size:9px;
 
-    cursor:pointer;
+  cursor:pointer;
 }
 
 
 /* =========================================================
-   RESPONSIVE
+   TOAST + BEAR
 ========================================================= */
 
-@media(max-width:620px){
+.toast{
 
-    .app{
+  position:fixed;
 
-        max-width:none;
+  z-index:6000;
 
-        padding-left:12px;
-        padding-right:12px;
-    }
+  left:50%;
 
-    .topbar{
+  bottom:
+    calc(
+      91px +
+      var(--safe-bottom)
+    );
 
-        width:calc(100% + 24px);
+  transform:
+    translate(-50%,18px);
 
-        margin-left:-12px;
-        margin-right:-12px;
+  opacity:0;
 
-        padding-left:
-            max(12px,env(safe-area-inset-left));
+  padding:11px 16px;
 
-        padding-right:
-            max(12px,env(safe-area-inset-right));
-    }
+  border-radius:99px;
 
-    .hero{
+  background:#35262d;
 
-        min-height:
-            clamp(
-                285px,
-                43dvh,
-                360px
-            );
-    }
+  color:white;
 
+  font-size:11px;
+
+  pointer-events:none;
+
+  transition:.25s;
 }
 
-@media(max-width:420px){
+.toast.show{
 
-    .brand-name{
-        font-size:16px;
-    }
+  opacity:1;
 
-    .brand-date{
-        font-size:7.5px;
-    }
-
-    .hero{
-        padding-left:19px;
-        padding-right:19px;
-    }
-
-    .hero-title{
-        font-size:29px;
-        max-width:72%;
-    }
-
-    .hero-description{
-        max-width:62%;
-    }
-
-    .hero-bear{
-        right:3px;
-        font-size:74px;
-    }
-
-    .menu-grid{
-        gap:8px;
-    }
-
-    .menu-card{
-        min-height:125px;
-        padding:13px;
-    }
-
-    .menu-card-title{
-        font-size:13px;
-    }
-
-    .menu-card-description{
-        font-size:9px;
-    }
-
+  transform:
+    translate(-50%,0);
 }
 
-@media(max-width:370px){
+.bear-pop{
 
-    .app{
+  position:fixed;
 
-        padding-left:9px;
-        padding-right:9px;
-    }
+  left:50%;
+  top:50%;
 
-    .topbar{
+  z-index:7000;
 
-        width:calc(100% + 18px);
+  transform:
+    translate(-50%,-50%)
+    scale(.6);
 
-        margin-left:-9px;
-        margin-right:-9px;
-    }
+  opacity:0;
 
-    .brand-name{
-        font-size:14px;
-    }
+  pointer-events:none;
 
-    .brand-subtitle{
-        font-size:7px;
-    }
+  text-align:center;
 
-    .theme-toggle{
-
-        width:40px;
-        height:40px;
-
-        flex-basis:40px;
-    }
-
-    .hero{
-
-        padding:
-            22px 16px;
-    }
-
-    .hero-title{
-        font-size:27px;
-    }
-
-    .hero-bear{
-        font-size:66px;
-    }
-
-    .inventory-actions{
-        grid-template-columns:1fr;
-    }
-
-    .quantity{
-        width:70px;
-    }
-
-    .product-name{
-        font-size:11px;
-    }
-
-    .product-meta{
-        font-size:8px;
-    }
-
-    .bottom-nav{
-        width:calc(100% - 10px);
-    }
-
-    .nav-icon{
-        font-size:17px;
-    }
-
-    .nav-label{
-        font-size:7px;
-    }
-
+  transition:.25s;
 }
 
-@media(max-width:340px){
+.bear-pop.show{
 
-    .app{
-        padding-left:7px;
-        padding-right:7px;
-    }
+  opacity:1;
 
-    .topbar{
+  transform:
+    translate(-50%,-50%)
+    scale(1);
+}
 
-        width:calc(100% + 14px);
+.bear-pop .bear{
+  font-size:78px;
+}
 
-        margin-left:-7px;
-        margin-right:-7px;
-    }
+.bear-pop div:last-child{
 
-    .menu-grid{
-        gap:6px;
-    }
+  margin-top:5px;
 
-    .menu-card{
-        padding:11px 9px;
-    }
+  padding:10px 16px;
 
-    .menu-icon{
+  border-radius:18px;
 
-        width:42px;
-        height:42px;
+  background:var(--surface);
 
-        font-size:20px;
-    }
+  color:var(--text);
 
-    .inner-title h1{
-        font-size:21px;
-    }
+  font-weight:850;
+}
 
-    .bottom-nav{
-        width:calc(100% - 8px);
-    }
+.copy-bear-animation{
 
+  display:inline-block;
+
+  animation:
+    copyBearBounce .65s
+    ease-in-out
+    infinite alternate;
+}
+
+@keyframes copyBearBounce{
+
+  from{
+    transform:
+      translateY(4px)
+      rotate(-7deg);
+  }
+
+  to{
+    transform:
+      translateY(-13px)
+      rotate(7deg);
+  }
 }
 
 
@@ -2667,63 +2281,154 @@ body.dark{
    ANIMATIONS OFF
 ========================================================= */
 
-body.animations-off *{
+body.animations-off *,
+body.animations-off *:before,
+body.animations-off *:after{
 
-    animation:none !important;
+  animation:none !important;
 
-    transition:none !important;
+  transition:none !important;
 
-    scroll-behavior:auto !important;
+  scroll-behavior:auto !important;
 }
 
 
 /* =========================================================
-   TAP FEEDBACK
+   MOBILE
 ========================================================= */
 
-.tap-feedback{
+@media(max-width:420px){
 
-    animation:
-        tapPulse .22s ease;
+  .brand-name{
+    font-size:15px;
+  }
+
+  .brand-subtitle{
+    font-size:7px;
+  }
+
+  .hero{
+    min-height:295px;
+    padding:23px 18px;
+  }
+
+  .hero-title{
+    font-size:28px;
+  }
+
+  .hero-bear{
+    font-size:72px;
+    right:1px;
+  }
+
+  .hero-description{
+    max-width:64%;
+  }
+
+  .menu-grid{
+    gap:8px;
+  }
+
+  .menu-card{
+    min-height:126px;
+    padding:13px;
+  }
+
+  .menu-card-title{
+    font-size:13px;
+  }
+
+  .menu-card-description{
+    font-size:9px;
+  }
+
+  .bottom-nav{
+    height:66px;
+  }
+
+  .nav-icon{
+    font-size:18px;
+  }
+
+  .nav-label{
+    font-size:7px;
+  }
 }
 
-@keyframes tapPulse{
+@media(max-width:360px){
 
-    50%{
-        transform:scale(.96);
-    }
+  .app{
+    padding-left:9px;
+    padding-right:9px;
+  }
 
+  .topbar{
+    width:calc(100% + 18px);
+    margin-left:-9px;
+    margin-right:-9px;
+  }
+
+  .brand-name{
+    font-size:14px;
+  }
+
+  .brand-logo{
+    width:42px;
+    height:42px;
+    flex-basis:42px;
+    font-size:23px;
+  }
+
+  .theme-toggle{
+    width:40px;
+    height:40px;
+    flex-basis:40px;
+  }
+
+  .hero{
+    padding:21px 15px;
+  }
+
+  .hero-title{
+    font-size:26px;
+  }
+
+  .hero-bear{
+    font-size:65px;
+  }
+
+  .hero-description{
+    font-size:10px;
+  }
+
+  .inventory-actions{
+    grid-template-columns:1fr;
+  }
+
+  .quantity{
+    width:68px;
+  }
+
+  .bottom-nav{
+    width:calc(100% - 8px);
+  }
 }
 
 
 /* =========================================================
-   DESKTOP
+   iOS SAFARI
 ========================================================= */
 
-@media(min-width:621px){
+@supports (-webkit-touch-callout:none){
 
-    .bottom-nav{
-        bottom:18px;
-    }
+  html,
+  body{
+    min-height:-webkit-fill-available;
+  }
 
-}
-
-
-/* =========================================================
-   IOS
-========================================================= */
-
-@supports(-webkit-touch-callout:none){
-
-    html,
-    body{
-        min-height:-webkit-fill-available;
-    }
-
-    .app{
-        min-height:-webkit-fill-available;
-    }
-
+  .app{
+    min-height:-webkit-fill-available;
+  }
 }
 
 </style>
@@ -2734,49 +2439,46 @@ body.animations-off *{
 
 <div class="app">
 
-
 <!-- =====================================================
-     HEADER
+     TOP BAR
 ===================================================== -->
 
 <header class="topbar">
 
-    <div class="brand">
+  <div class="brand">
 
-        <div class="brand-logo">
-            🐻
-        </div>
+    <div class="brand-logo">
+      🐻
+    </div>
 
-        <div class="brand-info">
+    <div class="brand-info">
 
-            <span class="brand-name">
-                Beary's Coffee Shop ☕
-            </span>
+      <span class="brand-name">
+        Beary's Coffee Shop ☕
+      </span>
 
-            <span class="brand-subtitle">
-                Tu mini centro de trabajo
-            </span>
+      <span class="brand-subtitle">
+        Tu mini centro de trabajo
+      </span>
 
-            <span
-                class="brand-date"
-                id="brandDate"
-            >
-                Cargando fecha...
-            </span>
-
-        </div>
+      <span
+        class="brand-date"
+        id="brandDate"
+      >
+        Cargando fecha...
+      </span>
 
     </div>
 
+  </div>
 
-    <button
-        class="theme-toggle"
-        id="themeToggle"
-        onclick="toggleTheme()"
-        aria-label="Cambiar tema"
-    >
-        🌙
-    </button>
+  <button
+    class="theme-toggle"
+    id="themeToggle"
+    onclick="toggleTheme()"
+  >
+    🌙
+  </button>
 
 </header>
 
@@ -2786,914 +2488,1055 @@ body.animations-off *{
 ===================================================== -->
 
 <section
-    class="page active"
-    id="homePage"
+  class="page active"
+  id="homePage"
 >
 
-    <div class="hero">
+  <div class="hero">
 
-        <span class="hero-star">✦</span>
-        <span class="hero-star">✧</span>
-        <span class="hero-star">✦</span>
+    <span class="hero-star">✦</span>
+    <span class="hero-star">✧</span>
+    <span class="hero-star">✦</span>
 
-        <div class="hero-content">
+    <div class="hero-content">
 
-            <div class="hero-label">
-                BIENVENIDO A BEARY'S ☕
-            </div>
+      <div class="hero-label">
+        BIENVENIDO A BEARY'S ☕
+      </div>
 
-            <h1 class="hero-title">
+      <h1 class="hero-title">
 
-                Hola,
-                <span
-                    class="welcome-name"
-                    id="welcomeName"
-                >
-                    amigo
-                </span>
-
-                <br>
-
-                🧸♡
-
-            </h1>
-
-            <p class="hero-description">
-                Qué bueno verte por aquí.
-                Vamos a dejar todo listo
-                para sobrevivir al rush.
-            </p>
-
-            <button
-                class="hero-button"
-                onclick="showToast('🧸 ¡Que tengas un día increíble!')"
-            >
-                Comenzar mi día →
-            </button>
-
-        </div>
-
-        <div class="hero-bear">
-            🧸
-        </div>
-
-    </div>
-
-
-    <div class="section-header">
-
-        <h2>
-            ¿Qué vamos a hacer?
-        </h2>
-
-        <span>
-            Menú principal
+        Hola,
+        <span
+          class="welcome-name"
+          id="welcomeName"
+        >
+          amigo
         </span>
 
-    </div>
+        <br>
 
+        🧸♡
 
-    <div class="menu-grid">
+      </h1>
 
-        <button
-            class="menu-card"
-            onclick="openPage('inventory')"
-        >
+      <p class="hero-description">
+        Qué bueno verte por aquí.
+        Vamos a dejar todo listo
+        para sobrevivir al rush.
+      </p>
 
-            <div class="menu-icon">
-                📦
-            </div>
-
-            <span class="menu-card-title">
-                Inventario
-            </span>
-
-            <span class="menu-card-description">
-                Productos y existencias
-            </span>
-
-        </button>
-
-
-        <button
-            class="menu-card"
-            onclick="openPage('activities')"
-        >
-
-            <div class="menu-icon">
-                ✓
-            </div>
-
-            <span class="menu-card-title">
-                Actividades
-            </span>
-
-            <span class="menu-card-description">
-                Apertura y cierre
-            </span>
-
-        </button>
-
-
-        <button
-            class="menu-card"
-            onclick="openPage('cleaning')"
-        >
-
-            <div class="menu-icon">
-                🧼
-            </div>
-
-            <span class="menu-card-title">
-                Limpieza
-            </span>
-
-            <span class="menu-card-description">
-                Todo limpio y en orden
-            </span>
-
-        </button>
-
-
-        <button
-            class="menu-card"
-            onclick="openPage('recipes')"
-        >
-
-            <div class="menu-icon">
-                ☕
-            </div>
-
-            <span class="menu-card-title">
-                Recetario
-            </span>
-
-            <span class="menu-card-description">
-                Recetas de bebidas
-            </span>
-
-        </button>
-
-
-        <button
-            class="menu-card"
-            onclick="openPage('history')"
-        >
-
-            <div class="menu-icon">
-                📖
-            </div>
-
-            <span class="menu-card-title">
-                Historial
-            </span>
-
-            <span class="menu-card-description">
-                Todo el movimiento
-            </span>
-
-        </button>
-
-
-        <button
-            class="menu-card"
-            onclick="openSettings()"
-        >
-
-            <div class="menu-icon">
-                ⚙️
-            </div>
-
-            <span class="menu-card-title">
-                Ajustes
-            </span>
-
-            <span class="menu-card-description">
-                Personaliza Beary's
-            </span>
-
-        </button>
+      <button
+        class="hero-button"
+        onclick="showToast('🧸 ¡Que tengas un día increíble!')"
+      >
+        Comenzar mi día →
+      </button>
 
     </div>
 
-
-    <div class="section-header">
-
-        <h2>
-            Un poquito de cariño ♡
-        </h2>
-
-        <span>
-            Para hoy
-        </span>
-
+    <div class="hero-bear">
+      🧸
     </div>
 
+  </div>
 
-    <div class="phrase-card">
 
-        <div class="phrase-top">
+  <div class="section-header">
 
-            <div class="phrase-label">
+    <h2>
+      ¿Qué vamos a hacer?
+    </h2>
 
-                <div class="phrase-label-icon">
-                    💌
-                </div>
+    <span>
+      Menú principal
+    </span>
 
-                <span>
-                    Una frase para hoy
-                </span>
+  </div>
 
-            </div>
 
-            <span
-                class="phrase-number"
-                id="phraseNumber"
-            >
-                1 / 8
-            </span>
+  <div class="menu-grid">
 
-        </div>
-
-
-        <p
-            class="phrase-text"
-            id="phraseText"
-        >
-            “Hoy también cuenta cada pequeño esfuerzo.”
-        </p>
-
-
-        <div class="phrase-bottom">
-
-            <div class="phrase-bear">
-                🧸
-            </div>
-
-            <button
-                class="phrase-button"
-                onclick="nextPhrase()"
-            >
-                Otra frase ♡
-            </button>
-
-        </div>
-
-    </div>
-
-
-    <div class="section-header">
-
-        <h2>
-            Estado de Beary's
-        </h2>
-
-    </div>
-
-
-    <div class="status-card">
-
-        <div class="status-content">
-
-            <div class="status-icon">
-                ✨
-            </div>
-
-            <div>
-
-                <span class="status-title">
-                    Todo listo para comenzar
-                </span>
-
-                <span class="status-description">
-                    Tu espacio Beary's está preparado.
-                </span>
-
-            </div>
-
-        </div>
-
-        <div class="status-dot"></div>
-
-    </div>
-
-
-    <div class="home-quick-actions">
-
-        <button onclick="changeName()">
-            ✏️ Mi nombre
-        </button>
-
-        <button onclick="openSettings()">
-            ⚙️ Ajustes
-        </button>
-
-    </div>
-
-</section>
-
-
-<!-- =====================================================
-     INVENTORY
-===================================================== -->
-
-<section
-    class="page"
-    id="inventoryPage"
->
-
-    <div class="inner-header">
-
-        <button
-            class="back-button"
-            onclick="goHome()"
-        >
-            ←
-        </button>
-
-        <div class="inner-title">
-
-            <h1>
-                Inventario 📦
-            </h1>
-
-            <p>
-                Inventario diario de Beary's
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <div class="inventory-hero">
-
-        <div class="inventory-top">
-
-            <strong>
-                Progreso del inventario
-            </strong>
-
-            <span id="inventoryProgressText">
-                0% completo
-            </span>
-
-        </div>
-
-
-        <div class="progress-track">
-
-            <div
-                class="progress-fill"
-                id="inventoryProgress"
-            ></div>
-
-        </div>
-
-
-        <div class="inventory-stats">
-
-            <div class="inv-stat">
-
-                <b id="statTotal">
-                    0
-                </b>
-
-                <small>
-                    Productos
-                </small>
-
-            </div>
-
-
-            <div class="inv-stat">
-
-                <b id="statComplete">
-                    0
-                </b>
-
-                <small>
-                    Completos
-                </small>
-
-            </div>
-
-
-            <div class="inv-stat">
-
-                <b id="statLow">
-                    0
-                </b>
-
-                <small>
-                    Faltantes
-                </small>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <input
-        id="inventorySearch"
-        class="inventory-search"
-        type="search"
-        placeholder="🔎 Buscar producto..."
-        autocomplete="off"
+    <button
+      class="menu-card"
+      onclick="openPage('inventory')"
     >
 
+      <div class="menu-icon">
+        📦
+      </div>
 
-    <div id="inventoryAreas"></div>
+      <span class="menu-card-title">
+        Inventario
+      </span>
 
+      <span class="menu-card-description">
+        Productos y existencias
+      </span>
 
-    <div class="inventory-actions">
-
-        <button
-            class="inv-btn primary"
-            onclick="generateInventoryList()"
-        >
-            📋 Generar y copiar lista
-        </button>
-
-        <button
-            class="inv-btn secondary"
-            onclick="newInventoryList()"
-        >
-            🧹 Nueva lista
-        </button>
-
-    </div>
-
-
-    <div
-        class="inventory-message"
-        id="inventoryMessage"
-    ></div>
-
-
-    <textarea
-        id="inventoryResult"
-        class="result-box"
-        readonly
-        placeholder="Aquí aparecerá tu lista de faltantes..."
-    ></textarea>
-
-</section>
-
-
-<!-- =====================================================
-     ACTIVITIES
-===================================================== -->
-
-<section
-    class="page"
-    id="activitiesPage"
->
-
-    <div class="inner-header">
-
-        <button
-            class="back-button"
-            onclick="goHome()"
-        >
-            ←
-        </button>
-
-        <div class="inner-title">
-
-            <h1>
-                Actividades ✓
-            </h1>
-
-            <p>
-                Elige qué parte del turno quieres hacer
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <div class="activity-switch">
-
-        <button
-            class="activity-tab active"
-            id="openingTab"
-            onclick="selectActivityType('opening')"
-        >
-            🌅 APERTURA
-        </button>
-
-        <button
-            class="activity-tab"
-            id="closingTab"
-            onclick="selectActivityType('closing')"
-        >
-            🌙 CIERRE
-        </button>
-
-    </div>
-
-
-    <div class="activity-progress">
-
-        <div class="activity-progress-top">
-
-            <span id="activityTitle">
-                Apertura
-            </span>
-
-            <span id="activityCount">
-                0 / 0
-            </span>
-
-        </div>
-
-
-        <div class="activity-progress-bar">
-
-            <div
-                class="activity-progress-fill"
-                id="activityProgress"
-            ></div>
-
-        </div>
-
-    </div>
-
-
-    <div
-        class="activity-list"
-        id="activityList"
-    ></div>
+    </button>
 
 
     <button
-        class="activity-reset"
-        onclick="resetActivities()"
+      class="menu-card"
+      onclick="openPage('activities')"
     >
-        🔄 Reiniciar actividades
+
+      <div class="menu-icon">
+        ✓
+      </div>
+
+      <span class="menu-card-title">
+        Actividades
+      </span>
+
+      <span class="menu-card-description">
+        Apertura y cierre
+      </span>
+
     </button>
 
+
+    <button
+      class="menu-card"
+      onclick="openPage('cleaning')"
+    >
+
+      <div class="menu-icon">
+        🧼
+      </div>
+
+      <span class="menu-card-title">
+        Limpieza
+      </span>
+
+      <span class="menu-card-description">
+        Todo limpio y en orden
+      </span>
+
+    </button>
+
+
+    <button
+      class="menu-card"
+      onclick="openPage('recipes')"
+    >
+
+      <div class="menu-icon">
+        ☕
+      </div>
+
+      <span class="menu-card-title">
+        Recetario
+      </span>
+
+      <span class="menu-card-description">
+        Recetas de bebidas
+      </span>
+
+    </button>
+
+
+    <button
+      class="menu-card"
+      onclick="openPage('history')"
+    >
+
+      <div class="menu-icon">
+        📖
+      </div>
+
+      <span class="menu-card-title">
+        Historial
+      </span>
+
+      <span class="menu-card-description">
+        Todo el movimiento
+      </span>
+
+    </button>
+
+
+    <button
+      class="menu-card"
+      onclick="openSettings()"
+    >
+
+      <div class="menu-icon">
+        ⚙️
+      </div>
+
+      <span class="menu-card-title">
+        Ajustes
+      </span>
+
+      <span class="menu-card-description">
+        Personaliza tu Beary's
+      </span>
+
+    </button>
+
+  </div>
+
+
+  <div class="section-header">
+
+    <h2>
+      Un poquito de cariño ♡
+    </h2>
+
+    <span>
+      Para hoy
+    </span>
+
+  </div>
+
+
+  <div class="phrase-card">
+
+    <div class="phrase-top">
+
+      <div class="phrase-label">
+
+        <div class="phrase-label-icon">
+          💌
+        </div>
+
+        <span>
+          Una frase para hoy
+        </span>
+
+      </div>
+
+      <span
+        class="phrase-number"
+        id="phraseNumber"
+      >
+        1 / 8
+      </span>
+
+    </div>
+
+
+    <p
+      class="phrase-text"
+      id="phraseText"
+    >
+      “Hoy también cuenta cada pequeño esfuerzo.”
+    </p>
+
+
+    <div class="phrase-bottom">
+
+      <div class="phrase-bear">
+        🧸
+      </div>
+
+      <button
+        class="phrase-button"
+        onclick="nextPhrase()"
+      >
+        Otra frase ♡
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div class="section-header">
+
+    <h2>
+      Estado de Beary's
+    </h2>
+
+  </div>
+
+
+  <div class="status-card">
+
+    <div class="status-content">
+
+      <div class="status-icon">
+        ✨
+      </div>
+
+      <div>
+
+        <span class="status-title">
+          Todo listo para comenzar
+        </span>
+
+        <span class="status-description">
+          Tu espacio Beary's está preparado.
+        </span>
+
+      </div>
+
+    </div>
+
+    <div class="status-dot"></div>
+
+  </div>
+
+
+  <div class="home-quick-actions">
+
+    <button onclick="changeName()">
+      ✏️ Mi nombre
+    </button>
+
+    <button onclick="openSettings()">
+      ⚙️ Ajustes
+    </button>
+
+  </div>
+
 </section>
 
 
 <!-- =====================================================
-     CLEANING
+     AJUSTES
 ===================================================== -->
 
 <section
-    class="page"
-    id="cleaningPage"
+  class="page"
+  id="settingsPage"
 >
 
-    <div class="inner-header">
+  <div class="inner-header">
 
-        <button
-            class="back-button"
-            onclick="goHome()"
-        >
-            ←
-        </button>
+    <button
+      class="back-button"
+      onclick="goHome()"
+    >
+      ←
+    </button>
 
-        <div class="inner-title">
+    <div class="inner-title">
 
-            <h1>
-                Limpieza 🧼
-            </h1>
+      <h1>
+        Ajustes ⚙️
+      </h1>
 
-            <p>
-                Mantener todo en orden
-            </p>
+      <p>
+        Personaliza tu Beary's
+      </p>
 
-        </div>
+    </div>
+
+  </div>
+
+
+  <div class="settings-card">
+
+    <div class="settings-profile">
+
+      <div class="settings-avatar">
+        🧸
+      </div>
+
+      <div>
+
+        <strong id="settingsName">
+          Tu nombre
+        </strong>
+
+        <span>
+          Este dispositivo
+        </span>
+
+      </div>
+
+      <button onclick="changeName()">
+        Editar
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div class="settings-card">
+
+    <div class="settings-title">
+      🎨 Apariencia
+    </div>
+
+
+    <button
+      class="setting-row"
+      onclick="toggleTheme()"
+    >
+
+      <span>
+
+        <b id="appearanceTitle">
+          Modo claro
+        </b>
+
+        <small>
+          Cambia entre rosa bebé y modo noche
+        </small>
+
+      </span>
+
+      <span id="settingsThemeIcon">
+        ☀️
+      </span>
+
+    </button>
+
+
+    <div class="setting-row">
+
+      <span>
+
+        <b>
+          ✨ Animaciones
+        </b>
+
+        <small>
+          Brillos y transiciones de Beary's
+        </small>
+
+      </span>
+
+      <button
+        class="mini-toggle"
+        id="animationToggle"
+        onclick="toggleAnimations(event)"
+      >
+        ON
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div class="settings-card">
+
+    <div class="settings-title">
+      📱 Aplicación
+    </div>
+
+    <div class="setting-row static">
+
+      <span>
+
+        <b>
+          Versión
+        </b>
+
+        <small>
+          Demo Beary's Coffee Shop
+        </small>
+
+      </span>
+
+      <span>
+        3.0
+      </span>
 
     </div>
 
 
-    <div class="empty-module">
+    <div class="setting-row static">
 
-        <div class="empty-icon">
-            🧼
-        </div>
+      <span>
 
-        <h2>
-            Lista de limpieza
-        </h2>
+        <b>
+          Datos locales
+        </b>
 
-        <p>
-            La checklist de limpieza será
-            nuestro siguiente módulo.
-        </p>
+        <small>
+          Nombre e inventario guardados
+          en este dispositivo
+        </small>
+
+      </span>
+
+      <span>
+        💾
+      </span>
 
     </div>
+
+  </div>
+
+
+  <div class="settings-card danger-card">
+
+    <div class="settings-title">
+      🧹 Zona de limpieza
+    </div>
+
+    <button
+      class="danger-button"
+      onclick="clearLocalData()"
+    >
+      Borrar datos de este dispositivo
+    </button>
+
+  </div>
 
 </section>
 
 
 <!-- =====================================================
-     RECIPES
+     INVENTARIO
 ===================================================== -->
 
 <section
-    class="page"
-    id="recipesPage"
+  class="page"
+  id="inventoryPage"
 >
 
-    <div class="inner-header">
+  <div class="inner-header">
 
-        <button
-            class="back-button"
-            onclick="goHome()"
-        >
-            ←
-        </button>
+    <button
+      class="back-button"
+      onclick="goHome()"
+    >
+      ←
+    </button>
 
-        <div class="inner-title">
+    <div class="inner-title">
 
-            <h1>
-                Recetario ☕
-            </h1>
+      <h1>
+        Inventario 📦
+      </h1>
 
-            <p>
-                Bebidas y preparación
-            </p>
+      <p>
+        Inventario diario de Beary's
+      </p>
 
-        </div>
+    </div>
+
+  </div>
+
+
+  <div class="inventory-hero">
+
+    <div class="inventory-top">
+
+      <strong>
+        Progreso del inventario
+      </strong>
+
+      <span id="inventoryProgressText">
+        0% completo
+      </span>
 
     </div>
 
 
-    <div class="empty-module">
+    <div class="progress-track">
 
-        <div class="empty-icon">
-            ☕
-        </div>
-
-        <h2>
-            Recetario de Beary's
-        </h2>
-
-        <p>
-            Aquí guardaremos recetas,
-            ingredientes, cantidades y
-            preparación de cada bebida.
-        </p>
+      <div
+        class="progress-fill"
+        id="inventoryProgress"
+      ></div>
 
     </div>
+
+
+    <div class="inventory-stats">
+
+      <div class="inv-stat">
+
+        <b id="statTotal">
+          0
+        </b>
+
+        <small>
+          Productos
+        </small>
+
+      </div>
+
+
+      <div class="inv-stat">
+
+        <b id="statComplete">
+          0
+        </b>
+
+        <small>
+          Completos
+        </small>
+
+      </div>
+
+
+      <div class="inv-stat">
+
+        <b id="statLow">
+          0
+        </b>
+
+        <small>
+          Faltantes
+        </small>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <input
+    id="inventorySearch"
+    class="inventory-search"
+    type="search"
+    placeholder="🔎 Buscar producto..."
+    autocomplete="off"
+  >
+
+
+  <div id="inventoryAreas"></div>
+
+
+  <div class="inventory-actions">
+
+    <button
+      class="inv-btn primary"
+      onclick="generateInventoryList()"
+    >
+      📋 Generar y copiar lista
+    </button>
+
+    <button
+      class="inv-btn secondary"
+      onclick="newInventoryList()"
+    >
+      🧹 Nueva lista
+    </button>
+
+  </div>
+
+
+  <div
+    class="inventory-message"
+    id="inventoryMessage"
+  ></div>
+
+
+  <textarea
+    id="inventoryResult"
+    class="result-box"
+    readonly
+    placeholder="Aquí aparecerá tu lista de faltantes..."
+  ></textarea>
 
 </section>
 
 
 <!-- =====================================================
-     HISTORY
+     ACTIVIDADES
 ===================================================== -->
 
 <section
-    class="page"
-    id="historyPage"
+  class="page"
+  id="activitiesPage"
 >
 
-    <div class="inner-header">
+  <div class="inner-header">
 
-        <button
-            class="back-button"
-            onclick="goHome()"
+    <button
+      class="back-button"
+      onclick="goHome()"
+    >
+      ←
+    </button>
+
+    <div class="inner-title">
+
+      <h1>
+        Actividades ✓
+      </h1>
+
+      <p>
+        Apertura y cierre
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <div class="activity-switch">
+
+    <button
+      class="activity-tab active"
+      id="openingTab"
+      onclick="selectActivityType('opening')"
+    >
+      🌅 Apertura
+    </button>
+
+
+    <button
+      class="activity-tab"
+      id="closingTab"
+      onclick="selectActivityType('closing')"
+    >
+      🌙 Cierre
+    </button>
+
+  </div>
+
+
+  <div
+    id="openingActivities"
+  >
+
+    <div class="activity-card">
+
+      <div class="activity-title">
+        🌅 Actividades de apertura
+      </div>
+
+
+      <label class="activity-item">
+
+        <input
+          type="checkbox"
+          data-activity="opening-1"
         >
-            ←
-        </button>
 
-        <div class="inner-title">
+        <span>
+          Preparar el área de trabajo
+        </span>
 
-            <h1>
-                Historial 📖
-            </h1>
+      </label>
 
-            <p>
-                Todo el movimiento
-            </p>
 
-        </div>
+      <label class="activity-item">
+
+        <input
+          type="checkbox"
+          data-activity="opening-2"
+        >
+
+        <span>
+          Revisar inventario
+        </span>
+
+      </label>
+
+
+      <label class="activity-item">
+
+        <input
+          type="checkbox"
+          data-activity="opening-3"
+        >
+
+        <span>
+          Revisar refrigeradores
+        </span>
+
+      </label>
+
+
+      <label class="activity-item">
+
+        <input
+          type="checkbox"
+          data-activity="opening-4"
+        >
+
+        <span>
+          Preparar estaciones de trabajo
+        </span>
+
+      </label>
+
+
+      <label class="activity-item">
+
+        <input
+          type="checkbox"
+          data-activity="opening-5"
+        >
+
+        <span>
+          Verificar limpieza inicial
+        </span>
+
+      </label>
+
+
+      <div
+        class="activity-progress"
+        id="openingProgress"
+      >
+        0 / 5 completadas
+      </div>
 
     </div>
 
+  </div>
 
-    <div class="empty-module">
 
-        <div class="empty-icon">
-            📖
-        </div>
+  <div
+    id="closingActivities"
+    style="display:none"
+  >
 
-        <h2>
-            Historial de Beary's
-        </h2>
+    <div class="activity-card">
 
-        <p>
-            Aquí quedará registrado
-            el movimiento de la aplicación
-            cuando conectemos la base de datos.
-        </p>
+      <div class="activity-title">
+        🌙 Actividades de cierre
+      </div>
+
+
+      <label class="activity-item">
+
+        <input
+          type="checkbox"
+          data-activity="closing-1"
+        >
+
+        <span>
+          Limpiar las estaciones de trabajo
+        </span>
+
+      </label>
+
+
+      <label class="activity-item">
+
+        <input
+          type="checkbox"
+          data-activity="closing-2"
+        >
+
+        <span>
+          Revisar y guardar alimentos
+        </span>
+
+      </label>
+
+
+      <label class="activity-item">
+
+        <input
+          type="checkbox"
+          data-activity="closing-3"
+        >
+
+        <span>
+          Revisar refrigeradores
+        </span>
+
+      </label>
+
+
+      <label class="activity-item">
+
+        <input
+          type="checkbox"
+          data-activity="closing-4"
+        >
+
+        <span>
+          Sacar basura correspondiente
+        </span>
+
+      </label>
+
+
+      <label class="activity-item">
+
+        <input
+          type="checkbox"
+          data-activity="closing-5"
+        >
+
+        <span>
+          Dejar todo listo para el siguiente turno
+        </span>
+
+      </label>
+
+
+      <div
+        class="activity-progress"
+        id="closingProgress"
+      >
+        0 / 5 completadas
+      </div>
 
     </div>
+
+  </div>
 
 </section>
 
 
 <!-- =====================================================
-     SETTINGS
+     LIMPIEZA
 ===================================================== -->
 
 <section
-    class="page"
-    id="settingsPage"
+  class="page"
+  id="cleaningPage"
 >
 
-    <div class="inner-header">
+  <div class="inner-header">
 
-        <button
-            class="back-button"
-            onclick="goHome()"
-        >
-            ←
-        </button>
+    <button
+      class="back-button"
+      onclick="goHome()"
+    >
+      ←
+    </button>
 
-        <div class="inner-title">
+    <div class="inner-title">
 
-            <h1>
-                Ajustes ⚙️
-            </h1>
+      <h1>
+        Limpieza 🧼
+      </h1>
 
-            <p>
-                Personaliza tu Beary's
-            </p>
-
-        </div>
+      <p>
+        Mantener todo en orden
+      </p>
 
     </div>
 
+  </div>
 
-    <div class="settings-card">
 
-        <div class="settings-profile">
+  <div class="empty-module">
 
-            <div class="settings-avatar">
-                🧸
-            </div>
-
-            <div class="settings-profile-info">
-
-                <strong id="settingsName">
-                    Tu nombre
-                </strong>
-
-                <span>
-                    Este dispositivo
-                </span>
-
-            </div>
-
-            <button onclick="changeName()">
-                Editar
-            </button>
-
-        </div>
-
+    <div class="empty-icon">
+      🧼
     </div>
 
+    <h2>
+      Lista de limpieza
+    </h2>
 
-    <div class="settings-card">
+    <p>
+      Aquí construiremos la checklist
+      completa de limpieza de Beary's.
+    </p>
 
-        <div class="settings-title">
-            🎨 Apariencia
-        </div>
-
-
-        <button
-            class="setting-row"
-            onclick="toggleTheme()"
-        >
-
-            <span>
-
-                <b id="appearanceTitle">
-                    Modo claro
-                </b>
-
-                <small>
-                    Cambia entre rosa bebé y modo noche
-                </small>
-
-            </span>
-
-            <span
-                class="setting-value"
-                id="settingsThemeIcon"
-            >
-                ☀️
-            </span>
-
-        </button>
-
-
-        <div class="setting-row">
-
-            <span>
-
-                <b>
-                    ✨ Animaciones
-                </b>
-
-                <small>
-                    Brillos y transiciones de Beary's
-                </small>
-
-            </span>
-
-
-            <button
-                class="mini-toggle"
-                id="animationToggle"
-                onclick="toggleAnimations(event)"
-            >
-                ON
-            </button>
-
-        </div>
-
-    </div>
-
-
-    <div class="settings-card">
-
-        <div class="settings-title">
-            📱 Aplicación
-        </div>
-
-
-        <div class="setting-row">
-
-            <span>
-
-                <b>
-                    Versión
-                </b>
-
-                <small>
-                    Base Beary's Coffee Shop
-                </small>
-
-            </span>
-
-            <span class="setting-value">
-                2.2
-            </span>
-
-        </div>
-
-
-        <div class="setting-row">
-
-            <span>
-
-                <b>
-                    Datos locales
-                </b>
-
-                <small>
-                    Nombre, inventario y actividades
-                    guardados en este dispositivo
-                </small>
-
-            </span>
-
-            <span class="setting-value">
-                💾
-            </span>
-
-        </div>
-
-    </div>
-
-
-    <div class="settings-card danger-card">
-
-        <div class="settings-title">
-            🧹 Zona de limpieza
-        </div>
-
-        <button
-            class="danger-button"
-            onclick="clearLocalData()"
-        >
-            Borrar datos de este dispositivo
-        </button>
-
-    </div>
+  </div>
 
 </section>
 
+
+<!-- =====================================================
+     RECETAS
+===================================================== -->
+
+<section
+  class="page"
+  id="recipesPage"
+>
+
+  <div class="inner-header">
+
+    <button
+      class="back-button"
+      onclick="goHome()"
+    >
+      ←
+    </button>
+
+    <div class="inner-title">
+
+      <h1>
+        Recetario ☕
+      </h1>
+
+      <p>
+        Bebidas y preparación
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <div class="empty-module">
+
+    <div class="empty-icon">
+      ☕
+    </div>
+
+    <h2>
+      Recetario de Beary's
+    </h2>
+
+    <p>
+      Aquí guardaremos recetas,
+      ingredientes, cantidades y
+      preparación de cada bebida.
+    </p>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     HISTORIAL
+===================================================== -->
+
+<section
+  class="page"
+  id="historyPage"
+>
+
+  <div class="inner-header">
+
+    <button
+      class="back-button"
+      onclick="goHome()"
+    >
+      ←
+    </button>
+
+    <div class="inner-title">
+
+      <h1>
+        Historial 📖
+      </h1>
+
+      <p>
+        Todo el movimiento
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <div class="empty-module">
+
+    <div class="empty-icon">
+      📖
+    </div>
+
+    <h2>
+      Historial de Beary's
+    </h2>
+
+    <p>
+      Aquí quedará registrado
+      el movimiento de la aplicación
+      cuando conectemos la base de datos.
+    </p>
+
+  </div>
+
+</section>
 
 </div>
 
@@ -3704,84 +3547,84 @@ body.animations-off *{
 
 <nav class="bottom-nav">
 
-    <button
-        class="nav-button active"
-        onclick="goHome()"
-    >
+  <button
+    class="nav-button active"
+    onclick="goHome()"
+  >
 
-        <span class="nav-icon">
-            ⌂
-        </span>
+    <span class="nav-icon">
+      ⌂
+    </span>
 
-        <span class="nav-label">
-            Inicio
-        </span>
+    <span class="nav-label">
+      Inicio
+    </span>
 
-    </button>
-
-
-    <button
-        class="nav-button"
-        onclick="openPage('inventory')"
-    >
-
-        <span class="nav-icon">
-            📦
-        </span>
-
-        <span class="nav-label">
-            Inventario
-        </span>
-
-    </button>
+  </button>
 
 
-    <button
-        class="nav-button"
-        onclick="openPage('activities')"
-    >
+  <button
+    class="nav-button"
+    onclick="openPage('inventory')"
+  >
 
-        <span class="nav-icon">
-            ✓
-        </span>
+    <span class="nav-icon">
+      📦
+    </span>
 
-        <span class="nav-label">
-            Actividades
-        </span>
+    <span class="nav-label">
+      Inventario
+    </span>
 
-    </button>
-
-
-    <button
-        class="nav-button"
-        onclick="openPage('recipes')"
-    >
-
-        <span class="nav-icon">
-            ☕
-        </span>
-
-        <span class="nav-label">
-            Recetas
-        </span>
-
-    </button>
+  </button>
 
 
-    <button
-        class="nav-button"
-        onclick="openPage('history')"
-    >
+  <button
+    class="nav-button"
+    onclick="openPage('activities')"
+  >
 
-        <span class="nav-icon">
-            ☰
-        </span>
+    <span class="nav-icon">
+      ✓
+    </span>
 
-        <span class="nav-label">
-            Más
-        </span>
+    <span class="nav-label">
+      Actividades
+    </span>
 
-    </button>
+  </button>
+
+
+  <button
+    class="nav-button"
+    onclick="openPage('recipes')"
+  >
+
+    <span class="nav-icon">
+      ☕
+    </span>
+
+    <span class="nav-label">
+      Recetas
+    </span>
+
+  </button>
+
+
+  <button
+    class="nav-button"
+    onclick="openPage('history')"
+  >
+
+    <span class="nav-icon">
+      ☰
+    </span>
+
+    <span class="nav-label">
+      Más
+    </span>
+
+  </button>
 
 </nav>
 
@@ -3791,8 +3634,8 @@ body.animations-off *{
 ===================================================== -->
 
 <div
-    class="toast"
-    id="toast"
+  class="toast"
+  id="toast"
 ></div>
 
 
@@ -3801,17 +3644,17 @@ body.animations-off *{
 ===================================================== -->
 
 <div
-    class="bear-pop"
-    id="bearPop"
+  class="bear-pop"
+  id="bearPop"
 >
 
-    <div class="bear copy-bear-animation">
-        🐻
-    </div>
+  <div class="bear copy-bear-animation">
+    🐻
+  </div>
 
-    <div>
-        ¡Lista copiada! ✨
-    </div>
+  <div>
+    ¡Lista copiada! ✨
+  </div>
 
 </div>
 
@@ -3821,52 +3664,52 @@ body.animations-off *{
 ===================================================== -->
 
 <div
-    class="name-overlay"
-    id="nameOverlay"
+  class="name-overlay"
+  id="nameOverlay"
 >
 
-    <div class="name-modal">
+  <div class="name-modal">
 
-        <div class="name-bear">
-            🧸
-        </div>
-
-        <h2>
-            ¡Bienvenido a Beary's! ☕
-        </h2>
-
-        <p>
-            Primero dime cómo te gustaría
-            que te llamemos. Tu nombre se
-            guardará <b>solo en este dispositivo</b>.
-        </p>
-
-
-        <input
-            id="nameInput"
-            class="name-input"
-            maxlength="24"
-            autocomplete="name"
-            placeholder="Escribe tu nombre..."
-        >
-
-
-        <button
-            class="name-save"
-            onclick="saveName()"
-        >
-            Guardar mi nombre ♡
-        </button>
-
-
-        <button
-            class="name-change"
-            onclick="closeNameModal()"
-        >
-            Ahora no
-        </button>
-
+    <div class="name-bear">
+      🧸
     </div>
+
+    <h2>
+      ¡Bienvenido a Beary's! ☕
+    </h2>
+
+    <p>
+      Primero dime cómo te gustaría
+      que te llamemos. Tu nombre se
+      guardará <b>solo en este dispositivo</b>.
+    </p>
+
+
+    <input
+      id="nameInput"
+      class="name-input"
+      maxlength="24"
+      autocomplete="name"
+      placeholder="Escribe tu nombre..."
+    >
+
+
+    <button
+      class="name-save"
+      onclick="saveName()"
+    >
+      Guardar mi nombre ♡
+    </button>
+
+
+    <button
+      class="name-change"
+      onclick="closeNameModal()"
+    >
+      Ahora no
+    </button>
+
+  </div>
 
 </div>
 
@@ -3879,194 +3722,247 @@ body.animations-off *{
 
 function loadName(){
 
-    const saved =
-        localStorage.getItem(
-            "bearyUserName"
-        );
+  const saved =
+    localStorage.getItem("bearyUserName");
 
-    if(saved){
+  if(saved){
 
-        document.getElementById(
-            "welcomeName"
-        ).textContent = saved;
+    document
+      .getElementById("welcomeName")
+      .textContent=saved;
 
-    }else{
+  }else{
 
-        setTimeout(function(){
+    setTimeout(()=>{
 
-            document
-                .getElementById("nameOverlay")
-                .classList.add("show");
+      document
+        .getElementById("nameOverlay")
+        .classList.add("show");
 
-        },450);
+    },500);
 
-    }
+  }
 
 }
 
 
 function saveName(){
 
-    const input =
-        document.getElementById(
-            "nameInput"
-        );
+  const input =
+    document.getElementById("nameInput");
 
-    const name =
-        input.value.trim();
+  const name =
+    input.value.trim();
 
-    if(!name){
+  if(!name){
 
-        input.focus();
-
-        showToast(
-            "🧸 Escribe tu nombre primero"
-        );
-
-        return;
-    }
-
-    localStorage.setItem(
-        "bearyUserName",
-        name
-    );
-
-    document.getElementById(
-        "welcomeName"
-    ).textContent = name;
-
-    syncSettingsUI();
-
-    document
-        .getElementById("nameOverlay")
-        .classList.remove("show");
+    input.focus();
 
     showToast(
-        "☕ ¡Bienvenido, " +
-        name +
-        "!"
+      "🧸 Escribe tu nombre primero"
     );
 
+    return;
+  }
+
+  localStorage.setItem(
+    "bearyUserName",
+    name
+  );
+
+  document
+    .getElementById("welcomeName")
+    .textContent=name;
+
+  syncSettingsUI();
+
+  document
+    .getElementById("nameOverlay")
+    .classList.remove("show");
+
+  showToast(
+    "☕ ¡Bienvenido, "+name+"!"
+  );
 }
 
 
 function closeNameModal(){
 
+  document
+    .getElementById("nameOverlay")
+    .classList.remove("show");
+
+  if(
+    !localStorage.getItem(
+      "bearyUserName"
+    )
+  ){
+
     document
-        .getElementById("nameOverlay")
-        .classList.remove("show");
-
-    if(
-        !localStorage.getItem(
-            "bearyUserName"
-        )
-    ){
-
-        document.getElementById(
-            "welcomeName"
-        ).textContent = "amigo";
-
-    }
+      .getElementById("welcomeName")
+      .textContent="amigo";
+  }
 
 }
 
 
 function changeName(){
 
-    const old =
-        localStorage.getItem(
-            "bearyUserName"
-        ) || "";
+  const old =
+    localStorage.getItem(
+      "bearyUserName"
+    ) || "";
 
-    document.getElementById(
-        "nameInput"
-    ).value = old;
+  document
+    .getElementById("nameInput")
+    .value=old;
+
+  document
+    .getElementById("nameOverlay")
+    .classList.add("show");
+
+  setTimeout(()=>{
 
     document
-        .getElementById("nameOverlay")
-        .classList.add("show");
+      .getElementById("nameInput")
+      .focus();
 
-    setTimeout(function(){
-
-        document
-            .getElementById("nameInput")
-            .focus();
-
-    },80);
+  },100);
 
 }
 
 
 document
-    .getElementById("nameInput")
-    .addEventListener(
-        "keydown",
-        function(event){
+  .getElementById("nameInput")
+  .addEventListener(
+    "keydown",
+    event=>{
 
-            if(event.key === "Enter"){
-                saveName();
-            }
+      if(event.key==="Enter"){
+        saveName();
+      }
 
-        }
-    );
+    }
+  );
 
 
 /* =========================================================
    FECHA
 ========================================================= */
 
-const weekdayShort = [
-    "dom",
-    "lun",
-    "mar",
-    "mié",
-    "jue",
-    "vie",
-    "sáb"
+const weekdayShort=[
+  "dom",
+  "lun",
+  "mar",
+  "mié",
+  "jue",
+  "vie",
+  "sáb"
 ];
 
-const monthShort = [
-    "ene",
-    "feb",
-    "mar",
-    "abr",
-    "may",
-    "jun",
-    "jul",
-    "ago",
-    "sep",
-    "oct",
-    "nov",
-    "dic"
+const monthShort=[
+  "ene",
+  "feb",
+  "mar",
+  "abr",
+  "may",
+  "jun",
+  "jul",
+  "ago",
+  "sep",
+  "oct",
+  "nov",
+  "dic"
 ];
 
 
 function updateBrandDate(){
 
-    const now = new Date();
+  const now=new Date();
 
-    const date =
-        weekdayShort[now.getDay()]
-        + " "
-        + now.getDate()
-        + " de "
-        + monthShort[now.getMonth()];
+  const date=
+    `${weekdayShort[now.getDay()]} ${now.getDate()} de ${monthShort[now.getMonth()]}`;
 
-    document.getElementById(
-        "brandDate"
-    ).textContent = date;
-
+  document
+    .getElementById("brandDate")
+    .textContent=date;
 }
 
 
-function updateDateEveryMinute(){
+/* =========================================================
+   TEMA
+========================================================= */
 
-    updateBrandDate();
+function applyTheme(theme){
 
-    setInterval(
-        updateBrandDate,
-        60000
+  const dark =
+    theme==="dark";
+
+  document
+    .documentElement
+    .classList
+    .toggle(
+      "dark",
+      dark
     );
+
+  document
+    .getElementById("themeToggle")
+    .textContent=
+      dark
+        ? "☀️"
+        : "🌙";
+
+  document
+    .getElementById("themeColor")
+    .setAttribute(
+      "content",
+      dark
+        ? "#171216"
+        : "#fff4f8"
+    );
+
+  document
+    .querySelector(
+      'meta[name="apple-mobile-web-app-status-bar-style"]'
+    )
+    .setAttribute(
+      "content",
+      dark
+        ? "black"
+        : "default"
+    );
+
+  localStorage.setItem(
+    "bearyTheme",
+    dark
+      ? "dark"
+      : "light"
+  );
+
+  syncSettingsUI();
+}
+
+
+function toggleTheme(){
+
+  const isDark =
+    document
+      .documentElement
+      .classList
+      .contains("dark");
+
+  applyTheme(
+    isDark
+      ? "light"
+      : "dark"
+  );
+
+  showToast(
+    isDark
+      ? "☀️ Modo claro activado"
+      : "🌙 Modo noche activado"
+  );
 
 }
 
@@ -4077,737 +3973,587 @@ function updateDateEveryMinute(){
 
 function syncSettingsUI(){
 
-    const name =
-        localStorage.getItem(
-            "bearyUserName"
-        ) || "Sin nombre";
+  const name =
+    localStorage.getItem(
+      "bearyUserName"
+    ) || "Sin nombre";
 
-    const settingsName =
-        document.getElementById(
-            "settingsName"
-        );
-
-    if(settingsName){
-        settingsName.textContent =
-            name;
-    }
-
-
-    const dark =
-        document.body.classList.contains(
-            "dark"
-        );
-
-    const title =
-        document.getElementById(
-            "appearanceTitle"
-        );
-
-    const icon =
-        document.getElementById(
-            "settingsThemeIcon"
-        );
-
-
-    if(title){
-
-        title.textContent =
-            dark
-                ? "Modo noche"
-                : "Modo claro";
-
-    }
-
-
-    if(icon){
-
-        icon.textContent =
-            dark
-                ? "🌙"
-                : "☀️";
-
-    }
-
-
-    const animationsOn =
-        localStorage.getItem(
-            "bearyAnimations"
-        ) !== "off";
-
-
-    document.body.classList.toggle(
-        "animations-off",
-        !animationsOn
+  const settingsName =
+    document.getElementById(
+      "settingsName"
     );
 
-
-    const toggle =
-        document.getElementById(
-            "animationToggle"
-        );
+  if(settingsName){
+    settingsName.textContent=name;
+  }
 
 
-    if(toggle){
+  const dark =
+    document
+      .documentElement
+      .classList
+      .contains("dark");
 
-        toggle.textContent =
-            animationsOn
-                ? "ON"
-                : "OFF";
+  const title =
+    document.getElementById(
+      "appearanceTitle"
+    );
 
-        toggle.classList.toggle(
-            "off",
-            !animationsOn
-        );
+  const icon =
+    document.getElementById(
+      "settingsThemeIcon"
+    );
 
-    }
+  if(title){
+    title.textContent=
+      dark
+        ? "Modo noche"
+        : "Modo claro";
+  }
 
-}
+  if(icon){
+    icon.textContent=
+      dark
+        ? "🌙"
+        : "☀️";
+  }
 
 
-function openSettings(){
+  const animationsOn =
+    localStorage.getItem(
+      "bearyAnimations"
+    ) !== "off";
 
-    openPage("settings");
+  document
+    .body
+    .classList
+    .toggle(
+      "animations-off",
+      !animationsOn
+    );
 
-    syncSettingsUI();
+  const toggle =
+    document.getElementById(
+      "animationToggle"
+    );
+
+  if(toggle){
+
+    toggle.textContent=
+      animationsOn
+        ? "ON"
+        : "OFF";
+
+    toggle.classList.toggle(
+      "off",
+      !animationsOn
+    );
+
+  }
 
 }
 
 
 function toggleAnimations(event){
 
-    if(event){
-        event.stopPropagation();
-    }
+  if(event){
+    event.stopPropagation();
+  }
 
-    const currentlyOff =
-        localStorage.getItem(
-            "bearyAnimations"
-        ) === "off";
+  const currentlyOff =
+    localStorage.getItem(
+      "bearyAnimations"
+    ) === "off";
 
-    localStorage.setItem(
-        "bearyAnimations",
-        currentlyOff
-            ? "on"
-            : "off"
-    );
+  localStorage.setItem(
+    "bearyAnimations",
+    currentlyOff
+      ? "on"
+      : "off"
+  );
 
-    syncSettingsUI();
+  syncSettingsUI();
 
-    showToast(
-        currentlyOff
-            ? "✨ Animaciones activadas"
-            : "🫧 Animaciones desactivadas"
-    );
-
-}
-
-
-/* =========================================================
-   THEME
-========================================================= */
-
-function applySavedTheme(){
-
-    const saved =
-        localStorage.getItem(
-            "bearyTheme"
-        );
-
-
-    if(saved === "dark"){
-
-        document.body.classList.add(
-            "dark"
-        );
-
-    }else{
-
-        document.body.classList.remove(
-            "dark"
-        );
-
-    }
-
-
-    updateThemeButton();
+  showToast(
+    currentlyOff
+      ? "✨ Animaciones activadas"
+      : "🫧 Animaciones desactivadas"
+  );
 
 }
 
 
-function updateThemeButton(){
+function openSettings(){
 
-    const button =
-        document.getElementById(
-            "themeToggle"
-        );
+  openPage("settings");
 
-    if(!button)return;
-
-
-    const dark =
-        document.body.classList.contains(
-            "dark"
-        );
-
-
-    button.textContent =
-        dark
-            ? "☀️"
-            : "🌙";
+  syncSettingsUI();
 
 }
 
-
-function toggleTheme(){
-
-    document.body.classList.toggle(
-        "dark"
-    );
-
-
-    const dark =
-        document.body.classList.contains(
-            "dark"
-        );
-
-
-    localStorage.setItem(
-        "bearyTheme",
-        dark
-            ? "dark"
-            : "light"
-    );
-
-
-    updateThemeButton();
-
-    syncSettingsUI();
-
-    showToast(
-        dark
-            ? "🌙 Modo noche activado"
-            : "☀️ Modo claro activado"
-    );
-
-}
-
-
-/* =========================================================
-   LOCAL DATA
-========================================================= */
 
 function clearLocalData(){
 
-    const answer =
-        confirm(
-            "¿Borrar el nombre, inventario y actividades guardadas en este dispositivo?"
-        );
+  const confirmed =
+    confirm(
+      "¿Borrar el nombre, inventario y actividades guardadas en este dispositivo?"
+    );
 
-    if(!answer)return;
-
-
-    Object.keys(localStorage)
-        .filter(function(key){
-
-            return (
-                key.startsWith("bearyInv_") ||
-                key.startsWith("bearyActivity_")
-            );
-
-        })
-        .forEach(function(key){
-
-            localStorage.removeItem(
-                key
-            );
-
-        });
+  if(!confirmed){
+    return;
+  }
 
 
-    localStorage.removeItem(
-        "bearyUserName"
+  Object
+    .keys(localStorage)
+    .filter(
+      key=>
+        key.startsWith("bearyInv_") ||
+        key.startsWith("bearyActivity_")
+    )
+    .forEach(
+      key=>
+        localStorage.removeItem(key)
     );
 
 
-    showToast(
-        "🧹 Datos locales borrados"
-    );
+  localStorage.removeItem(
+    "bearyUserName"
+  );
 
 
-    setTimeout(function(){
+  showToast(
+    "🧹 Datos locales borrados"
+  );
 
-        location.reload();
 
-    },700);
+  setTimeout(
+    ()=>location.reload(),
+    700
+  );
 
 }
 
 
 /* =========================================================
-   NAVIGATION
+   NAVEGACIÓN
 ========================================================= */
 
 function openPage(page){
 
-    document
-        .querySelectorAll(".page")
-        .forEach(function(p){
-
-            p.classList.remove(
-                "active"
-            );
-
-        });
+  document
+    .querySelectorAll(".page")
+    .forEach(
+      p=>
+        p.classList.remove("active")
+    );
 
 
-    const target =
-        document.getElementById(
-            page + "Page"
-        );
+  const target =
+    document.getElementById(
+      page+"Page"
+    );
+
+  if(!target){
+    return;
+  }
+
+  target.classList.add("active");
 
 
-    if(target){
-
-        target.classList.add(
-            "active"
-        );
-
-    }
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
 
 
-    window.scrollTo({
-        top:0,
-        behavior:"smooth"
-    });
+  updateNavigation(page);
 
 
-    updateNavigation(page);
+  if(page==="inventory"){
 
+    buildInventory();
 
-    if(page === "inventory"){
+    updateInventoryStats();
 
-        buildInventory();
-
-        updateInventoryStats();
-
-    }
-
-
-    if(page === "activities"){
-
-        renderActivities();
-
-    }
+  }
 
 }
 
 
 function goHome(){
 
-    document
-        .querySelectorAll(".page")
-        .forEach(function(p){
+  document
+    .querySelectorAll(".page")
+    .forEach(
+      p=>
+        p.classList.remove("active")
+    );
 
-            p.classList.remove(
-                "active"
-            );
+  document
+    .getElementById("homePage")
+    .classList.add("active");
 
-        });
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
 
-
-    document
-        .getElementById("homePage")
-        .classList.add("active");
-
-
-    window.scrollTo({
-        top:0,
-        behavior:"smooth"
-    });
-
-
-    updateNavigation("home");
+  updateNavigation("home");
 
 }
 
 
 function updateNavigation(page){
 
-    const buttons =
-        document.querySelectorAll(
-            ".nav-button"
-        );
+  const buttons =
+    document.querySelectorAll(
+      ".nav-button"
+    );
+
+  buttons.forEach(
+    button=>
+      button.classList.remove("active")
+  );
 
 
-    buttons.forEach(function(button){
+  if(page==="home"){
+    buttons[0].classList.add("active");
+  }
 
-        button.classList.remove(
-            "active"
-        );
+  else if(page==="inventory"){
+    buttons[1].classList.add("active");
+  }
 
-    });
+  else if(page==="activities"){
+    buttons[2].classList.add("active");
+  }
 
+  else if(page==="recipes"){
+    buttons[3].classList.add("active");
+  }
 
-    if(page === "home"){
-
-        buttons[0].classList.add(
-            "active"
-        );
-
-    }
-
-    else if(page === "inventory"){
-
-        buttons[1].classList.add(
-            "active"
-        );
-
-    }
-
-    else if(page === "activities"){
-
-        buttons[2].classList.add(
-            "active"
-        );
-
-    }
-
-    else if(page === "recipes"){
-
-        buttons[3].classList.add(
-            "active"
-        );
-
-    }
-
-    else if(
-        page === "history" ||
-        page === "settings"
-    ){
-
-        buttons[4].classList.add(
-            "active"
-        );
-
-    }
+  else if(page==="history"){
+    buttons[4].classList.add("active");
+  }
 
 }
 
 
 /* =========================================================
-   PHRASES
+   FRASES
 ========================================================= */
 
-const phrases = [
+const phrases=[
 
-    "“Hoy también cuenta cada pequeño esfuerzo.”",
+  "“Hoy también cuenta cada pequeño esfuerzo.”",
 
-    "“Un latte preparado con cariño siempre sabe diferente.”",
+  "“Un latte preparado con cariño siempre sabe diferente.”",
 
-    "“No tienes que hacerlo perfecto, solo hacerlo con cariño.”",
+  "“No tienes que hacerlo perfecto, solo hacerlo con cariño.”",
 
-    "“Cada pequeño detalle hace especial a Beary's.”",
+  "“Cada pequeño detalle hace especial a Beary's.”",
 
-    "“Respira, prepara tu área y disfruta el momento.”",
+  "“Respira, prepara tu área y disfruta el momento.”",
 
-    "“Detrás de cada buenos chilaquiles hay alguien que puso atención.”",
+  "“Detrás de cada buenos chilaquiles hay alguien que puso atención.”",
 
-    "“Hoy puede ser un día bonito, incluso en los días pesados.”",
+  "“Hoy puede ser un día bonito, incluso en los días pesados.”",
 
-    "“Hazlo con calma, con cariño y con una sonrisa. 🧸”"
+  "“Hazlo con calma, con cariño y con una sonrisa. 🧸”"
 
 ];
 
-
-let currentPhrase = 0;
+let currentPhrase=0;
 
 
 function nextPhrase(){
 
-    currentPhrase =
-        (currentPhrase + 1)
-        % phrases.length;
+  currentPhrase=
+    (currentPhrase+1)
+    %
+    phrases.length;
+
+  const text =
+    document.getElementById(
+      "phraseText"
+    );
+
+  text.style.opacity="0";
 
 
-    const text =
-        document.getElementById(
-            "phraseText"
-        );
+  setTimeout(()=>{
 
+    text.textContent=
+      phrases[currentPhrase];
 
-    text.style.opacity = "0";
+    document
+      .getElementById(
+        "phraseNumber"
+      )
+      .textContent=
+        `${currentPhrase+1} / ${phrases.length}`;
 
+    text.style.opacity="1";
 
-    setTimeout(function(){
-
-        text.textContent =
-            phrases[currentPhrase];
-
-
-        document.getElementById(
-            "phraseNumber"
-        ).textContent =
-            (
-                currentPhrase + 1
-            )
-            + " / "
-            + phrases.length;
-
-
-        text.style.opacity = "1";
-
-    },150);
+  },150);
 
 }
 
 
 /* =========================================================
-   INVENTARIO
+   PRODUCTOS
+   UNO POR UNO
 ========================================================= */
 
-const products = [
+const products=[
 
-    {nombre:"Jabón de trastes",objetivo:1,group:"gris"},
-    {nombre:"Jabón de manos",objetivo:1,group:"gris"},
-    {nombre:"Guantes para Baño",objetivo:1,group:"gris"},
-    {nombre:"Guantes para horno",objetivo:1,group:"gris"},
-    {nombre:"Esponja de carita",objetivo:3,group:"gris"},
-    {nombre:"Esponja para vasos",objetivo:3,group:"gris"},
-    {nombre:"Fibra de acero",objetivo:1,group:"gris"},
-    {nombre:"Fibra verde",objetivo:1,group:"gris"},
-    {nombre:"Piedra pómez",objetivo:1,group:"gris"},
-    {nombre:"Fabuloso",objetivo:1,group:"gris"},
-    {nombre:"Kalan",objetivo:1,group:"gris"},
-    {nombre:"Cloro",objetivo:1,group:"gris"},
-    {nombre:"Ajax de baño",objetivo:1,group:"gris"},
-    {nombre:"Ajax limón",objetivo:1,group:"gris"},
-    {nombre:"Aromatizante",objetivo:1,group:"gris"},
-    {nombre:"Windex",objetivo:1,group:"gris"},
-    {nombre:"Drano",objetivo:1,group:"gris"},
-    {nombre:"Mechudo",objetivo:1,group:"gris"},
-    {nombre:"Palitos de madera",objetivo:1,group:"gris"},
-    {nombre:"Cafiza",objetivo:1,group:"gris"},
-    {nombre:"Tenedores desechables",objetivo:2,group:"gris"},
-    {nombre:"Cucharas desechables",objetivo:2,group:"gris"},
-    {nombre:"Popotes",objetivo:1,group:"gris"},
-    {nombre:"Bolsas chicas de basura",objetivo:2,group:"gris"},
-    {nombre:"Bolsas grandes de basura",objetivo:1,group:"gris"},
-    {nombre:"Mangas",objetivo:7,group:"gris"},
-    {nombre:"Papel de baño",objetivo:8,group:"gris"},
-    {nombre:"Café",objetivo:2,group:"gris"},
-    {nombre:"Vasos de 16 oz",objetivo:4,group:"gris"},
-    {nombre:"Vasos de 12 oz",objetivo:5,group:"gris"},
-    {nombre:"Vasos transparentes",objetivo:5,group:"gris"},
-    {nombre:"Vasos de 10 oz",objetivo:1,group:"gris"},
-    {nombre:"Vasos de espresso",objetivo:1,group:"gris"},
-    {nombre:"Tapas Negras",objetivo:3,group:"gris"},
-    {nombre:"Tapas Domo",objetivo:2,group:"gris"},
-    {nombre:"Tapas Planas",objetivo:2,group:"gris"},
-    {nombre:"Tapas de Espresso",objetivo:1,group:"gris"},
-    {nombre:"Azúcar",objetivo:1,group:"gris"},
-    {nombre:"Splenda",objetivo:1,group:"gris"},
-    {nombre:"Stevia",objetivo:1,group:"gris"},
-    {nombre:"Guantes",objetivo:1,group:"gris"},
-    {nombre:"Servilletas",objetivo:2,group:"gris"},
-    {nombre:"Servitoallas",objetivo:2,group:"gris"},
-    {nombre:"Sanitas",objetivo:3,group:"gris"},
-    {nombre:"Azúcar mascabado",objetivo:1,group:"gris"},
-    {nombre:"Charolas chicas",objetivo:1,group:"gris"},
-    {nombre:"Charolas grandes",objetivo:1,group:"gris"},
-    {nombre:"Mangas desechables",objetivo:4,group:"gris"},
-    {nombre:"Bolsas para pollo y cochinita",objetivo:3,group:"gris"},
-    {nombre:"Rejillas",objetivo:30,group:"gris"},
-    {nombre:"Totopos",objetivo:16,group:"gris"},
-    {nombre:"Frijoles",objetivo:1,group:"gris"},
-    {nombre:"Té de frutos",objetivo:1,group:"gris"},
-    {nombre:"Té fresa/vainilla",objetivo:1,group:"gris"},
-    {nombre:"Té verde",objetivo:1,group:"gris"},
-    {nombre:"Té Earl Grey",objetivo:1,group:"gris"},
-    {nombre:"Té English",objetivo:1,group:"gris"},
-    {nombre:"Té mango/fresa",objetivo:1,group:"gris"},
-    {nombre:"Té limón",objetivo:1,group:"gris"},
-    {nombre:"Té limón/jengibre",objetivo:1,group:"gris"},
-    {nombre:"Té manzanilla",objetivo:1,group:"gris"},
-    {nombre:"Té manzanilla/vainilla",objetivo:1,group:"gris"},
-    {nombre:"Té de granada",objetivo:1,group:"gris"},
-    {nombre:"Helado de cookie and cream",objetivo:10,group:"gris"},
-    {nombre:"Helado de vainilla",objetivo:4,group:"gris"},
-    {nombre:"Helado de chocolate",objetivo:4,group:"gris"},
-    {nombre:"Helado de fresa",objetivo:10,group:"gris"},
-    {nombre:"Frutos rojos para waffles",objetivo:1,group:"gris"},
-    {nombre:"Harina de waffles",objetivo:1,group:"gris"},
-    {nombre:"Jamón",objetivo:2,group:"gris"},
-    {nombre:"Tocino en trozos",objetivo:2,group:"gris"},
-    {nombre:"Tocino en tiras",objetivo:1,group:"gris"},
-    {nombre:"Jitomate",objetivo:20,group:"gris"},
-    {nombre:"Cebolla",objetivo:4,group:"gris"},
-    {nombre:"Lechuga",objetivo:3,group:"gris"},
-    {nombre:"Limón",objetivo:10,group:"gris"},
-    {nombre:"Chile serrano",objetivo:20,group:"gris"},
-    {nombre:"Manzana",objetivo:4,group:"gris"},
-    {nombre:"Relleno de dulce de leche",objetivo:2,group:"gris"},
-    {nombre:"Relleno de chocolate",objetivo:2,group:"gris"},
-    {nombre:"Relleno de mascarpone",objetivo:2,group:"gris"},
-    {nombre:"Relleno de frutos rojos",objetivo:2,group:"gris"},
-    {nombre:"Salsa verde",objetivo:10,group:"gris"},
-    {nombre:"Salsa roja",objetivo:10,group:"gris"},
-    {nombre:"Cochinita",objetivo:2,group:"gris"},
-    {nombre:"Pollo",objetivo:2,group:"gris"},
-    {nombre:"Crema",objetivo:2,group:"gris"},
-    {nombre:"Crema batida",objetivo:2,group:"gris"},
-    {nombre:"Papas",objetivo:2,group:"gris"},
+  {nombre:"Jabón de trastes",objetivo:1,group:"bodega"},
+  {nombre:"Jabón de manos",objetivo:1,group:"bodega"},
+  {nombre:"Guantes para Baño",objetivo:1,group:"bodega"},
+  {nombre:"Guantes para horno",objetivo:1,group:"bodega"},
+  {nombre:"Esponja de carita",objetivo:3,group:"bodega"},
+  {nombre:"Esponja para vasos",objetivo:3,group:"bodega"},
+  {nombre:"Fibra de acero",objetivo:1,group:"bodega"},
+  {nombre:"Fibra verde",objetivo:1,group:"bodega"},
+  {nombre:"Piedra pómez",objetivo:1,group:"bodega"},
+  {nombre:"Fabuloso",objetivo:1,group:"bodega"},
+  {nombre:"Kalan",objetivo:1,group:"bodega"},
+  {nombre:"Cloro",objetivo:1,group:"bodega"},
+  {nombre:"Ajax de baño",objetivo:1,group:"bodega"},
+  {nombre:"Ajax limón",objetivo:1,group:"bodega"},
+  {nombre:"Aromatizante",objetivo:1,group:"bodega"},
+  {nombre:"Windex",objetivo:1,group:"bodega"},
+  {nombre:"Drano",objetivo:1,group:"bodega"},
+  {nombre:"Mechudo",objetivo:1,group:"bodega"},
+  {nombre:"Palitos de madera",objetivo:1,group:"bodega"},
+  {nombre:"Cafiza",objetivo:1,group:"bodega"},
+  {nombre:"Tenedores desechables",objetivo:2,group:"bodega"},
+  {nombre:"Cucharas desechables",objetivo:2,group:"bodega"},
+  {nombre:"Popotes",objetivo:1,group:"bodega"},
+  {nombre:"Bolsas chicas de basura",objetivo:2,group:"bodega"},
+  {nombre:"Bolsas grandes de basura",objetivo:1,group:"bodega"},
+  {nombre:"Mangas",objetivo:7,group:"bodega"},
+  {nombre:"Papel de baño",objetivo:8,group:"bodega"},
+  {nombre:"Café",objetivo:2,group:"bodega"},
+  {nombre:"Vasos de 16 oz",objetivo:4,group:"bodega"},
+  {nombre:"Vasos de 12 oz",objetivo:5,group:"bodega"},
+  {nombre:"Vasos transparentes",objetivo:5,group:"bodega"},
+  {nombre:"Vasos de 10 oz",objetivo:1,group:"bodega"},
+  {nombre:"Vasos de espresso",objetivo:1,group:"bodega"},
+  {nombre:"Tapas Negras",objetivo:3,group:"bodega"},
+  {nombre:"Tapas Domo",objetivo:2,group:"bodega"},
+  {nombre:"Tapas Planas",objetivo:2,group:"bodega"},
+  {nombre:"Tapas de Espresso",objetivo:1,group:"bodega"},
+  {nombre:"Azúcar",objetivo:1,group:"bodega"},
+  {nombre:"Splenda",objetivo:1,group:"bodega"},
+  {nombre:"Stevia",objetivo:1,group:"bodega"},
+  {nombre:"Guantes",objetivo:1,group:"bodega"},
+  {nombre:"Servilletas",objetivo:2,group:"bodega"},
+  {nombre:"Servitoallas",objetivo:2,group:"bodega"},
+  {nombre:"Sanitas",objetivo:3,group:"bodega"},
+  {nombre:"Azúcar mascabado",objetivo:1,group:"bodega"},
+  {nombre:"Charolas chicas",objetivo:1,group:"bodega"},
+  {nombre:"Charolas grandes",objetivo:1,group:"bodega"},
+  {nombre:"Mangas desechables",objetivo:4,group:"bodega"},
+  {nombre:"Bolsas para pollo y cochinita",objetivo:3,group:"bodega"},
+  {nombre:"Rejillas",objetivo:30,group:"bodega"},
+  {nombre:"Totopos",objetivo:16,group:"bodega"},
+  {nombre:"Frijoles",objetivo:1,group:"bodega"},
+  {nombre:"Té de frutos",objetivo:1,group:"bodega"},
+  {nombre:"Té fresa/vainilla",objetivo:1,group:"bodega"},
+  {nombre:"Té verde",objetivo:1,group:"bodega"},
+  {nombre:"Té Earl Grey",objetivo:1,group:"bodega"},
+  {nombre:"Té English",objetivo:1,group:"bodega"},
+  {nombre:"Té mango/fresa",objetivo:1,group:"bodega"},
+  {nombre:"Té limón",objetivo:1,group:"bodega"},
+  {nombre:"Té limón/jengibre",objetivo:1,group:"bodega"},
+  {nombre:"Té manzanilla",objetivo:1,group:"bodega"},
+  {nombre:"Té manzanilla/vainilla",objetivo:1,group:"bodega"},
+  {nombre:"Té de granada",objetivo:1,group:"bodega"},
+  {nombre:"Helado de cookie and cream",objetivo:10,group:"bodega"},
+  {nombre:"Helado de vainilla",objetivo:4,group:"bodega"},
+  {nombre:"Helado de chocolate",objetivo:4,group:"bodega"},
+  {nombre:"Helado de fresa",objetivo:10,group:"bodega"},
+  {nombre:"Frutos rojos para waffles",objetivo:1,group:"bodega"},
+  {nombre:"Harina de waffles",objetivo:1,group:"bodega"},
+  {nombre:"Jamón",objetivo:2,group:"bodega"},
+  {nombre:"Tocino en trozos",objetivo:2,group:"bodega"},
+  {nombre:"Tocino en tiras",objetivo:1,group:"bodega"},
+  {nombre:"Jitomate",objetivo:20,group:"bodega"},
+  {nombre:"Cebolla",objetivo:4,group:"bodega"},
+  {nombre:"Lechuga",objetivo:3,group:"bodega"},
+  {nombre:"Limón",objetivo:10,group:"bodega"},
+  {nombre:"Chile serrano",objetivo:20,group:"bodega"},
+  {nombre:"Manzana",objetivo:4,group:"bodega"},
+  {nombre:"Relleno de dulce de leche",objetivo:2,group:"bodega"},
+  {nombre:"Relleno de chocolate",objetivo:2,group:"bodega"},
+  {nombre:"Relleno de mascarpone",objetivo:2,group:"bodega"},
+  {nombre:"Relleno de frutos rojos",objetivo:2,group:"bodega"},
+  {nombre:"Salsa verde",objetivo:10,group:"bodega"},
+  {nombre:"Salsa roja",objetivo:10,group:"bodega"},
+  {nombre:"Cochinita",objetivo:2,group:"bodega"},
+  {nombre:"Pollo",objetivo:2,group:"bodega"},
+  {nombre:"Crema",objetivo:2,group:"bodega"},
+  {nombre:"Crema batida",objetivo:2,group:"bodega"},
+  {nombre:"Papas",objetivo:2,group:"bodega"},
 
-    {nombre:"Coca",objetivo:7,group:"morado"},
-    {nombre:"Coca zero",objetivo:5,group:"morado"},
-    {nombre:"Coca light",objetivo:5,group:"morado"},
-    {nombre:"Sprite",objetivo:4,group:"morado"},
-    {nombre:"Mundet",objetivo:4,group:"morado"},
-    {nombre:"Flanes",objetivo:5,group:"morado"},
-    {nombre:"Bolsas de pan",objetivo:1,group:"morado"},
-    {nombre:"Bolsas grandes",objetivo:40,group:"morado"},
-    {nombre:"Agua Santa María",objetivo:7,group:"morado"},
-    {nombre:"Topochico",objetivo:6,group:"morado"},
-    {nombre:"Vasos para porciones (llevar)",objetivo:1,group:"morado"},
-    {nombre:"Tapas para porciones (llevar)",objetivo:1,group:"morado"},
-    {nombre:"Papel encerado",objetivo:1,group:"morado"},
-    {nombre:"Turín",objetivo:1,group:"morado"},
-    {nombre:"Chai",objetivo:1,group:"morado"},
-    {nombre:"Chai Mango",objetivo:1,group:"morado"},
-    {nombre:"Taro",objetivo:1,group:"morado"},
-    {nombre:"Matcha",objetivo:1,group:"morado"},
-    {nombre:"Galleta Oreo",objetivo:3,group:"morado"},
-    {nombre:"Suavicremas",objetivo:2,group:"morado"},
-    {nombre:"Galleta Lotus",objetivo:4,group:"morado"},
-    {nombre:"Chocolate Abuelita",objetivo:3,group:"morado"},
-    {nombre:"Chocolate de decoración",objetivo:1,group:"morado"},
-    {nombre:"Café descafeinado",objetivo:1,group:"morado"},
-    {nombre:"Cajeta",objetivo:4,group:"morado"},
-    {nombre:"Crema Lotus",objetivo:1,group:"morado"},
-    {nombre:"Nutella",objetivo:4,group:"morado"},
-    {nombre:"Tarjetas de lealtad",objetivo:1,group:"morado"},
-    {nombre:"Etiquetas",objetivo:1,group:"morado"},
+  {nombre:"Coca",objetivo:7,group:"bebidas"},
+  {nombre:"Coca zero",objetivo:5,group:"bebidas"},
+  {nombre:"Coca light",objetivo:5,group:"bebidas"},
+  {nombre:"Sprite",objetivo:4,group:"bebidas"},
+  {nombre:"Mundet",objetivo:4,group:"bebidas"},
+  {nombre:"Flanes",objetivo:5,group:"bebidas"},
+  {nombre:"Bolsas de pan",objetivo:1,group:"bebidas"},
+  {nombre:"Bolsas grandes",objetivo:40,group:"bebidas"},
+  {nombre:"Agua Santa María",objetivo:7,group:"bebidas"},
+  {nombre:"Topochico",objetivo:6,group:"bebidas"},
+  {nombre:"Vasos para porciones (llevar)",objetivo:1,group:"bebidas"},
+  {nombre:"Tapas para porciones (llevar)",objetivo:1,group:"bebidas"},
+  {nombre:"Papel encerado",objetivo:1,group:"bebidas"},
+  {nombre:"Turín",objetivo:1,group:"bebidas"},
+  {nombre:"Chai",objetivo:1,group:"bebidas"},
+  {nombre:"Chai Mango",objetivo:1,group:"bebidas"},
+  {nombre:"Taro",objetivo:1,group:"bebidas"},
+  {nombre:"Matcha",objetivo:1,group:"bebidas"},
+  {nombre:"Galleta Oreo",objetivo:3,group:"bebidas"},
+  {nombre:"Suavicremas",objetivo:2,group:"bebidas"},
+  {nombre:"Galleta Lotus",objetivo:4,group:"bebidas"},
+  {nombre:"Chocolate Abuelita",objetivo:3,group:"bebidas"},
+  {nombre:"Chocolate de decoración",objetivo:1,group:"bebidas"},
+  {nombre:"Café descafeinado",objetivo:1,group:"bebidas"},
+  {nombre:"Cajeta",objetivo:4,group:"bebidas"},
+  {nombre:"Crema Lotus",objetivo:1,group:"bebidas"},
+  {nombre:"Nutella",objetivo:4,group:"bebidas"},
+  {nombre:"Tarjetas de lealtad",objetivo:1,group:"bebidas"},
+  {nombre:"Etiquetas",objetivo:1,group:"bebidas"},
 
-    {nombre:"Mayonesa",objetivo:1,group:"comida"},
-    {nombre:"Chiles en vinagre",objetivo:1,group:"comida"},
-    {nombre:"Mostaza",objetivo:1,group:"comida"},
-    {nombre:"Papaya",objetivo:1,group:"comida"},
-    {nombre:"Aguacate",objetivo:18,group:"comida"},
-    {nombre:"Salsa Maggi",objetivo:1,group:"comida"},
-    {nombre:"Salsa inglesa",objetivo:1,group:"comida"},
-    {nombre:"Salsa matcha",objetivo:1,group:"comida"},
-    {nombre:"Salsa Valentina",objetivo:1,group:"comida"},
-    {nombre:"Catsup",objetivo:1,group:"comida"},
-    {nombre:"Granola",objetivo:1,group:"comida"},
-    {nombre:"Miel",objetivo:1,group:"comida"},
-    {nombre:"Maple",objetivo:1,group:"comida"},
-    {nombre:"Sal",objetivo:1,group:"comida"},
-    {nombre:"Pam",objetivo:1,group:"comida"},
-    {nombre:"Aceite Nutrioli",objetivo:1,group:"comida"},
-    {nombre:"Galletas de cortesia",objetivo:1,group:"comida"},
-    {nombre:"Galletas de Limón",objetivo:5,group:"comida"},
-    {nombre:"Galletas de Pistache",objetivo:5,group:"comida"},
-    {nombre:"Huevo",objetivo:3,group:"comida"},
-    {nombre:"Comandas",objetivo:5,group:"comida"},
-    {nombre:"Tartas",objetivo:30,group:"comida"},
-    {nombre:"Leche deslactosada",objetivo:24,group:"comida"},
-    {nombre:"Leche entera",objetivo:15,group:"comida"},
-    {nombre:"Leche light",objetivo:6,group:"comida"},
-    {nombre:"Leche deslactosada light",objetivo:6,group:"comida"},
-    {nombre:"Leche de almendra",objetivo:4,group:"comida"},
-    {nombre:"Leche de coco",objetivo:3,group:"comida"},
-    {nombre:"Leche de avena",objetivo:4,group:"comida"},
-    {nombre:"Leche de soya",objetivo:4,group:"comida"},
-    {nombre:"Concentrado de fresa",objetivo:2,group:"comida"},
-    {nombre:"Concentrado de maracuya",objetivo:2,group:"comida"},
-    {nombre:"Concentrado de mango",objetivo:2,group:"comida"},
-    {nombre:"Vainilla Francesa",objetivo:2,group:"comida"},
-    {nombre:"Vainilla de Fresa",objetivo:1,group:"comida"},
-    {nombre:"Pink lemonade",objetivo:2,group:"comida"},
-    {nombre:"Caramelo",objetivo:1,group:"comida"},
-    {nombre:"Tortillas",objetivo:1,group:"comida"},
-    {nombre:"Chapatas",objetivo:20,group:"comida"},
-    {nombre:"Croissant",objetivo:15,group:"comida"},
-    {nombre:"Trapos limpios",objetivo:50,group:"comida"},
-    {nombre:"Bolsa para trapos",objetivo:1,group:"comida"},
-    {nombre:"Bombas de chocolate",objetivo:3,group:"comida"},
-    {nombre:"Velcro",objetivo:1,group:"comida"},
-    {nombre:"Osos para bebidas",objetivo:1,group:"comida"},
-    {nombre:"Osos grandes",objetivo:10,group:"comida"},
-    {nombre:"Vaso Beary rosa",objetivo:10,group:"comida"},
-    {nombre:"Vaso Beary rojo",objetivo:10,group:"comida"},
-    {nombre:"Limpiador de horno",objetivo:1,group:"comida"},
-    {nombre:"Protector de horno",objetivo:1,group:"comida"}
+  {nombre:"Mayonesa",objetivo:1,group:"comida"},
+  {nombre:"Chiles en vinagre",objetivo:1,group:"comida"},
+  {nombre:"Mostaza",objetivo:1,group:"comida"},
+  {nombre:"Papaya",objetivo:1,group:"comida"},
+  {nombre:"Aguacate",objetivo:18,group:"comida"},
+  {nombre:"Salsa Maggi",objetivo:1,group:"comida"},
+  {nombre:"Salsa inglesa",objetivo:1,group:"comida"},
+  {nombre:"Salsa matcha",objetivo:1,group:"comida"},
+  {nombre:"Salsa Valentina",objetivo:1,group:"comida"},
+  {nombre:"Catsup",objetivo:1,group:"comida"},
+  {nombre:"Granola",objetivo:1,group:"comida"},
+  {nombre:"Miel",objetivo:1,group:"comida"},
+  {nombre:"Maple",objetivo:1,group:"comida"},
+  {nombre:"Sal",objetivo:1,group:"comida"},
+  {nombre:"Pam",objetivo:1,group:"comida"},
+  {nombre:"Aceite Nutrioli",objetivo:1,group:"comida"},
+  {nombre:"Galletas de cortesia",objetivo:1,group:"comida"},
+  {nombre:"Galletas de Limón",objetivo:5,group:"comida"},
+  {nombre:"Galletas de Pistache",objetivo:5,group:"comida"},
+  {nombre:"Huevo",objetivo:3,group:"comida"},
+  {nombre:"Comandas",objetivo:5,group:"comida"},
+  {nombre:"Tartas",objetivo:30,group:"comida"},
+  {nombre:"Leche deslactosada",objetivo:24,group:"comida"},
+  {nombre:"Leche entera",objetivo:15,group:"comida"},
+  {nombre:"Leche light",objetivo:6,group:"comida"},
+  {nombre:"Leche deslactosada light",objetivo:6,group:"comida"},
+  {nombre:"Leche de almendra",objetivo:4,group:"comida"},
+  {nombre:"Leche de coco",objetivo:3,group:"comida"},
+  {nombre:"Leche de avena",objetivo:4,group:"comida"},
+  {nombre:"Leche de soya",objetivo:4,group:"comida"},
+  {nombre:"Concentrado de fresa",objetivo:2,group:"comida"},
+  {nombre:"Concentrado de maracuya",objetivo:2,group:"comida"},
+  {nombre:"Concentrado de mango",objetivo:2,group:"comida"},
+  {nombre:"Vainilla Francesa",objetivo:2,group:"comida"},
+  {nombre:"Vainilla de Fresa",objetivo:1,group:"comida"},
+  {nombre:"Pink lemonade",objetivo:2,group:"comida"},
+  {nombre:"Caramelo",objetivo:1,group:"comida"},
+  {nombre:"Tortillas",objetivo:1,group:"comida"},
+  {nombre:"Chapatas",objetivo:20,group:"comida"},
+  {nombre:"Croissant",objetivo:15,group:"comida"},
+  {nombre:"Trapos limpios",objetivo:50,group:"comida"},
+  {nombre:"Bolsa para trapos",objetivo:1,group:"comida"},
+  {nombre:"Bombas de chocolate",objetivo:3,group:"comida"},
+  {nombre:"Velcro",objetivo:1,group:"comida"},
+  {nombre:"Osos para bebidas",objetivo:1,group:"comida"},
+  {nombre:"Osos grandes",objetivo:10,group:"comida"},
+  {nombre:"Vaso Beary rosa",objetivo:10,group:"comida"},
+  {nombre:"Vaso Beary rojo",objetivo:10,group:"comida"},
+  {nombre:"Limpiador de horno",objetivo:1,group:"comida"},
+  {nombre:"Protector de horno",objetivo:1,group:"comida"}
 
 ];
 
 
-const inventoryGroups = {
+const areaNames={
 
-    gris:{
-        title:"Bodega, refri y limpieza",
-        icon:"🧹"
-    },
+  bodega:
+    "Bodega, refri y limpieza",
 
-    morado:{
-        title:"Bebidas",
-        icon:"🥤"
-    },
+  bebidas:
+    "Bebidas",
 
-    comida:{
-        title:"Comida",
-        icon:"🍓"
-    }
+  comida:
+    "Comida"
+
+};
+
+
+const areaIcons={
+
+  bodega:"🧹",
+
+  bebidas:"🥤",
+
+  comida:"🍓"
 
 };
 
 
 /* =========================================================
-   INVENTORY STORAGE
+   INVENTARIO STORAGE
 ========================================================= */
 
 function inventoryKey(name){
 
-    return (
-        "bearyInv_" +
-        name.replace(
-            /[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]/g,
-            "_"
-        )
-    );
+  return (
+    "bearyInv_" +
+    name.replace(
+      /[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]/g,
+      "_"
+    )
+  );
 
 }
 
 
 function getQuantity(name){
 
-    const value =
-        localStorage.getItem(
-            inventoryKey(name)
-        );
+  const value =
+    localStorage.getItem(
+      inventoryKey(name)
+    );
 
-    return value === null
-        ? ""
-        : value;
+  return value===null
+    ? ""
+    : value;
 
 }
 
 
 function saveQuantity(name,value){
 
-    if(value === ""){
+  if(value===""){
 
-        localStorage.removeItem(
-            inventoryKey(name)
-        );
+    localStorage.removeItem(
+      inventoryKey(name)
+    );
 
-    }else{
+  }else{
 
-        localStorage.setItem(
-            inventoryKey(name),
-            value
-        );
+    localStorage.setItem(
+      inventoryKey(name),
+      value
+    );
 
-    }
+  }
 
 }
 
@@ -4818,348 +4564,311 @@ function saveQuantity(name,value){
 
 function buildInventory(){
 
-    const container =
-        document.getElementById(
-            "inventoryAreas"
-        );
+  const container =
+    document.getElementById(
+      "inventoryAreas"
+    );
 
-    const search =
-        document
-            .getElementById(
-                "inventorySearch"
-            )
-            .value
-            .trim()
-            .toLowerCase();
-
-
-    container.innerHTML = "";
+  const search =
+    document
+      .getElementById(
+        "inventorySearch"
+      )
+      .value
+      .trim()
+      .toLowerCase();
 
 
-    Object.keys(inventoryGroups)
-        .forEach(function(group){
-
-            const filtered =
-                products.filter(
-                    function(product){
-
-                        return (
-                            product.group === group &&
-                            (
-                                !search ||
-                                product.nombre
-                                    .toLowerCase()
-                                    .includes(search)
-                            )
-                        );
-
-                    }
-                );
+  container.innerHTML="";
 
 
-            if(!filtered.length){
-                return;
-            }
+  Object.keys(areaNames)
+    .forEach(area=>{
 
+      const filtered =
+        products.filter(product=>{
 
-            const section =
-                document.createElement(
-                    "div"
-                );
+          const matchesArea =
+            product.group===area;
 
-            section.className =
-                "inventory-area";
+          const matchesSearch =
+            !search ||
+            product.nombre
+              .toLowerCase()
+              .includes(search);
 
-
-            const title =
-                document.createElement(
-                    "div"
-                );
-
-            title.className =
-                "inventory-area-title";
-
-
-            const heading =
-                document.createElement(
-                    "h2"
-                );
-
-            heading.textContent =
-                inventoryGroups[group].icon +
-                " " +
-                inventoryGroups[group].title;
-
-
-            const count =
-                document.createElement(
-                    "span"
-                );
-
-            count.textContent =
-                filtered.length +
-                " productos";
-
-
-            title.appendChild(
-                heading
-            );
-
-            title.appendChild(
-                count
-            );
-
-            section.appendChild(
-                title
-            );
-
-
-            filtered.forEach(
-                function(product){
-
-                    createProductRow(
-                        section,
-                        product
-                    );
-
-                }
-            );
-
-
-            container.appendChild(
-                section
-            );
+          return (
+            matchesArea &&
+            matchesSearch
+          );
 
         });
 
-}
+
+      if(!filtered.length){
+        return;
+      }
 
 
-/* =========================================================
-   PRODUCT ROW
-========================================================= */
-
-function createProductRow(
-    section,
-    product
-){
-
-    const name =
-        product.nombre;
-
-    const target =
-        product.objetivo;
-
-
-    const row =
+      const section =
         document.createElement(
-            "div"
+          "div"
         );
 
-    row.className =
-        "product-row";
+      section.className=
+        "inventory-area";
 
 
-    const info =
+      const title =
         document.createElement(
-            "div"
+          "div"
         );
 
-    info.className =
-        "product-info";
+      title.className=
+        "inventory-area-title";
 
 
-    const productName =
+      const h2 =
         document.createElement(
-            "div"
+          "h2"
         );
 
-    productName.className =
-        "product-name";
+      h2.textContent=
+        areaIcons[area] +
+        " " +
+        areaNames[area];
 
-    productName.textContent =
-        name;
 
-
-    const meta =
+      const count =
         document.createElement(
-            "div"
+          "span"
         );
 
-    meta.className =
-        "product-meta";
-
-    meta.textContent =
-        "Objetivo: " +
-        target;
+      count.textContent=
+        filtered.length +
+        " productos";
 
 
-    info.appendChild(
-        productName
-    );
+      title.appendChild(h2);
+      title.appendChild(count);
 
-    info.appendChild(
-        meta
-    );
+      section.appendChild(title);
 
 
-    const controls =
-        document.createElement(
+      filtered.forEach(product=>{
+
+        const name =
+          product.nombre;
+
+        const target =
+          product.objetivo;
+
+
+        const row =
+          document.createElement(
             "div"
+          );
+
+        row.className=
+          "product-row";
+
+
+        const info =
+          document.createElement(
+            "div"
+          );
+
+        info.className=
+          "product-info";
+
+
+        const productName =
+          document.createElement(
+            "div"
+          );
+
+        productName.className=
+          "product-name";
+
+        productName.textContent=
+          name;
+
+
+        const meta =
+          document.createElement(
+            "div"
+          );
+
+        meta.className=
+          "product-meta";
+
+        meta.textContent=
+          "Objetivo: " +
+          target;
+
+
+        info.appendChild(
+          productName
         );
 
-    controls.className =
-        "product-controls";
+        info.appendChild(
+          meta
+        );
 
 
-    const traffic =
-        document.createElement(
+        const controls =
+          document.createElement(
+            "div"
+          );
+
+        controls.className=
+          "product-controls";
+
+
+        const traffic =
+          document.createElement(
             "span"
-        );
+          );
 
-    traffic.className =
-        "traffic";
+        traffic.className=
+          "traffic";
 
 
-    const input =
-        document.createElement(
+        const input =
+          document.createElement(
             "input"
+          );
+
+        input.className=
+          "quantity";
+
+        input.type="number";
+        input.inputMode="decimal";
+        input.min="0";
+        input.step="any";
+        input.placeholder="Tengo";
+
+        input.value=
+          getQuantity(name);
+
+        input.setAttribute(
+          "aria-label",
+          "Cantidad de " + name
         );
 
-    input.className =
-        "quantity";
 
-    input.type =
-        "number";
+        function updateTraffic(){
 
-    input.inputMode =
-        "decimal";
-
-    input.min =
-        "0";
-
-    input.step =
-        "any";
-
-    input.placeholder =
-        "Tengo";
-
-    input.value =
-        getQuantity(name);
-
-    input.setAttribute(
-        "aria-label",
-        "Cantidad de " + name
-    );
-
-
-    function updateTraffic(){
-
-        const value =
+          const value =
             input.value.trim();
 
-
-        traffic.className =
+          traffic.className=
             "traffic";
 
 
-        if(value === ""){
+          if(value===""){
             return;
-        }
+          }
 
 
-        const number =
+          const number =
             parseFloat(value);
 
 
-        if(isNaN(number)){
+          if(isNaN(number)){
             return;
-        }
+          }
 
 
-        if(number >= target){
-
-            traffic.classList.add(
-                "green"
-            );
-
-        }
-
-        else if(number > 0){
+          if(number>=target){
 
             traffic.classList.add(
-                "yellow"
+              "green"
             );
 
-        }
+          }
 
-        else{
+          else if(number>0){
 
             traffic.classList.add(
-                "red"
+              "yellow"
             );
+
+          }
+
+          else{
+
+            traffic.classList.add(
+              "red"
+            );
+
+          }
 
         }
 
-    }
 
-
-    input.addEventListener(
-        "input",
-        function(){
+        input.addEventListener(
+          "input",
+          ()=>{
 
             saveQuantity(
-                name,
-                input.value
+              name,
+              input.value
             );
 
             updateTraffic();
 
             updateInventoryStats();
 
-        }
-    );
+          }
+        );
 
 
-    input.addEventListener(
-        "blur",
-        function(){
+        input.addEventListener(
+          "blur",
+          ()=>{
 
             saveQuantity(
-                name,
-                input.value
+              name,
+              input.value
             );
 
             updateTraffic();
 
-        }
-    );
+          }
+        );
 
 
-    updateTraffic();
+        updateTraffic();
 
 
-    controls.appendChild(
-        traffic
-    );
+        controls.appendChild(
+          traffic
+        );
 
-    controls.appendChild(
-        input
-    );
-
-
-    row.appendChild(
-        info
-    );
-
-    row.appendChild(
-        controls
-    );
+        controls.appendChild(
+          input
+        );
 
 
-    section.appendChild(
-        row
-    );
+        row.appendChild(info);
+
+        row.appendChild(
+          controls
+        );
+
+        section.appendChild(
+          row
+        );
+
+      });
+
+
+      container.appendChild(
+        section
+      );
+
+    });
 
 }
 
@@ -5170,790 +4879,486 @@ function createProductRow(
 
 function updateInventoryStats(){
 
-    const total =
-        products.length;
+  let total =
+    products.length;
 
-    let complete = 0;
+  let complete=0;
 
-    let low = 0;
+  let low=0;
 
-    let answered = 0;
-
-
-    products.forEach(
-        function(product){
-
-            const value =
-                getQuantity(
-                    product.nombre
-                );
+  let answered=0;
 
 
-            if(value !== ""){
+  products.forEach(product=>{
 
-                answered++;
+    const value =
+      getQuantity(
+        product.nombre
+      );
 
 
-                const number =
-                    parseFloat(value);
+    if(value!==""){
+
+      answered++;
 
 
-                if(
-                    !isNaN(number)
-                ){
+      const number =
+        parseFloat(value);
 
-                    if(
-                        number >=
-                        product.objetivo
-                    ){
 
-                        complete++;
+      if(!isNaN(number)){
 
-                    }else{
+        if(
+          number>=product.objetivo
+        ){
 
-                        low++;
+          complete++;
 
-                    }
+        }else{
 
-                }
-
-            }
+          low++;
 
         }
-    );
+
+      }
+
+    }
+
+  });
 
 
-    const percent =
-        total === 0
-            ? 0
-            : Math.round(
-                (
-                    answered /
-                    total
-                ) * 100
-            );
+  const percent =
+    total===0
+      ? 0
+      : Math.round(
+          (answered/total)*100
+        );
 
 
-    document.getElementById(
-        "statTotal"
-    ).textContent =
-        total;
+  document
+    .getElementById(
+      "statTotal"
+    )
+    .textContent=total;
 
 
-    document.getElementById(
-        "statComplete"
-    ).textContent =
-        complete;
+  document
+    .getElementById(
+      "statComplete"
+    )
+    .textContent=complete;
 
 
-    document.getElementById(
-        "statLow"
-    ).textContent =
-        low;
+  document
+    .getElementById(
+      "statLow"
+    )
+    .textContent=low;
 
 
-    document.getElementById(
-        "inventoryProgress"
-    ).style.width =
-        percent + "%";
+  document
+    .getElementById(
+      "inventoryProgress"
+    )
+    .style.width=
+      percent+"%";
 
 
-    document.getElementById(
-        "inventoryProgressText"
-    ).textContent =
-        percent +
-        "% completo";
+  document
+    .getElementById(
+      "inventoryProgressText"
+    )
+    .textContent=
+      percent+
+      "% completo";
 
 }
 
 
 /* =========================================================
-   GENERATE INVENTORY LIST
+   GENERAR LISTA
 ========================================================= */
 
 function generateInventoryList(){
 
-    const missing = [];
+  let missing=[];
 
 
-    products.forEach(
-        function(product){
+  products.forEach(product=>{
 
-            const value =
-                getQuantity(
-                    product.nombre
-                );
-
-
-            if(value === ""){
-                return;
-            }
+    const value =
+      getQuantity(
+        product.nombre
+      );
 
 
-            const number =
-                parseFloat(value);
-
-
-            if(isNaN(number)){
-                return;
-            }
-
-
-            const difference =
-                product.objetivo -
-                number;
-
-
-            if(difference > 0){
-
-                missing.push({
-
-                    name:
-                        product.nombre,
-
-                    amount:
-                        difference
-
-                });
-
-            }
-
-        }
-    );
-
-
-    let result =
-        "URGENTES\n\n";
-
-
-    if(missing.length === 0){
-
-        result +=
-            "No hay faltantes urgentes. 🧸☕";
-
-    }else{
-
-        missing.forEach(
-            function(item){
-
-                result +=
-                    item.name +
-                    ": " +
-                    formatNumber(
-                        item.amount
-                    ) +
-                    "\n";
-
-            }
-        );
-
+    if(value===""){
+      return;
     }
 
 
-    const textarea =
-        document.getElementById(
-            "inventoryResult"
+    const number =
+      parseFloat(value);
+
+
+    if(isNaN(number)){
+      return;
+    }
+
+
+    const difference =
+      product.objetivo-number;
+
+
+    if(difference>0){
+
+      missing.push({
+
+        name:
+          product.nombre,
+
+        amount:
+          difference
+
+      });
+
+    }
+
+  });
+
+
+  let result =
+    "URGENTES\n\n";
+
+
+  if(missing.length===0){
+
+    result +=
+      "No hay faltantes urgentes. 🧸☕";
+
+  }
+
+  else{
+
+    missing.forEach(item=>{
+
+      result +=
+        item.name +
+        ": " +
+        formatNumber(
+          item.amount
+        ) +
+        "\n";
+
+    });
+
+  }
+
+
+  const textarea =
+    document.getElementById(
+      "inventoryResult"
+    );
+
+  textarea.value=result;
+
+
+  navigator.clipboard
+    .writeText(result)
+    .then(()=>{
+
+      showBearCopied();
+
+    })
+    .catch(()=>{
+
+      textarea.select();
+
+      try{
+
+        document.execCommand(
+          "copy"
         );
 
+        showBearCopied();
 
-    textarea.value =
-        result;
+      }catch(error){
 
+        showToast(
+          "📋 Lista generada"
+        );
 
-    copyText(
-        result
-    );
+      }
+
+    });
 
 }
 
 
 function formatNumber(number){
 
-    if(
-        Number.isInteger(number)
-    ){
+  return Number.isInteger(number)
 
-        return number;
+    ? number
 
-    }
-
-
-    return number
+    : number
         .toFixed(2)
         .replace(
-            /\.?0+$/,
-            ""
+          /\.?0+$/,
+          ""
         );
 
 }
 
 
-/* =========================================================
-   COPY
-========================================================= */
+function newInventoryList(){
 
-function copyText(text){
+  products.forEach(product=>{
 
-    if(
-        navigator.clipboard &&
-        window.isSecureContext
-    ){
-
-        navigator.clipboard
-            .writeText(text)
-            .then(function(){
-
-                showBearCopied();
-
-            })
-            .catch(function(){
-
-                fallbackCopy(text);
-
-            });
-
-    }else{
-
-        fallbackCopy(text);
-
-    }
-
-}
-
-
-function fallbackCopy(text){
-
-    const textarea =
-        document.getElementById(
-            "inventoryResult"
-        );
-
-
-    textarea.value =
-        text;
-
-    textarea.removeAttribute(
-        "readonly"
+    localStorage.removeItem(
+      inventoryKey(
+        product.nombre
+      )
     );
 
-    textarea.select();
-
-    textarea.setSelectionRange(
-        0,
-        textarea.value.length
-    );
+  });
 
 
-    try{
-
-        document.execCommand(
-            "copy"
-        );
-
-        showBearCopied();
-
-    }catch(error){
-
-        showToast(
-            "📋 Lista generada"
-        );
-
-    }
+  document
+    .getElementById(
+      "inventoryResult"
+    )
+    .value="";
 
 
-    textarea.setAttribute(
-        "readonly",
-        ""
-    );
+  document
+    .getElementById(
+      "inventoryMessage"
+    )
+    .textContent="";
+
+
+  buildInventory();
+
+  updateInventoryStats();
+
+
+  showToast(
+    "🧹 Inventario listo para comenzar de nuevo"
+  );
 
 }
 
 
 function showBearCopied(){
 
-    const pop =
-        document.getElementById(
-            "bearPop"
-        );
-
-
-    pop.classList.add(
-        "show"
-    );
-
-
-    setTimeout(
-        function(){
-
-            pop.classList.remove(
-                "show"
-            );
-
-        },
-        1800
-    );
-
-
-    const message =
-        document.getElementById(
-            "inventoryMessage"
-        );
-
-
-    message.textContent =
-        "¡Lista copiada! 🧸✨";
-
-
-    setTimeout(
-        function(){
-
-            message.textContent =
-                "";
-
-        },
-        2200
-    );
-
-}
-
-
-/* =========================================================
-   NEW INVENTORY
-========================================================= */
-
-function newInventoryList(){
-
-    products.forEach(
-        function(product){
-
-            localStorage.removeItem(
-                inventoryKey(
-                    product.nombre
-                )
-            );
-
-        }
-    );
-
-
+  const pop =
     document.getElementById(
-        "inventoryResult"
-    ).value = "";
+      "bearPop"
+    );
 
 
+  pop.classList.add(
+    "show"
+  );
+
+
+  setTimeout(()=>{
+
+    pop.classList.remove(
+      "show"
+    );
+
+  },1800);
+
+
+  const message =
     document.getElementById(
-        "inventoryMessage"
-    ).textContent = "";
-
-
-    buildInventory();
-
-    updateInventoryStats();
-
-
-    showToast(
-        "🧹 Inventario listo para comenzar de nuevo"
+      "inventoryMessage"
     );
+
+  message.textContent=
+    "¡Lista copiada! 🧸✨";
+
+
+  setTimeout(()=>{
+
+    message.textContent="";
+
+  },2200);
 
 }
 
 
 /* =========================================================
-   ACTIVITIES DATA
-========================================================= */
-
-const activities = {
-
-    opening:[
-
-        "Encender y revisar el área de trabajo",
-
-        "Revisar que la barra esté limpia",
-
-        "Revisar refrigeradores",
-
-        "Revisar inventario necesario del turno",
-
-        "Preparar utensilios necesarios",
-
-        "Revisar vasos, tapas y servilletas",
-
-        "Preparar estación de bebidas",
-
-        "Verificar área de comida",
-
-        "Revisar limpieza general",
-
-        "Dejar estación lista para comenzar"
-
-    ],
-
-    closing:[
-
-        "Limpiar la barra de trabajo",
-
-        "Lavar y guardar utensilios",
-
-        "Limpiar máquinas y equipos",
-
-        "Revisar refrigeradores",
-
-        "Guardar correctamente los alimentos",
-
-        "Vaciar basura",
-
-        "Limpiar mesas y superficies",
-
-        "Dejar vasos y utensilios acomodados",
-
-        "Revisar que no quede comida expuesta",
-
-        "Dejar el área lista para el siguiente día"
-
-    ]
-
-};
-
-
-let currentActivityType =
-    "opening";
-
-
-/* =========================================================
-   ACTIVITY STORAGE
-========================================================= */
-
-function activityKey(
-    type,
-    index
-){
-
-    return (
-        "bearyActivity_" +
-        type +
-        "_" +
-        index
-    );
-
-}
-
-
-function isActivityDone(
-    type,
-    index
-){
-
-    return (
-        localStorage.getItem(
-            activityKey(
-                type,
-                index
-            )
-        ) === "done"
-    );
-
-}
-
-
-function setActivityDone(
-    type,
-    index,
-    done
-){
-
-    if(done){
-
-        localStorage.setItem(
-            activityKey(
-                type,
-                index
-            ),
-            "done"
-        );
-
-    }else{
-
-        localStorage.removeItem(
-            activityKey(
-                type,
-                index
-            )
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   SELECT ACTIVITY TYPE
+   ACTIVIDADES
 ========================================================= */
 
 function selectActivityType(type){
 
-    currentActivityType =
-        type;
-
-
-    document
-        .getElementById(
-            "openingTab"
-        )
-        .classList.toggle(
-            "active",
-            type === "opening"
-        );
-
-
-    document
-        .getElementById(
-            "closingTab"
-        )
-        .classList.toggle(
-            "active",
-            type === "closing"
-        );
-
-
-    renderActivities();
-
-}
-
-
-/* =========================================================
-   RENDER ACTIVITIES
-========================================================= */
-
-function renderActivities(){
-
-    const list =
-        document.getElementById(
-            "activityList"
-        );
-
-
-    list.innerHTML =
-        "";
-
-
-    const items =
-        activities[
-            currentActivityType
-        ];
-
-
+  const opening =
     document.getElementById(
-        "activityTitle"
-    ).textContent =
-        currentActivityType === "opening"
-            ? "Apertura"
-            : "Cierre";
+      "openingActivities"
+    );
 
+  const closing =
+    document.getElementById(
+      "closingActivities"
+    );
 
-    items.forEach(
-        function(activity,index){
+  const openingTab =
+    document.getElementById(
+      "openingTab"
+    );
 
-            const item =
-                document.createElement(
-                    "div"
-                );
-
-
-            item.className =
-                "activity-item";
-
-
-            const done =
-                isActivityDone(
-                    currentActivityType,
-                    index
-                );
-
-
-            if(done){
-
-                item.classList.add(
-                    "done"
-                );
-
-            }
-
-
-            const checkbox =
-                document.createElement(
-                    "div"
-                );
-
-            checkbox.className =
-                "activity-checkbox";
-
-
-            const text =
-                document.createElement(
-                    "div"
-                );
-
-            text.className =
-                "activity-text";
-
-            text.textContent =
-                activity;
-
-
-            item.appendChild(
-                checkbox
-            );
-
-            item.appendChild(
-                text
-            );
-
-
-            item.addEventListener(
-                "click",
-                function(){
-
-                    const nowDone =
-                        !isActivityDone(
-                            currentActivityType,
-                            index
-                        );
-
-
-                    setActivityDone(
-                        currentActivityType,
-                        index,
-                        nowDone
-                    );
-
-
-                    renderActivities();
-
-                }
-            );
-
-
-            list.appendChild(
-                item
-            );
-
-        }
+  const closingTab =
+    document.getElementById(
+      "closingTab"
     );
 
 
-    updateActivityProgress();
+  if(type==="opening"){
 
-}
+    opening.style.display=
+      "block";
 
+    closing.style.display=
+      "none";
 
-/* =========================================================
-   ACTIVITY PROGRESS
-========================================================= */
-
-function updateActivityProgress(){
-
-    const items =
-        activities[
-            currentActivityType
-        ];
-
-
-    let completed = 0;
-
-
-    items.forEach(
-        function(_,index){
-
-            if(
-                isActivityDone(
-                    currentActivityType,
-                    index
-                )
-            ){
-
-                completed++;
-
-            }
-
-        }
+    openingTab.classList.add(
+      "active"
     );
 
+    closingTab.classList.remove(
+      "active"
+    );
 
-    const total =
-        items.length;
+  }
 
+  else{
 
-    const percent =
-        total === 0
-            ? 0
-            : Math.round(
-                completed /
-                total *
-                100
-            );
+    opening.style.display=
+      "none";
 
+    closing.style.display=
+      "block";
 
-    document.getElementById(
-        "activityCount"
-    ).textContent =
-        completed +
-        " / " +
-        total;
+    openingTab.classList.remove(
+      "active"
+    );
 
+    closingTab.classList.add(
+      "active"
+    );
 
-    document.getElementById(
-        "activityProgress"
-    ).style.width =
-        percent + "%";
+  }
 
 }
 
 
 /* =========================================================
-   RESET ACTIVITIES
+   ACTIVIDADES STORAGE
 ========================================================= */
 
-function resetActivities(){
+function loadActivities(){
 
-    const answer =
-        confirm(
-            "¿Reiniciar las actividades de " +
-            (
-                currentActivityType === "opening"
-                    ? "apertura"
-                    : "cierre"
-            ) +
-            "?"
+  document
+    .querySelectorAll(
+      "[data-activity]"
+    )
+    .forEach(check=>{
+
+      const key =
+        "bearyActivity_" +
+        check.dataset.activity;
+
+      check.checked =
+        localStorage.getItem(
+          key
+        ) === "true";
+
+      updateActivityProgress(
+        check.dataset.activity
+          .split("-")[0]
+      );
+
+    });
+
+}
+
+
+document
+  .querySelectorAll(
+    "[data-activity]"
+  )
+  .forEach(check=>{
+
+    check.addEventListener(
+      "change",
+      ()=>{
+
+        const key =
+          "bearyActivity_" +
+          check.dataset.activity;
+
+        localStorage.setItem(
+          key,
+          check.checked
+            ? "true"
+            : "false"
         );
 
+        updateActivityProgress(
+          check.dataset.activity
+            .split("-")[0]
+        );
 
-    if(!answer){
-        return;
+      }
+    );
+
+  });
+
+
+function updateActivityProgress(type){
+
+  const checks =
+    document.querySelectorAll(
+      `[data-activity^="${type}-"]`
+    );
+
+  let completed=0;
+
+
+  checks.forEach(check=>{
+
+    if(check.checked){
+      completed++;
     }
 
+  });
 
-    activities[
-        currentActivityType
-    ].forEach(
-        function(_,index){
 
-            localStorage.removeItem(
-                activityKey(
-                    currentActivityType,
-                    index
-                )
-            );
+  const total =
+    checks.length;
 
-        }
+
+  const element =
+    document.getElementById(
+      type==="opening"
+        ? "openingProgress"
+        : "closingProgress"
     );
 
 
-    renderActivities();
+  if(element){
 
+    element.textContent=
+      completed +
+      " / " +
+      total +
+      " completadas";
 
-    showToast(
-        "🔄 Actividades reiniciadas"
-    );
+  }
 
 }
 
@@ -5964,37 +5369,34 @@ function resetActivities(){
 
 function showToast(message){
 
-    const toast =
-        document.getElementById(
-            "toast"
-        );
+  const toast =
+    document.getElementById(
+      "toast"
+    );
 
 
-    toast.textContent =
-        message;
+  toast.textContent=
+    message;
 
 
-    toast.classList.add(
+  toast.classList.add(
+    "show"
+  );
+
+
+  clearTimeout(
+    window.toastTimer
+  );
+
+
+  window.toastTimer=
+    setTimeout(()=>{
+
+      toast.classList.remove(
         "show"
-    );
+      );
 
-
-    clearTimeout(
-        window.toastTimer
-    );
-
-
-    window.toastTimer =
-        setTimeout(
-            function(){
-
-                toast.classList.remove(
-                    "show"
-                );
-
-            },
-            2200
-        );
+    },2200);
 
 }
 
@@ -6004,89 +5406,81 @@ function showToast(message){
 ========================================================= */
 
 document
-    .getElementById(
-        "inventorySearch"
-    )
-    .addEventListener(
-        "input",
-        function(){
+  .getElementById(
+    "inventorySearch"
+  )
+  .addEventListener(
+    "input",
+    ()=>{
 
-            buildInventory();
+      buildInventory();
 
-        }
-    );
+    }
+  );
 
 
 /* =========================================================
-   BUTTON TAP ANIMATION
+   TAP ANIMATION
 ========================================================= */
 
 document.addEventListener(
-    "click",
-    function(event){
+  "click",
+  event=>{
 
-        const button =
-            event.target.closest(
-                "button"
-            );
+    const button =
+      event.target.closest(
+        "button"
+      );
 
-
-        if(!button){
-            return;
-        }
-
-
-        button.classList.remove(
-            "tap-feedback"
-        );
-
-
-        void button.offsetWidth;
-
-
-        button.classList.add(
-            "tap-feedback"
-        );
-
-
-        setTimeout(
-            function(){
-
-                button.classList.remove(
-                    "tap-feedback"
-                );
-
-            },
-            250
-        );
-
+    if(!button){
+      return;
     }
+
+    button.classList.remove(
+      "tap-feedback"
+    );
+
+    void button.offsetWidth;
+
+    button.classList.add(
+      "tap-feedback"
+    );
+
+    setTimeout(()=>{
+
+      button.classList.remove(
+        "tap-feedback"
+      );
+
+    },250);
+
+  }
 );
 
 
 /* =========================================================
-   CLOSE NAME MODAL
+   NAME MODAL CLICK OUTSIDE
 ========================================================= */
 
 document
-    .getElementById(
+  .getElementById(
+    "nameOverlay"
+  )
+  .addEventListener(
+    "click",
+    event=>{
+
+      if(
+        event.target.id===
         "nameOverlay"
-    )
-    .addEventListener(
-        "click",
-        function(event){
+      ){
 
-            if(
-                event.target.id ===
-                "nameOverlay"
-            ){
+        closeNameModal();
 
-                closeNameModal();
+      }
 
-            }
-
-        }
-    );
+    }
+  );
 
 
 /* =========================================================
@@ -6095,28 +5489,44 @@ document
 
 function initializeApp(){
 
-    applySavedTheme();
+  const savedTheme =
+    localStorage.getItem(
+      "bearyTheme"
+    ) || "light";
 
-    updateBrandDate();
 
-    updateDateEveryMinute();
+  applyTheme(
+    savedTheme
+  );
 
-    loadName();
 
-    syncSettingsUI();
+  updateBrandDate();
 
-    buildInventory();
 
-    updateInventoryStats();
+  setInterval(
+    updateBrandDate,
+    60000
+  );
 
-    renderActivities();
+
+  loadName();
+
+
+  loadActivities();
+
+
+  buildInventory();
+
+
+  updateInventoryStats();
+
+
+  selectActivityType(
+    "opening"
+  );
 
 }
 
-
-/* =========================================================
-   START
-========================================================= */
 
 initializeApp();
 
