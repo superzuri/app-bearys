@@ -9,9 +9,9 @@
   content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no"
 >
 
-<meta name="theme-color" content="#fff4f8" id="themeColor">
+<meta name="theme-color" content="#fff8fb" id="themeColor">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 <title>Beary's Coffee Shop</title>
 
@@ -31,7 +31,7 @@
 html{
   width:100%;
   min-height:100%;
-  background:#fff4f8;
+  background:#fff8fb;
   color-scheme:light;
   overflow-x:hidden;
   -webkit-text-size-adjust:100%;
@@ -45,8 +45,8 @@ html.dark{
 body{
   width:100%;
   min-width:100%;
+  min-height:100vh;
   min-height:100dvh;
-  min-height:100svh;
   overflow-x:hidden;
 
   font-family:
@@ -157,6 +157,7 @@ button:active{
   --safe-bottom:env(safe-area-inset-bottom);
   --safe-left:env(safe-area-inset-left);
   --safe-right:env(safe-area-inset-right);
+  --chrome-bg:rgba(255,248,251,.96);
 }
 
 
@@ -187,6 +188,7 @@ html.dark{
 
   --success:#67d69b;
   --danger:#ff779d;
+  --chrome-bg:rgba(23,18,22,.96);
 }
 
 
@@ -198,8 +200,8 @@ html.dark{
   width:100%;
   max-width:620px;
   width:100vw;
+  min-height:100vh;
   min-height:100dvh;
-  min-height:100svh;
 
   margin:0 auto;
 
@@ -261,8 +263,7 @@ html.dark{
   align-items:center;
   justify-content:space-between;
 
-  background:
-    rgba(255,248,251,.90);
+  background:var(--chrome-bg);
 
   backdrop-filter:blur(24px);
   -webkit-backdrop-filter:blur(24px);
@@ -280,8 +281,7 @@ html.dark{
 
 html.dark .topbar{
 
-  background:
-    rgba(23,18,22,.91);
+  background:var(--chrome-bg);
 
   border-bottom:
     1px solid rgba(72,50,61,.8);
@@ -4008,19 +4008,9 @@ function applyTheme(theme){
       "content",
       dark
         ? "#171216"
-        : "#fff4f8"
+        : "#fff8fb"
     );
 
-  document
-    .querySelector(
-      'meta[name="apple-mobile-web-app-status-bar-style"]'
-    )
-    .setAttribute(
-      "content",
-      dark
-        ? "black"
-        : "default"
-    );
 
   localStorage.setItem(
     "bearyTheme",
