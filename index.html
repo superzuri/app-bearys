@@ -157,7 +157,7 @@ button:active{
   --safe-bottom:env(safe-area-inset-bottom);
   --safe-left:env(safe-area-inset-left);
   --safe-right:env(safe-area-inset-right);
-  --chrome-bg:rgba(255,248,251,.96);
+  --chrome-bg:#fff8fb;
 }
 
 
@@ -188,7 +188,7 @@ html.dark{
 
   --success:#67d69b;
   --danger:#ff779d;
-  --chrome-bg:rgba(23,18,22,.96);
+  --chrome-bg:#171216;
 }
 
 
@@ -3994,6 +3994,17 @@ function applyTheme(theme){
       "dark",
       dark
     );
+
+  const pageBackground =
+    dark
+      ? "#171216"
+      : "#fff8fb";
+
+  document.documentElement.style.backgroundColor =
+    pageBackground;
+
+  document.body.style.backgroundColor =
+    pageBackground;
 
   document
     .getElementById("themeToggle")
