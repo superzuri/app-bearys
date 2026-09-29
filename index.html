@@ -3,13 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" id="themeColorMeta" content="#fff7fa">
-<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#fff4f8" id="metaThemeColor">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Beary's Coffee Shop</title>
 <style>
 /* BEARY'S COFFEE SHOP — UI BASE */
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{scroll-behavior:smooth;background:#fff7fa;transition:background .3s ease}
+html{scroll-behavior:smooth;background-color:var(--bg)}
 button,input,textarea{font:inherit}
 button{border:0}
 button.tap-feedback{animation:tapPulse .22s ease}
@@ -29,15 +30,25 @@ body.dark{
 --nav:rgba(30,22,27,.95);--success:#67d69b;--danger:#ff779d;
 }
 body{
-min-height:100vh;background:var(--bg);color:var(--text);
+min-height:100dvh;background:var(--bg);color:var(--text);
 font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 transition:.3s;padding-bottom:calc(92px + env(safe-area-inset-bottom))
 }
 .app{width:min(100%,620px);margin:auto;padding:0 15px}
+
+/* TOPBAR CORREGIDA PARA ISLA DINÁMICA */
 .topbar{
-height:calc(78px + env(safe-area-inset-top));display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;padding-top:env(safe-area-inset-top);
-margin:0 -15px;padding:0 15px;background:color-mix(in srgb,var(--bg) 84%,transparent);
-backdrop-filter:blur(20px);border-bottom:1px solid var(--border)
+position:sticky;top:0;z-index:100;
+min-height:calc(65px + env(safe-area-inset-top));
+padding-top:calc(env(safe-area-inset-top) + 8px);
+padding-bottom:12px;
+padding-left:max(15px, env(safe-area-inset-left));
+padding-right:max(15px, env(safe-area-inset-right));
+margin:0 -15px;
+display:flex;align-items:center;justify-content:space-between;
+background:color-mix(in srgb,var(--bg) 84%,transparent);
+backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+border-bottom:1px solid var(--border)
 }
 .brand{display:flex;align-items:center;gap:10px}
 .brand-logo{
@@ -153,7 +164,7 @@ border-radius:30px;border:1px solid var(--border);background:var(--surface);box-
 .bottom-nav{
 position:fixed;left:50%;bottom:calc(9px + env(safe-area-inset-bottom));transform:translateX(-50%);
 z-index:200;width:min(590px,calc(100% - 18px));height:70px;display:grid;grid-template-columns:repeat(5,1fr);gap:3px;
-padding:6px;border-radius:25px;border:1px solid var(--border);background:var(--nav);backdrop-filter:blur(24px);
+padding:6px;border-radius:25px;border:1px solid var(--border);background:var(--nav);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
 box-shadow:0 18px 55px rgba(65,25,45,.2)
 }
 .nav-button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border-radius:18px;background:transparent;color:var(--muted);cursor:pointer}
@@ -163,7 +174,19 @@ box-shadow:0 18px 55px rgba(65,25,45,.2)
 .bear-pop{position:fixed;left:50%;top:50%;z-index:999;transform:translate(-50%,-50%) scale(.6);opacity:0;pointer-events:none;text-align:center;transition:.25s}
 .bear-pop.show{opacity:1;transform:translate(-50%,-50%) scale(1)}.bear-pop .bear{font-size:78px}
 .bear-pop div:last-child{margin-top:5px;padding:10px 16px;border-radius:18px;background:var(--surface);color:var(--text);font-weight:850;box-shadow:var(--shadow)}
-@media(max-width:370px){.app{padding:0 11px}.topbar{margin:0 -11px;padding:0 11px}.hero{padding:23px 19px}.hero-title{font-size:29px}.hero-bear{right:5px;font-size:74px}.menu-grid{gap:8px}.menu-card{min-height:125px;padding:13px}}
+
+/* CALENDARIO */
+.calendar-card{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:15px;margin-bottom:13px;box-shadow:var(--shadow)}
+.calendar-head{display:flex;align-items:center;justify-content:space-between;text-align:center;margin-bottom:15px}.calendar-head b{display:block;font-size:16px}.calendar-head small{display:block;margin-top:2px;color:var(--muted);font-size:9px}
+.calendar-arrow{width:38px;height:38px;border-radius:13px;background:var(--bg2);color:var(--text);font-size:25px;cursor:pointer}
+.calendar-week,.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.calendar-week{margin-bottom:6px}.calendar-week span{text-align:center;color:var(--muted);font-size:8px;font-weight:850}
+.calendar-day{position:relative;min-height:46px;border-radius:13px;background:var(--bg2);border:1px solid transparent;color:var(--text);padding:6px 5px;text-align:left;cursor:pointer}.calendar-day.empty{background:transparent;cursor:default}.calendar-day.today{border-color:var(--pink);box-shadow:0 0 0 2px rgba(255,121,173,.10)}.calendar-day-number{font-size:10px;font-weight:850}.calendar-event-dot{display:inline-block;width:5px;height:5px;border-radius:50%;margin:7px 2px 0 0}.calendar-event-dot.birthday{background:#ff79ad}.calendar-event-dot.season{background:#c58b4e}.calendar-event-count{font-size:7px;color:var(--muted)}
+.calendar-legend{display:flex;gap:15px;margin:-3px 3px 14px;color:var(--muted);font-size:9px}.calendar-legend span{display:flex;align-items:center;gap:5px}.dot{width:8px;height:8px;border-radius:50%;display:inline-block}.dot.birthday{background:#ff79ad}.dot.season{background:#c58b4e}
+.calendar-section-title{font-size:13px;font-weight:900}.calendar-help{margin-top:5px;color:var(--muted);font-size:9px;line-height:1.5}.calendar-form-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:8px;margin-top:11px}.calendar-input{width:100%;padding:11px 10px;border-radius:13px;border:1px solid var(--border);background:var(--surface);color:var(--text);outline:0}.calendar-input:focus{border-color:var(--pink)}.calendar-add-button{width:100%;margin-top:8px;padding:12px;border-radius:14px;background:var(--pink);color:white;font-weight:850;cursor:pointer}.event-list{margin-top:10px;display:grid;gap:7px}.event-item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 11px;border-radius:14px;background:var(--bg2);border:1px solid var(--border)}.event-item-main{min-width:0}.event-item-title{font-size:11px;font-weight:850}.event-item-meta{margin-top:3px;color:var(--muted);font-size:8px}.event-item button{flex:0 0 auto;padding:7px 9px;border-radius:10px;background:var(--surface);color:var(--danger);font-size:9px;font-weight:800;cursor:pointer}
+.season-edit{display:grid;grid-template-columns:1.4fr 1fr 1fr auto;gap:6px;align-items:center}.season-edit input{min-width:0;width:100%;padding:8px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:10px!important}.season-edit button{padding:8px 9px;border-radius:10px;background:var(--pinksoft);color:var(--pink2);font-size:9px;font-weight:800;cursor:pointer}
+@media(max-width:430px){.calendar-form-grid{grid-template-columns:1fr}.season-edit{grid-template-columns:1fr 1fr}.season-edit input:first-child{grid-column:1/-1}.season-edit button{grid-column:1/-1}}
+
+@media(max-width:370px){.app{padding:0 11px}.topbar{margin:0 -11px;padding-left:11px;padding-right:11px}.hero{padding:23px 19px}.hero-title{font-size:29px}.hero-bear{right:5px;font-size:74px}.menu-grid{gap:8px}.menu-card{min-height:125px;padding:13px}}
 
 .name-overlay{
  position:fixed;inset:0;z-index:900;display:none;align-items:center;justify-content:center;
@@ -195,10 +218,7 @@ box-shadow:0 18px 55px rgba(65,25,45,.2)
  to{transform:translateY(-13px) rotate(7deg)}
 }
 
-
-/* =========================================================
-   BEARY'S — CAPA VISUAL / ROSA BEBÉ
-   ========================================================= */
+/* BEARY'S — CAPA VISUAL / ROSA BEBÉ */
 body:not(.dark){
   background:
     radial-gradient(circle at 7% 5%,rgba(255,188,214,.30),transparent 22%),
@@ -240,10 +260,7 @@ body:not(.dark) .quantity:focus{
   opacity:.35;
 }
 
-
-/* =========================================================
-   BEARY'S 2.1 — GLOW + MOBILE POLISH
-   ========================================================= */
+/* BEARY'S 2.1 — GLOW + MOBILE POLISH */
 .brand-date{
  display:block;margin-top:3px;font-size:8px;font-weight:750;
  color:var(--muted);letter-spacing:.25px;text-transform:lowercase
@@ -280,7 +297,6 @@ body:not(.dark) .quantity:focus{
 .danger-button{width:100%;padding:11px;border-radius:13px;background:color-mix(in srgb,var(--danger) 12%,transparent);color:var(--danger);font-size:10px;font-weight:850;cursor:pointer}
 body.animations-off *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 
-/* Soft glow in both modes, intentionally stronger at night. */
 .menu-card,.phrase-card,.status-card,.inventory-area,.inventory-hero,.settings-card{
  transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease
 }
@@ -310,9 +326,6 @@ body:not(.dark) .bottom-nav{box-shadow:0 18px 55px rgba(168,72,111,.13),0 0 22px
  .home-quick-actions button{font-size:8px;padding:7px 10px}
 }
 
-</style>
-
-<style>
 .activity-switch{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
 .activity-tab{min-height:88px;border:1px solid var(--border);border-radius:22px;background:var(--surface);color:var(--muted);box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;transition:.25s}
 .activity-tab:first-child{font-size:25px}.activity-tab:nth-child(2){font-size:25px}
@@ -322,9 +335,8 @@ body:not(.dark) .bottom-nav{box-shadow:0 18px 55px rgba(168,72,111,.13),0 0 22px
 .activity-panel-head b{display:block;font-size:14px}.activity-panel-head span{display:block;margin-top:3px;font-size:9px;color:var(--muted)}.activity-progress{min-width:45px;text-align:center;padding:8px;border-radius:12px;background:var(--bg2);color:var(--pink2);font-size:10px;font-weight:900}
 .empty-module.compact{min-height:300px}
 body.dark .activity-tab.active{box-shadow:0 0 0 1px rgba(255,130,178,.12),0 0 30px rgba(255,91,157,.14)}
-</style>
-<style>
-/* BEARY'S 2.2 — iPhone / Dynamic Island polish */
+
+/* BEARY'S 2.2 — iPhone Polish */
 @media (max-width:620px){
   body{overflow-x:hidden;}
   .app{width:100%;max-width:none;padding-left:14px;padding-right:14px;}
@@ -333,7 +345,22 @@ body.dark .activity-tab.active{box-shadow:0 0 0 1px rgba(255,130,178,.12),0 0 30
   .hero{min-height:300px;}
   .bottom-nav{width:calc(100% - 14px);bottom:calc(7px + env(safe-area-inset-bottom));}
 }
-@supports(height:100dvh){body{min-height:100dvh}}
+
+html,body{width:100%;min-width:0;max-width:100%;overflow-x:hidden}
+.bottom-nav{padding-bottom:max(8px,env(safe-area-inset-bottom))}
+.activity-choice{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:15px 0}
+.activity-choice-card{min-height:145px;padding:18px 10px;border:1px solid var(--border);border-radius:24px;background:var(--surface);color:var(--text);box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.activity-choice-card:active{transform:scale(.97)}
+.activity-big-icon{font-size:38px}
+.activity-choice-card strong{font-size:14px}.activity-choice-card small{font-size:9px;color:var(--muted);text-align:center}
+.activity-list-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 0}
+.activity-list-head button{padding:8px 10px;border:0;border-radius:12px;background:var(--pinksoft);color:var(--pink2);font-size:9px;font-weight:850}
+.activity-item{display:flex;align-items:center;gap:11px;padding:13px;margin:7px 0;border:1px solid var(--border);border-radius:17px;background:var(--surface)}
+.activity-item input{width:21px;height:21px;accent-color:var(--pink)}
+.empty-activities{text-align:center;padding:35px 20px;border:1px dashed var(--border);border-radius:22px;color:var(--muted)}
+.empty-activities div{font-size:42px;margin-bottom:8px}.empty-activities strong{display:block;color:var(--text);font-size:12px}.empty-activities small{display:block;margin-top:5px;font-size:9px;line-height:1.5}
+.brand-date{display:block;margin-top:3px;font-size:8px;font-weight:750;color:var(--muted);letter-spacing:.25px}
+@media(max-width:380px){.activity-choice{gap:8px}.activity-choice-card{min-height:132px}.activity-big-icon{font-size:32px}}
 </style>
 </head>
 <body>
@@ -371,9 +398,10 @@ body.dark .activity-tab.active{box-shadow:0 0 0 1px rgba(255,130,178,.12),0 0 30
   <button class="menu-card" onclick="openPage('cleaning')"><div class="menu-icon">🧼</div><span class="menu-card-title">Limpieza</span><span class="menu-card-description">Todo limpio y en orden</span></button>
   <button class="menu-card" onclick="openPage('recipes')"><div class="menu-icon">☕</div><span class="menu-card-title">Recetario</span><span class="menu-card-description">Recetas de bebidas</span></button>
   <button class="menu-card" onclick="openPage('history')"><div class="menu-icon">📖</div><span class="menu-card-title">Historial</span><span class="menu-card-description">Todo el movimiento</span></button>
+  <button class="menu-card" onclick="openPage('calendar')"><div class="menu-icon">🗓️</div><span class="menu-card-title">Calendario</span><span class="menu-card-description">Cumpleaños y temporadas</span></button>
  </div>
 
- <div class="section-header"><h2>Un poquito de cariño ♡</h2><span>Para hoy</span></div>
+ <div class="section-header"><h2>Un poquito de cariño</h2><span>Para hoy</span></div>
  <div class="phrase-card">
   <div class="phrase-top"><div class="phrase-label"><div class="phrase-label-icon">💌</div><span>Una frase para hoy</span></div><span class="phrase-number" id="phraseNumber">1 / 8</span></div>
   <p class="phrase-text" id="phraseText">“Hoy también cuenta cada pequeño esfuerzo.”</p>
@@ -390,7 +418,6 @@ body.dark .activity-tab.active{box-shadow:0 0 0 1px rgba(255,130,178,.12),0 0 30
   <button onclick="openSettings()">⚙️ Ajustes</button>
  </div>
 </section>
-
 
 <section class="page" id="settingsPage">
  <div class="inner-header">
@@ -420,7 +447,7 @@ body.dark .activity-tab.active{box-shadow:0 0 0 1px rgba(255,130,178,.12),0 0 30
 
  <div class="settings-card">
   <div class="settings-title">📱 Aplicación</div>
-  <div class="setting-row static"><span><b>Versión</b><small>Base Beary's Coffee Shop</small></span><span>2.1</span></div>
+  <div class="setting-row static"><span><b>Versión</b><small>Base Beary's Coffee Shop</small></span><span>0.3</span></div>
   <div class="setting-row static"><span><b>Datos locales</b><small>Nombre e inventario guardados en este dispositivo</small></span><span>💾</span></div>
  </div>
 
@@ -458,28 +485,64 @@ body.dark .activity-tab.active{box-shadow:0 0 0 1px rgba(255,130,178,.12),0 0 30
 </section>
 
 <section class="page" id="activitiesPage">
- <div class="inner-header"><button class="back-button" onclick="goHome()">←</button><div class="inner-title"><h1>Actividades ✓</h1><p>Elige qué parte del turno quieres revisar</p></div></div>
+ <div class="inner-header"><button class="back-button" onclick="goHome()">←</button><div class="inner-title"><h1>Actividades ✅</h1><p>Elige qué parte del turno quieres revisar</p></div></div>
  <div class="activity-switch" role="tablist" aria-label="Tipo de actividades">
-  <button id="activityOpenBtn" class="activity-tab active" onclick="selectActivityType('opening')">🌅<span>Abrir</span><small>Inicio del turno</small></button>
-  <button id="activityCloseBtn" class="activity-tab" onclick="selectActivityType('closing')">🌙<span>Cerrar</span><small>Final del turno</small></button>
+  <button id="activityOpenBtn" class="activity-tab active" onclick="selectActivityType('opening')">🌅<span>Abre</span><small>Inicio del turno</small></button>
+  <button id="activityCloseBtn" class="activity-tab" onclick="selectActivityType('closing')">🌙<span>Cierre</span><small>Final del turno</small></button>
  </div>
  <div class="activity-panel" id="activityOpeningPanel">
   <div class="activity-panel-head"><div><b>Apertura</b><span>Checklist de apertura</span></div><div class="activity-progress">0%</div></div>
-  <div class="empty-module compact"><div class="empty-icon">🌅</div><h2>Actividades de apertura</h2><p>En cuanto me pases las actividades reales, las colocamos aquí una por una con casillas para marcar.</p></div>
+  <div class="empty-module compact"><div class="empty-icon">🌅</div><h2>Actividades de apertura</h2><p>Aquí irán las actividades necesarias para comenzar el turno.</p></div>
  </div>
  <div class="activity-panel" id="activityClosingPanel" style="display:none">
   <div class="activity-panel-head"><div><b>Cierre</b><span>Checklist de cierre</span></div><div class="activity-progress">0%</div></div>
   <div class="empty-module compact"><div class="empty-icon">🌙</div><h2>Actividades de cierre</h2><p>Aquí irán las tareas necesarias para dejar Beary's listo para el siguiente día.</p></div>
  </div>
 </section>
+
 <section class="page" id="cleaningPage">
  <div class="inner-header"><button class="back-button" onclick="goHome()">←</button><div class="inner-title"><h1>Limpieza 🧼</h1><p>Mantener todo en orden</p></div></div>
  <div class="empty-module"><div class="empty-icon">🧼</div><h2>Lista de limpieza</h2><p>La checklist de limpieza será nuestro siguiente módulo.</p></div>
 </section>
+
 <section class="page" id="recipesPage">
  <div class="inner-header"><button class="back-button" onclick="goHome()">←</button><div class="inner-title"><h1>Recetario ☕</h1><p>Bebidas y preparación</p></div></div>
  <div class="empty-module"><div class="empty-icon">☕</div><h2>Recetario de Beary's</h2><p>Aquí guardaremos recetas, ingredientes, cantidades y preparación de cada bebida.</p></div>
 </section>
+
+<section class="page" id="calendarPage">
+ <div class="inner-header"><button class="back-button" onclick="goHome()">←</button><div class="inner-title"><h1>Calendario 🗓️</h1><p>Cumpleaños y temporadas de Beary's</p></div></div>
+
+ <div class="calendar-card">
+  <div class="calendar-head"><button class="calendar-arrow" onclick="changeCalendarMonth(-1)">‹</button><div><b id="calendarMonthTitle">Mes</b><small id="calendarYearTitle">Año</small></div><button class="calendar-arrow" onclick="changeCalendarMonth(1)">›</button></div>
+  <div class="calendar-week"><span>DOM</span><span>LUN</span><span>MAR</span><span>MIÉ</span><span>JUE</span><span>VIE</span><span>SÁB</span></div>
+  <div class="calendar-grid" id="calendarGrid"></div>
+ </div>
+
+ <div class="calendar-legend"><span><i class="dot birthday"></i>Cumpleaños</span><span><i class="dot season"></i>Temporada</span></div>
+
+ <div class="calendar-card event-form-card">
+  <div class="calendar-section-title">🎂 Agregar cumpleaños</div>
+  <p class="calendar-help">Aquí puedes guardar el cumpleaños de cada persona. Se repite cada año.</p>
+  <div class="calendar-form-grid">
+   <input id="birthdayName" class="calendar-input" maxlength="40" placeholder="Nombre de la persona">
+   <input id="birthdayDate" class="calendar-input" type="date">
+  </div>
+  <button class="calendar-add-button" onclick="addBirthday()">🎂 Guardar cumpleaños</button>
+ </div>
+
+ <div class="calendar-card">
+  <div class="calendar-section-title">🎃 Temporadas y temáticas</div>
+  <p class="calendar-help">Las fechas de abajo son editables para adaptarlas al calendario real de Beary's.</p>
+  <div id="seasonList" class="event-list"></div>
+ </div>
+
+ <div class="calendar-card">
+  <div class="calendar-section-title">🎂 Cumpleaños guardados</div>
+  <div id="birthdayList" class="event-list"></div>
+ </div>
+</section>
+
 <section class="page" id="historyPage">
  <div class="inner-header"><button class="back-button" onclick="goHome()">←</button><div class="inner-title"><h1>Historial 📖</h1><p>Todo el movimiento</p></div></div>
  <div class="empty-module"><div class="empty-icon">📖</div><h2>Historial de Beary's</h2><p>Aquí quedará registrado el movimiento de la aplicación cuando conectemos la base de datos.</p></div>
@@ -487,16 +550,15 @@ body.dark .activity-tab.active{box-shadow:0 0 0 1px rgba(255,130,178,.12),0 0 30
 </div>
 
 <nav class="bottom-nav">
- <button class="nav-button active" onclick="goHome()"><span class="nav-icon">⌂</span><span class="nav-label">Inicio</span></button>
+ <button class="nav-button active" onclick="goHome()"><span class="nav-icon">🏠</span><span class="nav-label">Inicio</span></button>
  <button class="nav-button" onclick="openPage('inventory')"><span class="nav-icon">📦</span><span class="nav-label">Inventario</span></button>
- <button class="nav-button" onclick="openPage('activities')"><span class="nav-icon">✓</span><span class="nav-label">Actividades</span></button>
+ <button class="nav-button" onclick="openPage('activities')"><span class="nav-icon">✅</span><span class="nav-label">Actividades</span></button>
  <button class="nav-button" onclick="openPage('recipes')"><span class="nav-icon">☕</span><span class="nav-label">Recetas</span></button>
  <button class="nav-button" onclick="openPage('history')"><span class="nav-icon">☰</span><span class="nav-label">Más</span></button>
 </nav>
 
 <div class="toast" id="toast"></div>
 <div class="bear-pop" id="bearPop"><div class="bear copy-bear-animation">🐻</div><div>¡Lista copiada! ✨</div></div>
-
 
 <div class="name-overlay" id="nameOverlay">
  <div class="name-modal">
@@ -510,7 +572,6 @@ body.dark .activity-tab.active{box-shadow:0 0 0 1px rgba(255,130,178,.12),0 0 30
 </div>
 
 <script>
-
 function loadName(){
  const saved=localStorage.getItem("bearyUserName");
  if(saved){
@@ -541,17 +602,15 @@ function changeName(){
 }
 document.getElementById("nameInput").addEventListener("keydown",e=>{if(e.key==="Enter")saveName()});
 
-
-/* =========================================================
-   DATE / SETTINGS / PERSONALIZATION
-   ========================================================= */
+/* DATE / SETTINGS / PERSONALIZATION */
 const weekdayShort=["dom","lun","mar","mié","jue","vie","sáb"];
 const monthShort=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
 
 function updateBrandDate(){
  const now=new Date();
  const date=`${weekdayShort[now.getDay()]} ${now.getDate()} de ${monthShort[now.getMonth()]}`;
- document.getElementById("brandDate").textContent=date;
+ const el=document.getElementById("brandDate");
+ if(el) el.textContent=date;
 }
 
 function syncSettingsUI(){
@@ -567,6 +626,10 @@ function syncSettingsUI(){
  document.body.classList.toggle("animations-off",!animOn);
  const toggle=document.getElementById("animationToggle");
  if(toggle){toggle.textContent=animOn?"ON":"OFF";toggle.classList.toggle("off",!animOn);toggle.classList.toggle("on",animOn)}
+ 
+ // Sincroniza la barra de estado de iOS con el tema actual
+ const metaTheme = document.getElementById("metaThemeColor");
+ if(metaTheme) metaTheme.setAttribute("content", dark ? "#171216" : "#fff4f8");
 }
 
 function openSettings(){
@@ -595,7 +658,6 @@ function updateDateEveryMinute(){
  setInterval(updateBrandDate,60000);
 }
 
-
 function selectActivityType(type){
  const opening=type==='opening';
  document.getElementById('activityOpeningPanel').style.display=opening?'block':'none';
@@ -616,7 +678,8 @@ function openPage(page){
  if(target)target.classList.add("active");
  window.scrollTo({top:0,behavior:"smooth"});
  updateNavigation(page);
- if(page==="inventory")updateInventoryStats();
+ if(page==="inventory")updateStats();
+ if(page==="calendar")renderCalendar();
 }
 function goHome(){
  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
@@ -629,30 +692,25 @@ function updateNavigation(page){
  if(page==="home")b[0].classList.add("active");
  else if(page==="inventory")b[1].classList.add("active");
  else if(["activities","opening","closing","cleaning"].includes(page))b[2].classList.add("active");
- else if(page==="recipes")b[3].classList.add("active");else if(page==="history")b[4].classList.add("active");
-}
-function applyThemeColors(){
- const dark=document.body.classList.contains("dark");
- const meta=document.getElementById("themeColorMeta");
- if(meta)meta.setAttribute("content",dark?"#171216":"#fff7fa");
- document.documentElement.style.backgroundColor=dark?"#171216":"#fff7fa";
+ else if(page==="recipes")b[3].classList.add("active");else if(page==="history"||page==="calendar")b[4].classList.add("active");
 }
 function toggleTheme(){
  document.body.classList.toggle("dark");
+ document.documentElement.classList.toggle("dark",document.body.classList.contains("dark"));
  const dark=document.body.classList.contains("dark");
+ const themeMeta=document.getElementById("metaThemeColor");
+ if(themeMeta) themeMeta.setAttribute("content",dark?"#171216":"#fff4f8");
  document.getElementById("themeToggle").textContent=dark?"☀️":"🌙";
  localStorage.setItem("bearyTheme",dark?"dark":"light");
- applyThemeColors();
  syncSettingsUI();
  showToast(dark?"🌙 Modo noche activado":"☀️ Modo claro activado");
 }
-if(localStorage.getItem("bearyTheme")==="dark"){document.body.classList.add("dark");document.getElementById("themeToggle").textContent="☀️"}
-applyThemeColors();
+if(localStorage.getItem("bearyTheme")==="dark"){document.body.classList.add("dark");document.documentElement.classList.add("dark");document.getElementById("themeToggle").textContent="☀️";const m=document.getElementById("metaThemeColor");if(m)m.setAttribute("content","#171216")}
 
 const phrases=[
 "“Hoy también cuenta cada pequeño esfuerzo.”","“Un café preparado con cariño siempre sabe diferente.”",
 "“No tienes que hacerlo perfecto, solo hacerlo con cariño.”","“Cada pequeño detalle hace especial a Beary's.”",
-"“Respira, prepara tu estación y disfruta el momento.”","“Detrás de cada buen café hay alguien que puso atención.”",
+"“Respira, prepara tu área y disfruta el momento.”","“Detrás de cada buenos chilaquiles hay alguien que puso atención.”",
 "“Hoy puede ser un día bonito, incluso en los días pesados.”","“Hazlo con calma, con cariño y con una sonrisa. 🧸”"
 ];
 let currentPhrase=0;
@@ -753,6 +811,7 @@ const products=[
 { nombre:"Crema", objetivo:2, group:"bodega" },
 { nombre:"Crema batida", objetivo:2, group:"bodega" },
 { nombre:"Papas", objetivo:2, group:"bodega" },
+
 { nombre:"Coca", objetivo:7, group:"bebidas" },
 { nombre:"Coca zero", objetivo:5, group:"bebidas" },
 { nombre:"Coca light", objetivo:5, group:"bebidas" },
@@ -782,6 +841,7 @@ const products=[
 { nombre:"Nutella", objetivo:4, group:"bebidas" },
 { nombre:"Tarjetas de lealtad", objetivo:1, group:"bebidas" },
 { nombre:"Etiquetas", objetivo:1, group:"bebidas" },
+
 { nombre:"Mayonesa", objetivo:1, group:"comida" },
 { nombre:"Chiles en vinagre", objetivo:1, group:"comida" },
 { nombre:"Mostaza", objetivo:1, group:"comida" },
@@ -833,44 +893,115 @@ const products=[
 { nombre:"Limpiador de horno", objetivo:1, group:"comida" },
 { nombre:"Protector de horno", objetivo:1, group:"comida" },
 ];
+
 const groups={
 bodega:["📦 Bodega, refri y limpieza","📦"],bebidas:["☕ Bebidas","☕"],comida:["🍔 Comida","🍔"]
 };
+
 function key(i){return"bearyInv_"+i}
 function esc(s){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+
 function buildInventory(){
- const box=document.getElementById("inventoryAreas");box.innerHTML="";
- Object.keys(groups).forEach(g=>{
-  const list=products.map((p,i)=>({...p,i})).filter(p=>p[2]===g);
-  const area=document.createElement("div");area.className="inventory-area";area.dataset.group=g;
-  area.innerHTML=`<div class="inventory-area-title"><h2>${groups[g][0]}</h2><span>${list.length} productos</span></div>`;
-  list.forEach(p=>{
-   const saved=localStorage.getItem(key(p.i));
-   const row=document.createElement("div");row.className="product-row";row.dataset.name=p[0].toLowerCase();
-   row.innerHTML=`<div class="product-info"><div class="product-name">${esc(p[0])}</div><div class="product-meta">Meta: ${p[1]}</div></div>
-   <div class="product-controls"><span class="traffic"></span><input class="quantity" type="number" min="0" step="any" inputmode="numeric" data-index="${p.i}" value="${saved??""}"></div>`;
-   const input=row.querySelector("input"),dot=row.querySelector(".traffic");
-   input.addEventListener("input",()=>{localStorage.setItem(key(p.i),input.value);traffic(input,dot,p[1]);updateStats()});
-   if(saved!==null)traffic(input,dot,p[1]);
-   area.appendChild(row);
-  });box.appendChild(area);
- });
- updateStats();
+    const box = document.getElementById("inventoryAreas");
+    if(!box) return;
+    box.innerHTML = "";
+
+    Object.keys(groups).forEach(g=>{
+        const list=products.map((p,i)=>({...p,i}))
+            .filter(p=>p.group===g);
+
+        const area=document.createElement("div");
+        area.className="inventory-area";
+        area.dataset.group=g;
+
+        area.innerHTML=`
+            <div class="inventory-area-title">
+                <h2>${groups[g][0]}</h2>
+                <span>${list.length} productos</span>
+            </div>
+        `;
+
+        list.forEach(p=>{
+            const saved=localStorage.getItem(key(p.i));
+
+            const row=document.createElement("div");
+            row.className="product-row";
+            row.dataset.name=p.nombre.toLowerCase();
+
+            row.innerHTML=`
+                <div class="product-info">
+                    <div class="product-name">${esc(p.nombre)}</div>
+                    <div class="product-meta">Meta: ${p.objetivo}</div>
+                </div>
+
+                <div class="product-controls">
+                    <span class="traffic"></span>
+                    <input
+                        class="quantity"
+                        type="number"
+                        min="0"
+                        step="any"
+                        inputmode="numeric"
+                        data-index="${p.i}"
+                        value="${saved ?? ""}">
+                </div>
+            `;
+
+            const input=row.querySelector("input");
+            const dot=row.querySelector(".traffic");
+
+            input.addEventListener("input",()=>{
+                localStorage.setItem(key(p.i),input.value);
+                traffic(input,dot,p.objetivo);
+                updateStats();
+            });
+
+            if(saved!==null && saved!==""){
+                traffic(input,dot,p.objetivo);
+            }
+
+            area.appendChild(row);
+        });
+
+        box.appendChild(area);
+    });
+
+    updateStats();
 }
+
 function traffic(input,dot,target){
- dot.className="traffic";const v=parseFloat(input.value);if(Number.isNaN(v))return;
- if(v>=target)dot.classList.add("green");else if(v>=target*.5)dot.classList.add("yellow");else dot.classList.add("red");
+ dot.className="traffic";
+ const v=parseFloat(input.value);
+ if(Number.isNaN(v))return;
+ if(v>=target)dot.classList.add("green");
+ else if(v>=target*.5)dot.classList.add("yellow");
+ else dot.classList.add("red");
 }
+
 function updateStats(){
  let filled=0,complete=0,low=0;
- products.forEach((p,i)=>{const el=document.querySelector(`.quantity[data-index="${i}"]`);if(!el||el.value==="")return;filled++;const v=parseFloat(el.value);if(v>=p[1])complete++;else low++});
+ products.forEach((p,i)=>{
+  const el=document.querySelector(`.quantity[data-index="${i}"]`);
+  if(!el||el.value==="")return;
+  filled++;
+  const v=parseFloat(el.value);
+  if(v>=p.objetivo)complete++;
+  else low++;
+ });
  const pct=Math.round(filled/products.length*100);
- document.getElementById("statTotal").textContent=products.length;
- document.getElementById("statComplete").textContent=complete;
- document.getElementById("statLow").textContent=low;
- document.getElementById("inventoryProgress").style.width=pct+"%";
- document.getElementById("inventoryProgressText").textContent=pct+"% completo";
+ const elTotal = document.getElementById("statTotal");
+ const elComplete = document.getElementById("statComplete");
+ const elLow = document.getElementById("statLow");
+ const elProgress = document.getElementById("inventoryProgress");
+ const elProgressText = document.getElementById("inventoryProgressText");
+
+ if(elTotal) elTotal.textContent=products.length;
+ if(elComplete) elComplete.textContent=complete;
+ if(elLow) elLow.textContent=low;
+ if(elProgress) elProgress.style.width=pct+"%";
+ if(elProgressText) elProgressText.textContent=pct+"% completo";
 }
+
 document.getElementById("inventorySearch").addEventListener("input",function(){
  const q=this.value.toLowerCase().trim();
  document.querySelectorAll(".inventory-area").forEach(area=>{
@@ -879,6 +1010,7 @@ document.getElementById("inventorySearch").addEventListener("input",function(){
   area.style.display=n?"block":"none";
  });
 });
+
 function generateInventoryList(){
  const faltantes=[];
 
@@ -888,13 +1020,11 @@ function generateInventoryList(){
 
   const valor=parseFloat(input.value);
 
-  // Igual que en el inventario original:
-  // campos vacíos no entran en la lista.
   if(Number.isNaN(valor))return;
 
-  if(valor<producto[1]){
-   const falta=producto[1]-valor;
-   faltantes.push(`${producto[0]}: ${falta}`);
+  if(valor < producto.objetivo){
+   const falta = producto.objetivo - valor;
+   faltantes.push(`${producto.nombre}: ${falta}`);
   }
  });
 
@@ -909,16 +1039,13 @@ function generateInventoryList(){
   return;
  }
 
- // Formato EXACTO solicitado:
- // URGENTES
- //
- // producto: cantidad
  const texto="URGENTES\n\n"+faltantes.join("\n");
 
  resultado.value=texto;
  mensaje.textContent="¡Lista generada y copiada! 🐻☕";
  copyText(texto);
 }
+
 async function copyText(text){
  try{await navigator.clipboard.writeText(text);showBear()}
  catch(e){
@@ -936,9 +1063,11 @@ async function copyText(text){
    document.getElementById("inventoryMessage").textContent="Lista generada. Cópiala manualmente 🐻";
   }
   t.remove();
+ }
 }
-}
+
 function showBear(){const p=document.getElementById("bearPop");p.classList.add("show");setTimeout(()=>p.classList.remove("show"),1600)}
+
 function newInventoryList(){
  if(!confirm("¿Seguro que quieres limpiar toda la lista actual? 🐻"))return;
  products.forEach((p,i)=>localStorage.removeItem(key(i)));
@@ -950,28 +1079,82 @@ function newInventoryList(){
  document.querySelectorAll(".product-row").forEach(r=>r.style.display="flex");
  updateStats();
 }
+
 let toastTimer;
 function showToast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove("show"),1800)}
 
-function testUrgentesFormat(){
- const ejemplo=["Jabón de manos: 1","Café: 1","Leche entera: 5"];
- const texto="URGENTES\n\n"+ejemplo.join("\n");
- return texto.startsWith("URGENTES\n\n") &&
-        !texto.includes("*URGENTES") &&
-        !texto.includes("🚨");
+/* CALENDARIO */
+const defaultSeasons=[
+ {id:"otono",name:"🍂 Otoño",start:"2026-09-22",end:"2026-12-20"},
+ {id:"halloween",name:"🎃 Halloween",start:"2026-10-15",end:"2026-10-31"},
+ {id:"navidad",name:"🎄 Navidad",start:"2026-12-01",end:"2026-12-31"},
+ {id:"febrero",name:"💗 Febrero / San Valentín",start:"2027-02-01",end:"2027-02-14"},
+ {id:"primavera",name:"🌸 Primavera",start:"2027-03-20",end:"2027-05-31"},
+ {id:"verano",name:"☀️ Verano",start:"2027-06-01",end:"2027-09-21"}
+];
+let calendarDate=new Date();
+let birthdays=JSON.parse(localStorage.getItem("bearyBirthdays")||"[]");
+let seasons=JSON.parse(localStorage.getItem("bearySeasons")||"null")||defaultSeasons;
+function saveCalendarData(){localStorage.setItem("bearyBirthdays",JSON.stringify(birthdays));localStorage.setItem("bearySeasons",JSON.stringify(seasons));}
+function dateKey(y,m,d){return `${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`}
+function parseLocalDate(value){const [y,m,d]=value.split("-").map(Number);return new Date(y,m-1,d)}
+function calendarEventsForDate(y,m,d){
+ const key=dateKey(y,m,d), list=[];
+ birthdays.forEach((b,i)=>{const bd=parseLocalDate(b.date);if(bd.getMonth()===m&&bd.getDate()===d)list.push({type:"birthday",title:b.name,id:i})});
+ seasons.forEach((s,i)=>{if(key>=s.start&&key<=s.end)list.push({type:"season",title:s.name,id:i})});
+ return list;
 }
+function renderCalendar(){
+ const grid=document.getElementById("calendarGrid");if(!grid)return;
+ const y=calendarDate.getFullYear(),m=calendarDate.getMonth();
+ const title=calendarDate.toLocaleDateString("es-MX",{month:"long"});
+ document.getElementById("calendarMonthTitle").textContent=title.charAt(0).toUpperCase()+title.slice(1);
+ document.getElementById("calendarYearTitle").textContent=y;
+ grid.innerHTML="";
+ const first=new Date(y,m,1).getDay(), days=new Date(y,m+1,0).getDate();
+ for(let i=0;i<first;i++){const e=document.createElement("div");e.className="calendar-day empty";grid.appendChild(e)}
+ const today=new Date();
+ for(let d=1;d<=days;d++){
+  const cell=document.createElement("div");cell.className="calendar-day";
+  if(today.getFullYear()===y&&today.getMonth()===m&&today.getDate()===d)cell.classList.add("today");
+  const events=calendarEventsForDate(y,m,d);
+  cell.innerHTML=`<div class="calendar-day-number">${d}</div>`;
+  events.slice(0,3).forEach(ev=>{cell.insertAdjacentHTML("beforeend",`<span class="calendar-event-dot ${ev.type}"></span>`)});
+  if(events.length>3)cell.insertAdjacentHTML("beforeend",`<span class="calendar-event-count">+${events.length-3}</span>`);
+  cell.title=events.map(e=>e.title).join(" · ");
+  grid.appendChild(cell);
+ }
+ renderBirthdayList();renderSeasonList();
+}
+function changeCalendarMonth(delta){calendarDate.setMonth(calendarDate.getMonth()+delta);renderCalendar()}
+function addBirthday(){
+ const name=document.getElementById("birthdayName").value.trim(),date=document.getElementById("birthdayDate").value;
+ if(!name||!date){showToast("🎂 Pon nombre y fecha");return}
+ birthdays.push({name,date});birthdays.sort((a,b)=>a.date.localeCompare(b.date));saveCalendarData();
+ document.getElementById("birthdayName").value="";document.getElementById("birthdayDate").value="";renderCalendar();showToast("🎂 Cumpleaños guardado");
+}
+function removeBirthday(i){birthdays.splice(i,1);saveCalendarData();renderCalendar()}
+function renderBirthdayList(){
+ const box=document.getElementById("birthdayList");if(!box)return;
+ if(!birthdays.length){box.innerHTML='<div class="event-item"><div class="event-item-main"><div class="event-item-title">Todavía no hay cumpleaños</div><div class="event-item-meta">Agrega aquí a todo el equipo de Beary\'s.</div></div></div>';return}
+ box.innerHTML=birthdays.map((b,i)=>{const d=parseLocalDate(b.date);return `<div class="event-item"><div class="event-item-main"><div class="event-item-title">🎂 ${esc(b.name)}</div><div class="event-item-meta">${d.toLocaleDateString("es-MX",{day:"numeric",month:"long"})} · se repite cada año</div></div><button onclick="removeBirthday(${i})">Eliminar</button></div>`}).join("");
+}
+function renderSeasonList(){
+ const box=document.getElementById("seasonList");if(!box)return;
+ box.innerHTML=seasons.map((s,i)=>`<div class="event-item"><div class="season-edit"><input value="${esc(s.name)}" onchange="updateSeason(${i},'name',this.value)"><input type="date" value="${s.start}" onchange="updateSeason(${i},'start',this.value)"><input type="date" value="${s.end}" onchange="updateSeason(${i},'end',this.value)"><button onclick="removeSeason(${i})">Eliminar</button></div></div>`).join("");
+}
+function updateSeason(i,field,value){seasons[i][field]=value;saveCalendarData();renderCalendar();showToast("🗓️ Temporada actualizada")}
+function removeSeason(i){seasons.splice(i,1);saveCalendarData();renderCalendar()}
 
 buildInventory();
+renderCalendar();
 loadName();
 updateBrandDate();
 updateDateEveryMinute();
 syncSettingsUI();
 selectActivityType(localStorage.getItem('bearyActivityType')||'opening');
-console.assert(testUrgentesFormat(), 'Formato URGENTES inválido');
 
-/* =========================================================
-   MICROINTERACCIONES Y PROTECCIONES
-   ========================================================= */
+/* MICROINTERACCIONES Y PROTECCIONES */
 (function(){
   const buttons=document.querySelectorAll("button");
   buttons.forEach(btn=>{
@@ -994,27 +1177,6 @@ console.assert(testUrgentesFormat(), 'Formato URGENTES inválido');
   });
 })();
 
-</script>
-
-<script>
-(function(){
-  function updateBrandDate(){
-    const el=document.getElementById("brandDate");
-    if(!el)return;
-    const d=new Date();
-    const dias=["dom","lun","mar","mié","jue","vie","sáb"];
-    const meses=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
-    el.textContent=dias[d.getDay()]+" "+d.getDate()+" de "+meses[d.getMonth()];
-  }
-  document.addEventListener("DOMContentLoaded",function(){
-    updateBrandDate();
-    setInterval(updateBrandDate,60000);
-  });
-})();
-</script>
-
-
-<script>
 const bearysActivityData={abre:[],cierre:[]};
 
 function showActivityChoice(){
@@ -1035,7 +1197,7 @@ function selectActivityMode(mode){
   title.textContent=mode==="abre"?"🌅 Actividades de apertura":"🌙 Actividades de cierre";
   const list=bearysActivityData[mode]||[];
   if(!list.length){
-    items.innerHTML='<div class="empty-activities"><div>🧸</div><strong>Aún no hay actividades</strong><small>Cuando me pases las actividades reales, las ponemos aquí.</small></div>';
+    items.innerHTML='<div class="empty-activities"><div>🧸</div><strong>Aún no hay actividades</strong><small>Aquí irán ls actividades de abre para empezar.</small></div>';
     return;
   }
   items.innerHTML=list.map((item,i)=>{
@@ -1044,31 +1206,12 @@ function selectActivityMode(mode){
     return '<label class="activity-item"><input type="checkbox" data-key="'+key+'" '+checked+'><span>'+item+'</span></label>';
   }).join("");
 }
+
 document.addEventListener("change",function(e){
   if(e.target.matches(".activity-item input")){
     localStorage.setItem(e.target.dataset.key,e.target.checked?"1":"0");
   }
 });
 </script>
-
-<style>
-html,body{width:100%;min-width:0;max-width:100%;overflow-x:hidden}
-body{min-height:100dvh}
-.topbar{padding-top:max(10px,env(safe-area-inset-top))}
-.bottom-nav{padding-bottom:max(8px,env(safe-area-inset-bottom))}
-.activity-choice{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:15px 0}
-.activity-choice-card{min-height:145px;padding:18px 10px;border:1px solid var(--border);border-radius:24px;background:var(--surface);color:var(--text);box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.activity-choice-card:active{transform:scale(.97)}
-.activity-big-icon{font-size:38px}
-.activity-choice-card strong{font-size:14px}.activity-choice-card small{font-size:9px;color:var(--muted);text-align:center}
-.activity-list-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 0}
-.activity-list-head button{padding:8px 10px;border:0;border-radius:12px;background:var(--pinksoft);color:var(--pink2);font-size:9px;font-weight:850}
-.activity-item{display:flex;align-items:center;gap:11px;padding:13px;margin:7px 0;border:1px solid var(--border);border-radius:17px;background:var(--surface)}
-.activity-item input{width:21px;height:21px;accent-color:var(--pink)}
-.empty-activities{text-align:center;padding:35px 20px;border:1px dashed var(--border);border-radius:22px;color:var(--muted)}
-.empty-activities div{font-size:42px;margin-bottom:8px}.empty-activities strong{display:block;color:var(--text);font-size:12px}.empty-activities small{display:block;margin-top:5px;font-size:9px;line-height:1.5}
-.brand-date{display:block;margin-top:3px;font-size:8px;font-weight:750;color:var(--muted);letter-spacing:.25px}
-@media(max-width:380px){.activity-choice{gap:8px}.activity-choice-card{min-height:132px}.activity-big-icon{font-size:32px}}
-</style>
 </body>
 </html>
