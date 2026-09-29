@@ -2518,6 +2518,27 @@ input, textarea, select {
 .recipe-no-results strong{color:var(--text);font-size:12px}
 .recipe-no-results p{margin:5px 0 0;color:var(--muted);font-size:10px}
 
+
+
+/* RETO BEARY DEL DÍA */
+.daily-challenge-overlay{position:fixed;inset:0;z-index:5500;display:none;align-items:center;justify-content:center;padding:calc(18px + var(--safe-top)) 18px calc(18px + var(--safe-bottom));background:rgba(30,12,22,.58);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.daily-challenge-overlay.show{display:flex}
+.daily-challenge-modal{position:relative;width:min(100%,390px);padding:25px 22px 22px;border:1px solid var(--border);border-radius:30px;background:var(--surface);color:var(--text);box-shadow:0 30px 80px rgba(0,0,0,.25);text-align:center;animation:modalIn .3s ease}
+.daily-challenge-close{position:absolute;top:10px;right:11px;width:36px;height:36px;border-radius:12px;background:var(--bg);color:var(--muted);font-size:24px;line-height:1;cursor:pointer}
+.daily-challenge-bear{margin:2px 0 8px;font-size:42px}
+.daily-challenge-label{color:var(--pink2);font-size:9px;font-weight:950;letter-spacing:1.4px}
+.daily-challenge-modal h2{margin:7px 0 0;color:var(--text);font-size:19px}
+.daily-challenge-date{margin:5px 0 15px;color:var(--muted);font-size:10px;text-transform:capitalize}
+.daily-challenge-goal{padding:18px 14px;border:1px solid var(--border);border-radius:20px;background:var(--bg);color:var(--text);font-size:16px;font-weight:900;line-height:1.4}
+.daily-challenge-copy{margin:12px 0 15px;color:var(--muted);font-size:10px;line-height:1.5}
+.daily-challenge-primary{width:100%;padding:13px 16px;border-radius:15px;background:linear-gradient(135deg,var(--pink),var(--pink2));color:#fff;font-size:12px;font-weight:900;cursor:pointer;box-shadow:0 8px 18px rgba(237,79,138,.2)}
+
+
+.activity-placeholder{min-height:210px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center}
+.activity-placeholder-icon{margin-bottom:10px;font-size:38px}
+.activity-placeholder .activity-title{justify-content:center;margin:0 0 7px;text-align:center}
+.activity-placeholder p{max-width:280px;margin:0;color:var(--muted);font-size:10px;line-height:1.55}
+
 </style>
 </head>
 
@@ -2615,7 +2636,8 @@ input, textarea, select {
 
       <button
         class="hero-button"
-        onclick="showToast('🧸 ¡Que tengas un día increíble!')"
+        id="heroStartButton"
+        onclick="openDailyChallenge()"
       >
         Comenzar mi día →
       </button>
@@ -3286,189 +3308,23 @@ input, textarea, select {
   <div
     id="openingActivities"
   >
-
-    <div class="activity-card">
-
-      <div class="activity-title">
-        🌅 Actividades de apertura
-      </div>
-
-
-      <label class="activity-item">
-
-        <input
-          type="checkbox"
-          data-activity="opening-1"
-        >
-
-        <span>
-          Preparar el área de trabajo
-        </span>
-
-      </label>
-
-
-      <label class="activity-item">
-
-        <input
-          type="checkbox"
-          data-activity="opening-2"
-        >
-
-        <span>
-          Revisar inventario
-        </span>
-
-      </label>
-
-
-      <label class="activity-item">
-
-        <input
-          type="checkbox"
-          data-activity="opening-3"
-        >
-
-        <span>
-          Revisar refrigeradores
-        </span>
-
-      </label>
-
-
-      <label class="activity-item">
-
-        <input
-          type="checkbox"
-          data-activity="opening-4"
-        >
-
-        <span>
-          Preparar estaciones de trabajo
-        </span>
-
-      </label>
-
-
-      <label class="activity-item">
-
-        <input
-          type="checkbox"
-          data-activity="opening-5"
-        >
-
-        <span>
-          Verificar limpieza inicial
-        </span>
-
-      </label>
-
-
-      <div
-        class="activity-progress"
-        id="openingProgress"
-      >
-        0 / 5 completadas
-      </div>
-
+    <div class="activity-card activity-placeholder">
+      <div class="activity-placeholder-icon" aria-hidden="true">🧸</div>
+      <div class="activity-title">🌅 Actividades oficiales de apertura</div>
+      <p>Aquí agregaremos la lista oficial de apertura cuando me la compartas.</p>
     </div>
-
   </div>
-
 
   <div
     id="closingActivities"
     style="display:none"
   >
-
-    <div class="activity-card">
-
-      <div class="activity-title">
-        🌙 Actividades de cierre
-      </div>
-
-
-      <label class="activity-item">
-
-        <input
-          type="checkbox"
-          data-activity="closing-1"
-        >
-
-        <span>
-          Limpiar las estaciones de trabajo
-        </span>
-
-      </label>
-
-
-      <label class="activity-item">
-
-        <input
-          type="checkbox"
-          data-activity="closing-2"
-        >
-
-        <span>
-          Revisar y guardar alimentos
-        </span>
-
-      </label>
-
-
-      <label class="activity-item">
-
-        <input
-          type="checkbox"
-          data-activity="closing-3"
-        >
-
-        <span>
-          Revisar refrigeradores
-        </span>
-
-      </label>
-
-
-      <label class="activity-item">
-
-        <input
-          type="checkbox"
-          data-activity="closing-4"
-        >
-
-        <span>
-          Sacar basura correspondiente
-        </span>
-
-      </label>
-
-
-      <label class="activity-item">
-
-        <input
-          type="checkbox"
-          data-activity="closing-5"
-        >
-
-        <span>
-          Dejar todo listo para el siguiente turno
-        </span>
-
-      </label>
-
-
-      <div
-        class="activity-progress"
-        id="closingProgress"
-      >
-        0 / 5 completadas
-      </div>
-
+    <div class="activity-card activity-placeholder">
+      <div class="activity-placeholder-icon" aria-hidden="true">☕</div>
+      <div class="activity-title">🌙 Actividades oficiales de cierre</div>
+      <p>Aquí agregaremos la lista oficial de cierre cuando me la compartas.</p>
     </div>
-
   </div>
-
 </section>
 
 
@@ -3796,6 +3652,43 @@ input, textarea, select {
     ¡Lista copiada! ✨
   </div>
 
+</div>
+
+
+<!-- =====================================================
+     RETO DEL DÍA
+===================================================== -->
+
+<div
+  class="daily-challenge-overlay"
+  id="dailyChallengeOverlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="dailyChallengeTitle"
+>
+  <div class="daily-challenge-modal">
+    <button
+      type="button"
+      class="daily-challenge-close"
+      id="dailyChallengeClose"
+      aria-label="Cerrar reto"
+      onclick="closeDailyChallenge()"
+    >×</button>
+
+    <div class="daily-challenge-bear" aria-hidden="true">🐻☕</div>
+    <div class="daily-challenge-label">RETO BEARY DEL DÍA</div>
+    <h2 id="dailyChallengeTitle">Un objetivo para hoy</h2>
+    <p class="daily-challenge-date" id="dailyChallengeDate"></p>
+
+    <div class="daily-challenge-goal" id="dailyChallengeGoal"></div>
+    <p class="daily-challenge-copy">Un reto para cumplir en equipo, con mucho corazón. 💗</p>
+
+    <button
+      type="button"
+      class="daily-challenge-primary"
+      onclick="closeDailyChallenge(true)"
+    >¡Vamos, equipo!</button>
+  </div>
 </div>
 
 
@@ -4998,7 +4891,7 @@ function buildInventory(){
 
           }
 
-          else if(number>0){
+          else if(number>=target*0.5){
 
             traffic.classList.add(
               "yellow"
@@ -5577,6 +5470,89 @@ function updateActivityProgress(type){
    TOAST
 ========================================================= */
 
+
+/* =========================================================
+   RETO BEARY DEL DÍA
+========================================================= */
+const dailyChallengeGoals=[
+  {id:"bebidas",text:"Vender 65 bebidas Beary's"},
+  {id:"tartas",text:"Vender 15 tartas"},
+  {id:"waffles",text:"Vender 5 órdenes de waffles"},
+  {id:"instagram",text:"Conseguir 10 menciones en historias de Instagram"},
+  {id:"propinas",text:"Alcanzar $2,000 de propina"},
+  {id:"google",text:"Recibir 15 reseñas auténticas en Google Maps"},
+  {id:"tamales",text:"Vender 10 tamales"}
+];
+
+function getDailyChallengeDateKey(date){
+  return date.getFullYear()+"-"+String(date.getMonth()+1).padStart(2,"0")+"-"+String(date.getDate()).padStart(2,"0");
+}
+
+function getTodaysChallenge(){
+  const today=new Date();
+  const dateKey=getDailyChallengeDateKey(today);
+  const storageKey="bearyDailyChallenge_v1";
+  let saved=null;
+
+  try{
+    saved=JSON.parse(localStorage.getItem(storageKey)||"null");
+  }catch(error){
+    saved=null;
+  }
+
+  if(saved&&saved.date===dateKey){
+    const existing=dailyChallengeGoals.find(goal=>goal.id===saved.id);
+    if(existing)return existing;
+  }
+
+  const selected=dailyChallengeGoals[Math.floor(Math.random()*dailyChallengeGoals.length)];
+
+  try{
+    localStorage.setItem(storageKey,JSON.stringify({date:dateKey,id:selected.id}));
+  }catch(error){}
+
+  return selected;
+}
+
+function updateDailyChallengeButton(){
+  const button=document.getElementById("heroStartButton");
+  if(!button)return;
+
+  const today=getDailyChallengeDateKey(new Date());
+  let saved=null;
+
+  try{
+    saved=JSON.parse(localStorage.getItem("bearyDailyChallenge_v1")||"null");
+  }catch(error){
+    saved=null;
+  }
+
+  const hasToday=saved&&saved.date===today&&dailyChallengeGoals.some(goal=>goal.id===saved.id);
+  button.textContent=hasToday?"Ver reto del día →":"Comenzar mi día →";
+}
+
+function openDailyChallenge(){
+  const challenge=getTodaysChallenge();
+  const now=new Date();
+
+  document.getElementById("heroStartButton").textContent="Ver reto del día →";
+
+  document.getElementById("dailyChallengeGoal").textContent=challenge.text;
+  document.getElementById("dailyChallengeDate").textContent=
+    now.toLocaleDateString("es-MX",{weekday:"long",day:"numeric",month:"long"});
+
+  document.getElementById("dailyChallengeOverlay").classList.add("show");
+  document.getElementById("dailyChallengeClose").focus();
+}
+
+function closeDailyChallenge(accepted){
+  document.getElementById("dailyChallengeOverlay").classList.remove("show");
+  if(accepted){
+    showToast("🐻 ¡Reto aceptado! Que empiece el día ☕");
+    document.getElementById("heroStartButton").focus();
+  }
+}
+
 function showToast(message){
 
   const toast =
@@ -5691,6 +5667,21 @@ document
 
     }
   );
+
+
+document
+  .getElementById("dailyChallengeOverlay")
+  .addEventListener("click",event=>{
+    if(event.target.id==="dailyChallengeOverlay"){
+      closeDailyChallenge();
+    }
+  });
+
+document.addEventListener("keydown",event=>{
+  if(event.key==="Escape"&&document.getElementById("dailyChallengeOverlay").classList.contains("show")){
+    closeDailyChallenge();
+  }
+});
 
 
 /* =========================================================
@@ -5839,6 +5830,7 @@ function setupRecipeBook(){
 function initializeApp(){
 
   setupRecipeBook();
+  updateDailyChallengeButton();
 
   const savedTheme =
     localStorage.getItem(
