@@ -2479,6 +2479,45 @@ input, textarea, select {
 /* Calendario: mantener anti-zoom en campos editables */
 .calendar-input,.season-edit input{font-size:16px!important}
 
+
+
+/* RECETARIO */
+.recipe-intro{display:flex;align-items:center;gap:12px;margin:10px 2px 15px;padding:14px;border:1px solid var(--border);border-radius:20px;background:var(--surface);box-shadow:var(--shadow)}
+.recipe-intro-icon{width:44px;height:44px;flex:0 0 44px;display:grid;place-items:center;border-radius:15px;background:var(--pinksoft);font-size:24px}
+.recipe-intro strong{display:block;color:var(--text);font-size:13px;font-weight:900}
+.recipe-intro p{margin:4px 0 0;color:var(--muted);font-size:10px;line-height:1.45}
+.recipe-searchbox{position:relative;display:block;margin:0 0 10px}
+.recipe-searchbox>span{position:absolute;left:15px;top:50%;transform:translateY(-53%);color:var(--pink2);font-size:25px;line-height:1}
+.recipe-searchbox input{width:100%;padding:14px 14px 14px 43px;border:1px solid var(--border);border-radius:17px;outline:0;background:var(--surface);color:var(--text);font-size:16px!important;box-shadow:var(--shadow)}
+.recipe-searchbox input::placeholder{color:var(--muted)}
+.recipe-searchbox input:focus{border-color:var(--pink);box-shadow:0 0 0 3px rgba(255,121,173,.13)}
+.recipe-filters{display:flex;gap:7px;overflow-x:auto;padding:2px 1px 8px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.recipe-filters::-webkit-scrollbar{display:none}
+.recipe-filter{flex:0 0 auto;padding:9px 12px;border:1px solid var(--border);border-radius:999px;background:var(--surface);color:var(--muted);font-size:10px;font-weight:850;cursor:pointer;white-space:nowrap}
+.recipe-filter.active{border-color:var(--pink);background:var(--pink);color:#fff;box-shadow:0 5px 13px rgba(237,79,138,.2)}
+.recipe-category{margin:13px 0 18px}
+.recipe-category-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 3px 9px}
+.recipe-category-heading h2{margin:0;color:var(--text);font-size:15px;font-weight:900}
+.recipe-category-count{flex:0 0 auto;color:var(--muted);font-size:9px;font-weight:750}
+.recipe-group-note{margin:0 0 9px;padding:10px 12px;border:1px solid var(--border);border-radius:14px;background:var(--pinksoft);color:var(--text);font-size:10px;line-height:1.5}
+.recipe-list{display:grid;gap:8px}
+.recipe-card{overflow:hidden;border:1px solid var(--border);border-radius:17px;background:var(--surface);box-shadow:var(--shadow)}
+.recipe-card summary{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:50px;padding:13px 14px;color:var(--text);font-size:12px;font-weight:850;cursor:pointer;list-style:none}
+.recipe-card summary::-webkit-details-marker{display:none}
+.recipe-card summary::after{content:"+";width:24px;height:24px;flex:0 0 24px;display:grid;place-items:center;border-radius:50%;background:var(--pinksoft);color:var(--pink2);font-size:17px;line-height:1}
+.recipe-card[open] summary{border-bottom:1px solid var(--border)}
+.recipe-card[open] summary::after{content:"−"}
+.recipe-details{padding:11px 14px 13px}
+.recipe-details ul{margin:0;padding:0;list-style:none;display:grid;gap:7px}
+.recipe-details li{position:relative;padding-left:16px;color:var(--text);font-size:11px;line-height:1.45}
+.recipe-details li::before{content:"•";position:absolute;left:2px;color:var(--pink2);font-weight:900}
+.recipe-note{margin:10px 0 0;padding:9px 10px;border-radius:12px;background:var(--bg);color:var(--muted);font-size:10px;line-height:1.5}
+.recipe-no-results{margin-top:15px;padding:28px 16px;border:1px solid var(--border);border-radius:20px;background:var(--surface);text-align:center}
+.recipe-no-results[hidden]{display:none}
+.recipe-no-results span{display:block;margin-bottom:8px;font-size:28px}
+.recipe-no-results strong{color:var(--text);font-size:12px}
+.recipe-no-results p{margin:5px 0 0;color:var(--muted);font-size:10px}
+
 </style>
 </head>
 
@@ -3519,22 +3558,34 @@ input, textarea, select {
   </div>
 
 
-  <div class="empty-module">
-
-    <div class="empty-icon">
-      ☕
+  <div class="recipe-intro">
+    <span class="recipe-intro-icon" aria-hidden="true">🧋</span>
+    <div>
+      <strong>Recetas de Beary's</strong>
+      <p>Toca una bebida para ver sus ingredientes y preparación.</p>
     </div>
+  </div>
 
-    <h2>
-      Recetario de Beary's
-    </h2>
+  <label class="recipe-searchbox">
+    <span aria-hidden="true">⌕</span>
+    <input id="recipeSearch" type="search" placeholder="Buscar bebida o ingrediente..." autocomplete="off">
+  </label>
 
-    <p>
-      Aquí guardaremos recetas,
-      ingredientes, cantidades y
-      preparación de cada bebida.
-    </p>
+  <div class="recipe-filters" role="group" aria-label="Filtrar recetas">
+    <button type="button" class="recipe-filter active" data-category="all" aria-pressed="true">Todas</button>
+    <button type="button" class="recipe-filter" data-category="calientes" aria-pressed="false">Calientes</button>
+    <button type="button" class="recipe-filter" data-category="frias" aria-pressed="false">Frías</button>
+    <button type="button" class="recipe-filter" data-category="frappeadas" aria-pressed="false">Frappeadas</button>
+    <button type="button" class="recipe-filter" data-category="vegetal" aria-pressed="false">Leche vegetal</button>
+    <button type="button" class="recipe-filter" data-category="malteadas" aria-pressed="false">Malteadas</button>
+  </div>
 
+  <div id="recipeResults" class="recipe-results" aria-live="polite"></div>
+
+  <div id="recipeNoResults" class="recipe-no-results" hidden>
+    <span aria-hidden="true">🔎</span>
+    <strong>No encontramos esa receta</strong>
+    <p>Prueba con otro nombre o ingrediente.</p>
   </div>
 
 </section>
@@ -5646,7 +5697,148 @@ document
    INITIALIZE
 ========================================================= */
 
+
+/* =========================================================
+   RECETARIO DE BEBIDAS
+========================================================= */
+const recipeGroups=[
+  {
+    id:"calientes",title:"Bebidas calientes",icon:"☕",
+    recipes:[
+      {name:"Espresso",items:["Carga doble (maneral doble)","1½ oz de espresso para sencillo","2 oz de espresso para doble"]},
+      {name:"Americano",items:["Carga doble (maneral doble)","1½ oz de espresso","260 ml de agua"]},
+      {name:"Capuccino",items:["Carga doble (maneral doble)","1 oz de espresso","250 ml de leche espumada","Canela, opcional"]},
+      {name:"Latte",items:["Carga doble (maneral doble)","1 oz de espresso","250 ml de leche cremada"]},
+      {name:"Latte caramelo",items:["Carga doble (maneral doble)","1 oz de espresso","1½ pumps de vainilla","200 ml de leche cremada"],note:"Agrega una ligera capa de caramelo en la parte inferior y superior."},
+      {name:"Latte cajeta",items:["Carga doble (maneral doble)","1 oz de espresso","45 g de cajeta","200 ml de leche cremada"]},
+      {name:"Latte Nutella",items:["Carga sencilla (maneral sencillo)","1½ oz de espresso","65 g de Nutella","200 ml de leche"]},
+      {name:"Mocaccino",items:["Carga doble (maneral doble)","1 oz de espresso","30 g de Turín","200 ml de leche cremada"]},
+      {name:"Latte vainilla",items:["Carga doble (maneral doble)","1 oz de espresso","3 pumps de vainilla","200 ml de leche cremada"]},
+      {name:"Flat white",items:["Carga doble (maneral doble)","1 oz de espresso","150 ml de leche cremada"]},
+      {name:"Té",items:["2 sobres de té","300 ml de agua caliente"],note:"Se sirve en prensa francesa."},
+      {name:"Chai",items:["30 g de chai en polvo","250 ml de leche cremada"]},
+      {name:"Chocolate",items:["40 g de chocolate en polvo","250 ml de leche cremada"]},
+      {name:"Matcha",items:["30 g de matcha en polvo","250 ml de leche cremada"]},
+      {name:"Taro",items:["40 g de taro en polvo","250 ml de leche cremada"]},
+      {name:"Chai mango",items:["40 g de chai mango en polvo","250 ml de leche cremada"]}
+    ]
+  },
+  {
+    id:"frias",title:"Bebidas frías",icon:"🧊",
+    note:"Para servir en vaso de oso, agrega 2 hielos más al té helado, americano frío, latte frío, Pink lemonade y aguas de sabor.",
+    recipes:[
+      {name:"Americano frío",items:["Carga sencilla (maneral sencillo)","1½ oz de espresso","150 ml de agua","1 vaso copeteado de hielo"]},
+      {name:"Latte frío",items:["Carga sencilla (maneral sencillo)","2 oz de espresso","100 ml de leche cremada","1 vaso copeteado de hielo"]},
+      {name:"Latte caramelo frío",items:["Carga sencilla (maneral sencillo)","2 oz de espresso","1½ pumps de vainilla","100 ml de leche cremada","1 vaso copeteado de hielo"],note:"Agrega una ligera capa de caramelo en la parte inferior, en el vaso y en la parte superior."},
+      {name:"Latte cajeta frío",items:["Carga sencilla (maneral sencillo)","1½ oz de espresso","55 g de cajeta","100 ml de leche cremada","1 vaso copeteado de hielo"]},
+      {name:"Latte Nutella frío",items:["Carga sencilla (maneral sencillo)","1½ oz de espresso","65 g de Nutella","100 ml de leche cremada","1 vaso copeteado de hielo"]},
+      {name:"Mocaccino frío",items:["Carga sencilla (maneral sencillo)","1½ oz de espresso","55 g de Turín","100 ml de leche cremada","1 vaso copeteado de hielo"]},
+      {name:"Latte vainilla frío",items:["Carga sencilla (maneral sencillo)","2 oz de espresso","3 pumps de vainilla","100 ml de leche cremada","1 vaso copeteado de hielo"]},
+      {name:"Chai mango frío",items:["45 g de chai mango en polvo","125 ml de leche cremada","1 vaso copeteado de hielo"],note:"Se prepara en jarra."},
+      {name:"Taro frío",items:["40 g de taro en polvo","125 ml de leche cremada","1 vaso copeteado de hielo"],note:"Se prepara en jarra."},
+      {name:"Aguas de sabor",items:["60 ml de fresa","60 ml de maracuyá y mango","250 ml de agua","1 vaso copeteado de hielo"]},
+      {name:"Pink lemonade",items:["45 ml de Pink lemonade","¾ de vaso de hielo","Agua, dejando 2 dedos antes de llenar el vaso"],note:"Preparación: primero el hielo, después el agua y al final el concentrado."},
+      {name:"Cookie butter latte",items:["50 g de crema Lotus","100 ml de leche cremada","2 pumps de vainilla","1 oz de carga sencilla de café","1 vaso copeteado de hielo"]},
+      {name:"Chocolate frío",items:["40 g de chocolate en polvo","125 ml de leche cremada","1 vaso copeteado de hielo"],note:"Se prepara en jarra."},
+      {name:"Té frío",items:["2 sobres de té","150 ml de agua para infusión + 100 ml de agua","1 vaso copeteado de hielo"]},
+      {name:"Matcha frío",items:["40 g de matcha en polvo","125 ml de leche vegetal cremada","1 vaso copeteado de hielo"],note:"Se prepara en jarra."},
+      {name:"Chai frío",items:["45 g de chai en polvo","125 ml de leche cremada","1 vaso copeteado de hielo"],note:"Se prepara en jarra."}
+    ]
+  },
+  {
+    id:"frappeadas",title:"Bebidas frappeadas",icon:"🥤",
+    recipes:[
+      {name:"Frappuccino",items:["Carga doble (maneral doble)","2 oz de espresso","75 ml de leche","1 scoop al tope de base","1¼ vaso de hielo (al final)"]},
+      {name:"Frappuccino endulzado",items:["Carga doble (maneral doble)","2 oz de espresso","75 ml de leche","5 sobres de azúcar","1 scoop al tope de base","1¼ vaso de hielo (al final)"]},
+      {name:"Frappe de sabor",items:["80 ml de fresa","60 ml de maracuyá, mango o Pink","100 ml de agua","1½ vaso de hielo"]},
+      {name:"Frappe de caramelo",items:["Carga sencilla (maneral sencillo)","2 oz de espresso","3 pumps de vainilla","65 g de caramelo","100 ml de leche","1½ vaso de hielo (al final)"]},
+      {name:"Frappe de cajeta",items:["Carga sencilla (maneral sencillo)","2 oz de espresso","80 g de cajeta","100 ml de leche","1½ vaso de hielo (al final)"]},
+      {name:"Frappe Moca",items:["Carga sencilla (maneral sencillo)","2 oz de espresso","70 g de Turín","100 ml de leche","1½ vaso de hielo (al final)"]},
+      {name:"Frappuccino de Nutella",items:["Carga sencilla (maneral sencillo)","1 oz de espresso","80 g de Nutella","100 ml de leche","1½ vaso de hielo (al final)"]},
+      {name:"Frappe de chai",items:["50 g de chai en polvo","100 ml de leche","1½ vaso de hielo (al final)"]},
+      {name:"Frappe de chai mango",items:["50 g de chai mango en polvo","100 ml de leche","1½ vaso de hielo (al final)"]},
+      {name:"Frappe de taro",items:["50 g de taro en polvo","100 ml de leche","1½ vaso de hielo (al final)"]},
+      {name:"Frappe de chocolate",items:["100 g de chocolate en polvo","100 ml de leche","1½ vaso de hielo (al final)"]},
+      {name:"Frappe de matcha",items:["50 g de matcha (scoop completo)","100 ml de leche","1½ vaso de hielo (al final)"]},
+      {name:"Frappuccino vegetal",items:["Carga sencilla (maneral sencillo)","2 oz de espresso","75 ml de leche vegetal","1 scoop de base neutra","1¼ vaso de hielo (al final)"]},
+      {name:"Frappe cookie butter latte",items:["70 g de crema Lotus","3 pumps de vainilla","1 oz de café de carga sencilla","100 ml de leche","1½ vaso de hielo (al final)"],note:"Lleva una galleta como decoración con el osito."}
+    ]
+  },
+  {
+    id:"vegetal",title:"Bebidas con leche vegetal",icon:"🌱",
+    recipes:[
+      {name:"Matcha frío vegetal",items:["50 g de matcha","125 ml de leche vegetal","1 vaso copeteado de hielo"],note:"Se prepara todo en jarra."},
+      {name:"Taro frío vegetal",items:["45 g de taro","125 ml de leche vegetal","1 vaso copeteado de hielo"],note:"Se prepara todo en jarra."},
+      {name:"Chai mango frío vegetal",items:["45 g de chai mango en polvo","125 ml de leche vegetal","1 vaso copeteado de hielo"],note:"Se prepara todo en jarra."},
+      {name:"Chai frío vegetal",items:["45 g de chai","125 ml de leche vegetal","1 vaso copeteado de hielo"],note:"Se prepara todo en jarra."},
+      {name:"Matcha caliente vegetal",items:["50 g de matcha","250 ml de leche vegetal"]},
+      {name:"Cookie caliente",items:["45 g de Cookie","2 pumps de vainilla","1 oz de espresso","200 ml de leche cremada","Galleta Lotus en polvo y una pieza"]},
+      {name:"Frappes de matcha, chai, taro y chai mango",items:["50 g del polvo correspondiente, copeteado","125 ml de leche vegetal","1 vaso de hielo (al final)"]},
+      {name:"Frappe de chocolate vegetal",items:["100 g de chocolate (2 scoops)","125 ml de leche","1 vaso de hielo (al final)"]},
+      {name:"Chocolate frío vegetal",items:["50 g de chocolate","125 ml de leche vegetal","1 vaso copeteado de hielo"],note:"Se prepara todo en jarra."},
+      {name:"Chai, Chai M, Chocolate y Taro calientes",items:["45 g del polvo correspondiente","250 ml de leche vegetal"]}
+    ]
+  },
+  {
+    id:"malteadas",title:"Malteadas",icon:"🍨",
+    note:"Todas las malteadas se sirven en vaso de oso.",
+    recipes:[
+      {name:"Cookie and cream",items:["350 g de helado","100 ml de leche","3 pumps de vainilla","3 piezas de galleta Oreo: 2 se licúan y 1 es para decorar","Crema batida para decorar"]},
+      {name:"Fresa",items:["350 g de helado","100 ml de leche","4 pumps de fresa","Crema batida para decorar","1 Suavicrema para decorar"]}
+    ]
+  }
+];
+
+let activeRecipeCategory="all";
+function recipeText(value){
+  return String(value).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+}
+function normalizeRecipeText(value){
+  return String(value).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase("es");
+}
+function renderRecipes(){
+  const results=document.getElementById("recipeResults");
+  if(!results)return;
+  const query=normalizeRecipeText(document.getElementById("recipeSearch").value.trim());
+  const markup=recipeGroups.map(group=>{
+    if(activeRecipeCategory!=="all"&&group.id!==activeRecipeCategory)return "";
+    const matches=group.recipes.filter(recipe=>{
+      const searchable=normalizeRecipeText([group.title,recipe.name,...recipe.items,recipe.note||""].join(" "));
+      return searchable.includes(query);
+    });
+    if(!matches.length)return "";
+    const note=group.note?'<p class="recipe-group-note">💡 '+recipeText(group.note)+'</p>':"";
+    const cards=matches.map(recipe=>{
+      const items=recipe.items.map(item=>"<li>"+recipeText(item)+"</li>").join("");
+      const recipeNote=recipe.note?'<p class="recipe-note">📝 '+recipeText(recipe.note)+'</p>':"";
+      return '<details class="recipe-card"><summary>'+recipeText(recipe.name)+'</summary><div class="recipe-details"><ul>'+items+"</ul>"+recipeNote+"</div></details>";
+    }).join("");
+    return '<section class="recipe-category"><div class="recipe-category-heading"><h2>'+group.icon+" "+recipeText(group.title)+'</h2><span class="recipe-category-count">'+matches.length+" "+(matches.length===1?"receta":"recetas")+'</span></div>'+note+'<div class="recipe-list">'+cards+"</div></section>";
+  }).join("");
+  results.innerHTML=markup;
+  document.getElementById("recipeNoResults").hidden=markup!=="";
+}
+function setupRecipeBook(){
+  const search=document.getElementById("recipeSearch");
+  search.addEventListener("input",renderRecipes);
+  document.querySelectorAll(".recipe-filter").forEach(button=>{
+    button.addEventListener("click",()=>{
+      activeRecipeCategory=button.dataset.category;
+      document.querySelectorAll(".recipe-filter").forEach(filter=>{
+        const active=filter===button;
+        filter.classList.toggle("active",active);
+        filter.setAttribute("aria-pressed",String(active));
+      });
+      renderRecipes();
+    });
+  });
+  renderRecipes();
+}
+
+
 function initializeApp(){
+
+  setupRecipeBook();
 
   const savedTheme =
     localStorage.getItem(
