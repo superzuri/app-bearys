@@ -1642,6 +1642,14 @@ html.dark .menu-card:hover{
 
   text-align:center;
 }
+.closing-progress-panel{margin:10px 0 6px;padding:12px 13px 13px;border:1px solid var(--border);border-radius:15px;background:var(--bg2)}
+.closing-progress-summary{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.closing-progress-summary .activity-progress{margin:0;text-align:left}
+.closing-progress-percent{color:var(--pink2);font-size:12px;font-weight:900}
+.closing-progress-track{height:10px;margin-top:8px}
+.closing-progress-track .progress-fill{position:relative;overflow:hidden}
+.closing-progress-track .progress-fill::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 25%,rgba(255,255,255,.45) 50%,transparent 75%);background-size:200% 100%;animation:progressShine 2.8s linear infinite}
+@keyframes progressShine{to{background-position:-200% 0}}
 
 
 /* =========================================================
@@ -2537,7 +2545,8 @@ input, textarea, select {
  .calendar-day:not(.empty):hover{transform:translateY(-2px);transition:transform .18s ease}
  .recipe-card summary:hover::after{animation:iconWiggle .36s ease}
 }
-@media(max-width:430px){.calendar-form-grid{grid-template-columns:1fr}.season-edit{grid-template-columns:56px minmax(0,1fr)}.season-date-field,.season-edit button{grid-column:1/-1}}
+@media(max-width:560px){.season-event-item{padding:11px}.season-edit{grid-template-columns:minmax(0,1fr);gap:9px;width:100%;min-width:0}.season-edit>.season-field,.season-edit>button{grid-column:1;min-width:0;width:100%}.season-field input{box-sizing:border-box;min-width:0}.season-edit button{min-height:40px}}
+@media(max-width:430px){.calendar-form-grid{grid-template-columns:1fr}}
 
 
 /* Calendario: mantener anti-zoom en campos editables */
@@ -3386,7 +3395,15 @@ input, textarea, select {
     <div class="activity-card">
       <div class="activity-title">📋 Checklist de cierre</div>
       <p class="activity-group-note">Marca cada tarea al terminar. El avance se guarda por día.</p>
-      <div class="activity-progress" id="closingProgress">0 tareas completadas</div>
+      <div class="closing-progress-panel">
+        <div class="closing-progress-summary">
+          <span class="activity-progress" id="closingProgress">0 / 0 completadas</span>
+          <strong class="closing-progress-percent" id="closingProgressPercent">0%</strong>
+        </div>
+        <div class="progress-track closing-progress-track" id="closingProgressTrack" role="progressbar" aria-label="Avance de actividades de cierre" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0 actividades completadas">
+          <div class="progress-fill" id="closingProgressBar"></div>
+        </div>
+      </div>
       <label class="activity-item"><input type="checkbox" data-activity="closing-urgentes-envio"><span>Preparar y enviar los urgentes antes de las 5:00 p. m.</span></label>
       <label class="activity-item"><input type="checkbox" data-activity="closing-bebidas-area"><span>Limpiar el área de bebidas.</span></label>
       <label class="activity-item"><input type="checkbox" data-activity="closing-maquina-cafe"><span>Limpiar la máquina de café.</span></label>
@@ -5663,6 +5680,18 @@ function updateActivityProgress(type){
 
   const total =
     checks.length;
+  const percent=total?Math.round((completed/total)*100):0;
+  const progressBar=document.getElementById("closingProgressBar");
+  const progressPercent=document.getElementById("closingProgressPercent");
+  const progressTrack=document.getElementById("closingProgressTrack");
+  if(type==="closing"){
+    if(progressBar)progressBar.style.width=percent+"%";
+    if(progressPercent)progressPercent.textContent=percent+"%";
+    if(progressTrack){
+      progressTrack.setAttribute("aria-valuenow",String(percent));
+      progressTrack.setAttribute("aria-valuetext",completed+" de "+total+" actividades completadas");
+    }
+  }
 
 
   const element =
