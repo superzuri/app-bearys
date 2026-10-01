@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,7 +5,7 @@
 
 <meta
   name="viewport"
-  content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no"
+  content="width=device-width, initial-scale=1.0, viewport-fit=cover"
 >
 
 <meta name="theme-color" content="#fff8fb" id="themeColor">
@@ -124,6 +123,7 @@ button:active{
   transform:scale(.965);
 }
 
+:focus-visible{outline:3px solid var(--pink2);outline-offset:3px;border-radius:8px}
 
 /* =========================================================
    VARIABLES
@@ -969,13 +969,21 @@ html.dark .menu-card:hover{
   font-size:10px;
 }
 
-.welcome-section-header h2{display:flex;align-items:center;gap:7px}
-.welcome-section-header h2::before{content:"🐾";font-size:14px;line-height:1}
-.status-card.welcome-card{position:relative;overflow:hidden;padding-right:68px;border-color:rgba(255,121,173,.28);background:linear-gradient(115deg,var(--surface) 48%,var(--pinksoft) 100%);box-shadow:var(--shadow),inset 0 0 0 1px rgba(255,255,255,.35)}
-.status-card.welcome-card::before{content:"✦";position:absolute;top:11px;right:24px;color:var(--pink);font-size:18px;animation:welcomeTwinkle 2.4s ease-in-out infinite}
-.status-card.welcome-card::after{content:"🐻";position:absolute;right:12px;bottom:-5px;font-size:45px;opacity:.24;transform:rotate(-8deg);pointer-events:none}
-.welcome-card .status-content{position:relative;z-index:1}
-.welcome-card .status-icon{background:var(--pinksoft);color:var(--pink2);box-shadow:0 5px 14px rgba(237,79,138,.12)}
+.home-progress-card{position:relative;overflow:hidden;margin:14px 0 20px;padding:15px;border:1px solid rgba(255,121,173,.28);border-radius:22px;background:linear-gradient(120deg,var(--surface) 30%,var(--pinksoft) 100%);box-shadow:var(--shadow)}
+.home-progress-card::after{content:"✦";position:absolute;top:9px;right:13px;color:var(--pink);font-size:17px;opacity:.65;animation:welcomeTwinkle 2.4s ease-in-out infinite;pointer-events:none}
+.home-progress-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.home-progress-heading{display:flex;align-items:center;gap:10px;min-width:0}
+.home-progress-icon{width:42px;height:42px;flex:0 0 42px;display:grid;place-items:center;border-radius:15px;background:var(--pinksoft);font-size:21px;box-shadow:0 5px 14px rgba(237,79,138,.12)}
+.home-progress-eyebrow{display:block;color:var(--muted);font-size:8px;font-weight:900;letter-spacing:.09em}
+.home-progress-heading strong{display:block;margin-top:3px;color:var(--text);font-size:13px;font-weight:900}
+.home-progress-percent{position:relative;z-index:1;color:var(--pink2);font-size:17px;font-weight:950}
+.home-progress-track{height:10px;margin-top:12px}
+.home-progress-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:9px;margin-top:10px}
+.home-progress-count{color:var(--muted);font-size:9px;font-weight:750}
+.home-progress-button{position:relative;z-index:1;display:flex;align-items:center;gap:6px;padding:9px 12px;border-radius:12px;background:var(--pink);color:#fff;font-size:9px;font-weight:850;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease}
+.home-progress-button:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(237,79,138,.2)}
+.home-progress-button span{font-size:13px}
+@media(max-width:360px){.home-progress-footer{align-items:stretch}.home-progress-count{width:100%}.home-progress-button{justify-content:center;width:100%}}
 @keyframes welcomeTwinkle{0%,100%{opacity:.55;transform:scale(.9) rotate(-8deg)}50%{opacity:1;transform:scale(1.12) rotate(8deg)}}
 
 .status-dot{
@@ -991,40 +999,6 @@ html.dark .menu-card:hover{
     0 0 0 5px
     rgba(81,200,138,.20);
 }
-
-.home-quick-actions{
-
-  display:flex;
-
-  justify-content:center;
-
-  gap:8px;
-
-  margin-top:10px;
-}
-
-.home-quick-actions button{
-
-  padding:8px 12px;
-
-  border-radius:13px;
-
-  background:var(--surface);
-
-  color:var(--muted);
-
-  border:
-    1px solid var(--border);
-
-  font-size:9px;
-  font-weight:800;
-
-  box-shadow:
-    0 7px 18px rgba(120,50,80,.06);
-
-  cursor:pointer;
-}
-
 
 /* =========================================================
    INNER HEADER
@@ -1624,6 +1598,13 @@ html.dark .menu-card:hover{
   line-height:1.35;
 }
 
+.activity-item>span{flex:1;min-width:0}
+.scheduled-activity{transition:background .2s ease,opacity .2s ease}
+.scheduled-activity.is-for-today{padding-left:8px;padding-right:8px;border-radius:12px;background:var(--pinksoft)}
+.scheduled-activity.not-for-today{opacity:.52}
+.activity-day-badge{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;min-height:21px;padding:4px 7px;border-radius:99px;background:var(--bg2);color:var(--muted);font-size:7px;font-weight:900;line-height:1;white-space:nowrap}
+.scheduled-activity.is-for-today .activity-day-badge{background:var(--pink);color:#fff}
+.scheduled-activity input:disabled{opacity:.55;cursor:not-allowed}
 .activity-item input:checked + span{
 
   color:var(--muted);
@@ -2004,7 +1985,7 @@ html.dark .bottom-nav{
   cursor:pointer;
 }
 
-.nav-button.active{
+.nav-button.active,.nav-button[aria-expanded="true"]{
 
   color:var(--pink2);
 
@@ -2594,6 +2575,13 @@ input, textarea, select {
 
 
 /* RETO BEARY DEL DÍA */
+.home-challenge-card{position:relative;overflow:hidden;margin:-7px 0 20px;padding:15px;border:1px solid var(--border);border-radius:20px;background:var(--surface);box-shadow:var(--shadow)}
+.home-challenge-card[hidden]{display:none}
+.home-challenge-card:not([hidden]){animation:cardArrival .38s cubic-bezier(.2,.7,.25,1) both}
+.home-challenge-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:7px}
+.home-challenge-label{color:var(--pink2);font-size:9px;font-weight:950;letter-spacing:.06em}
+.home-challenge-date{color:var(--muted);font-size:9px;text-transform:capitalize}
+.home-challenge-goal{position:relative;margin-top:10px;padding:12px 13px;border:1px solid rgba(255,121,173,.2);border-radius:15px;background:var(--pinksoft);color:var(--text);font-size:12px;font-weight:850;line-height:1.45}
 .daily-challenge-overlay{position:fixed;inset:0;z-index:5500;display:none;align-items:center;justify-content:center;padding:calc(18px + var(--safe-top)) 18px calc(18px + var(--safe-bottom));background:rgba(30,12,22,.58);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 .daily-challenge-overlay.show{display:flex}
 .daily-challenge-modal{position:relative;width:min(100%,390px);padding:25px 22px 22px;border:1px solid var(--border);border-radius:30px;background:var(--surface);color:var(--text);box-shadow:0 30px 80px rgba(0,0,0,.25);text-align:center;animation:modalIn .3s ease}
@@ -2612,6 +2600,22 @@ input, textarea, select {
 .activity-placeholder .activity-title{justify-content:center;margin:0 0 7px;text-align:center}
 .activity-placeholder p{max-width:280px;margin:0;color:var(--muted);font-size:10px;line-height:1.55}
 
+.more-menu[hidden]{display:none}
+.more-menu{position:fixed;inset:0;z-index:5200;display:flex;align-items:flex-end;justify-content:center;padding:14px 14px calc(14px + var(--safe-bottom));background:rgba(39,20,29,.42);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px)}
+.more-menu-sheet{width:min(100%,440px);max-height:82vh;overflow-y:auto;padding:15px 17px 18px;border:1px solid var(--border);border-radius:26px;background:var(--surface);color:var(--text);box-shadow:0 25px 70px rgba(49,19,34,.28);animation:moreMenuIn .24s cubic-bezier(.2,.75,.25,1) both}
+.more-menu-handle{width:38px;height:4px;margin:0 auto 13px;border-radius:99px;background:var(--border)}
+.more-menu-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 2px 10px}
+.more-menu-eyebrow{color:var(--pink2);font-size:8px;font-weight:900;letter-spacing:.1em}
+.more-menu-header h2{margin-top:3px;font-size:17px;font-weight:900}
+.more-menu-close{width:34px;height:34px;border-radius:11px;background:var(--bg2);color:var(--muted);font-size:23px;line-height:1;cursor:pointer}
+.more-menu-option{width:100%;display:flex;align-items:center;gap:11px;margin-top:7px;padding:10px 11px;border:1px solid var(--border);border-radius:15px;background:var(--bg2);color:var(--text);text-align:left;cursor:pointer;transition:transform .18s ease,border-color .18s ease,background .18s ease}
+.more-menu-option:hover{transform:translateX(3px);border-color:var(--pink);background:var(--pinksoft)}
+.more-menu-option-icon{width:38px;height:38px;flex:0 0 38px;display:grid;place-items:center;border-radius:13px;background:var(--surface);font-size:20px}
+.more-menu-option-copy{min-width:0;flex:1}
+.more-menu-option-copy b{display:block;font-size:11px;font-weight:850}
+.more-menu-option-copy small{display:block;margin-top:3px;color:var(--muted);font-size:9px}
+.more-menu-chevron{color:var(--pink2);font-size:24px}
+@keyframes moreMenuIn{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 </style>
 </head>
 
@@ -2723,6 +2727,34 @@ input, textarea, select {
 
   </div>
 
+  <div class="home-progress-card">
+    <div class="home-progress-top">
+      <div class="home-progress-heading">
+        <div class="home-progress-icon" aria-hidden="true">🌙</div>
+        <div>
+          <span class="home-progress-eyebrow">AVANCE DE HOY</span>
+          <strong>Cierre de hoy</strong>
+        </div>
+      </div>
+      <strong class="home-progress-percent" id="homeClosingProgressPercent">0%</strong>
+    </div>
+    <div class="progress-track home-progress-track" id="homeClosingProgressTrack" role="progressbar" aria-label="Avance del checklist de cierre de hoy" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0 actividades completadas">
+      <div class="progress-fill" id="homeClosingProgressBar"></div>
+    </div>
+    <div class="home-progress-footer">
+      <span class="home-progress-count" id="homeClosingProgress">0 de 0 actividades completadas</span>
+      <button type="button" class="home-progress-button" onclick="openPage('activities');selectActivityType('closing')">Abrir checklist <span aria-hidden="true">→</span></button>
+    </div>
+  </div>
+
+
+  <div class="home-challenge-card" id="homeDailyChallengeCard" hidden aria-live="polite">
+    <div class="home-challenge-header">
+      <span class="home-challenge-label">🐻 RETO BEARY DEL DÍA</span>
+      <span class="home-challenge-date" id="homeDailyChallengeDate"></span>
+    </div>
+    <p class="home-challenge-goal" id="homeDailyChallengeGoal"></p>
+  </div>
 
   <div class="section-header">
 
@@ -2741,26 +2773,6 @@ input, textarea, select {
 
     <button
       class="menu-card"
-      onclick="openPage('inventory')"
-    >
-
-      <div class="menu-icon">
-        📦
-      </div>
-
-      <span class="menu-card-title">
-        Inventario
-      </span>
-
-      <span class="menu-card-description">
-        Productos y existencias
-      </span>
-
-    </button>
-
-
-    <button
-      class="menu-card"
       onclick="openPage('activities')"
     >
 
@@ -2774,6 +2786,26 @@ input, textarea, select {
 
       <span class="menu-card-description">
         Apertura y cierre
+      </span>
+
+    </button>
+
+
+    <button
+      class="menu-card"
+      onclick="openPage('inventory')"
+    >
+
+      <div class="menu-icon">
+        📦
+      </div>
+
+      <span class="menu-card-title">
+        Inventario
+      </span>
+
+      <span class="menu-card-description">
+        Productos y existencias
       </span>
 
     </button>
@@ -2846,24 +2878,7 @@ input, textarea, select {
     </button>
 
 
-    <button
-      class="menu-card"
-      onclick="openSettings()"
-    >
-
-      <div class="menu-icon">
-        ⚙️
-      </div>
-
-      <span class="menu-card-title">
-        Ajustes
-      </span>
-
-      <span class="menu-card-description">
-        Personaliza tu Beary's
-      </span>
-
-    </button>
+    
 
   </div>
 
@@ -2929,55 +2944,6 @@ input, textarea, select {
       </button>
 
     </div>
-
-  </div>
-
-
-  <div class="section-header welcome-section-header">
-
-    <h2>
-      Para empezar
-    </h2>
-
-  </div>
-
-
-  <div class="status-card welcome-card">
-
-    <div class="status-content">
-
-      <div class="status-icon">
-        ✨
-      </div>
-
-      <div>
-
-        <span class="status-title">
-          Elige una sección
-        </span>
-
-        <span class="status-description">
-          Abre una opción del menú para continuar.
-        </span>
-
-      </div>
-
-    </div>
-
-
-
-  </div>
-
-
-  <div class="home-quick-actions">
-
-    <button onclick="changeName()">
-      ✏️ Mi nombre
-    </button>
-
-    <button onclick="openSettings()">
-      ⚙️ Ajustes
-    </button>
 
   </div>
 
@@ -3394,7 +3360,7 @@ input, textarea, select {
   >
     <div class="activity-card">
       <div class="activity-title">📋 Checklist de cierre</div>
-      <p class="activity-group-note">Marca cada tarea al terminar. El avance se guarda por día.</p>
+      <p class="activity-group-note">Marca cada tarea al terminar. El avance se guarda por día y cuenta solo las tareas que aplican hoy.</p>
       <div class="closing-progress-panel">
         <div class="closing-progress-summary">
           <span class="activity-progress" id="closingProgress">0 / 0 completadas</span>
@@ -3446,8 +3412,8 @@ input, textarea, select {
       <label class="activity-item"><input type="checkbox" data-activity="closing-corte"><span>Hacer el corte.</span></label>
       <label class="activity-item"><input type="checkbox" data-activity="closing-temperatura"><span>Enviar la temperatura del refrigerador.</span></label>
       <label class="activity-item"><input type="checkbox" data-activity="closing-staff"><span>Cerrar staff.</span></label>
-      <label class="activity-item"><input type="checkbox" data-activity="closing-tamales-miercoles"><span>Miércoles por la noche: enviar el total de tamales.</span></label>
-      <label class="activity-item"><input type="checkbox" data-activity="closing-agua-caliente-dias"><span>Lunes, miércoles, viernes y domingo: echar un poco de agua caliente en las tarjas y la máquina de café.</span></label>
+      <label class="activity-item scheduled-activity" data-active-days="3" aria-disabled="true"><input type="checkbox" data-activity="closing-tamales-miercoles"><span>Miércoles por la noche: enviar el total de tamales.</span><small class="activity-day-badge"></small></label>
+      <label class="activity-item scheduled-activity" data-active-days="0,1,3,5" aria-disabled="true"><input type="checkbox" data-activity="closing-agua-caliente-dias"><span>Lunes, miércoles, viernes y domingo: echar un poco de agua caliente en las tarjas y la máquina de café.</span><small class="activity-day-badge"></small></label>
     </div>
   </div>
 </section>
@@ -3691,22 +3657,6 @@ input, textarea, select {
 
   <button
     class="nav-button"
-    onclick="openPage('inventory')"
-  >
-
-    <span class="nav-icon">
-      📦
-    </span>
-
-    <span class="nav-label">
-      Inventario
-    </span>
-
-  </button>
-
-
-  <button
-    class="nav-button"
     onclick="openPage('activities')"
   >
 
@@ -3716,6 +3666,22 @@ input, textarea, select {
 
     <span class="nav-label">
       Actividades
+    </span>
+
+  </button>
+
+
+  <button
+    class="nav-button"
+    onclick="openPage('inventory')"
+  >
+
+    <span class="nav-icon">
+      📦
+    </span>
+
+    <span class="nav-label">
+      Inventario
     </span>
 
   </button>
@@ -3739,7 +3705,10 @@ input, textarea, select {
 
   <button
     class="nav-button"
-    onclick="openPage('history')"
+    id="moreNavButton"
+    onclick="toggleMoreMenu()"
+    aria-controls="moreMenu"
+    aria-expanded="false"
   >
 
     <span class="nav-icon">
@@ -3754,6 +3723,38 @@ input, textarea, select {
 
 </nav>
 
+<div class="more-menu" id="moreMenu" hidden onclick="if(event.target===this)closeMoreMenu()">
+  <section class="more-menu-sheet" role="dialog" aria-modal="true" aria-labelledby="moreMenuTitle" tabindex="-1">
+    <div class="more-menu-handle" aria-hidden="true"></div>
+    <div class="more-menu-header">
+      <div>
+        <span class="more-menu-eyebrow">BEARY'S COFFEE SHOP</span>
+        <h2 id="moreMenuTitle">Más opciones</h2>
+      </div>
+      <button type="button" class="more-menu-close" aria-label="Cerrar menú" onclick="closeMoreMenu()">×</button>
+    </div>
+    <button type="button" class="more-menu-option" onclick="openMorePage('cleaning')">
+      <span class="more-menu-option-icon" aria-hidden="true">🧼</span>
+      <span class="more-menu-option-copy"><b>Limpieza</b><small>Rutinas y pendientes del local</small></span>
+      <span class="more-menu-chevron" aria-hidden="true">›</span>
+    </button>
+    <button type="button" class="more-menu-option" onclick="openMorePage('calendar')">
+      <span class="more-menu-option-icon" aria-hidden="true">🗓️</span>
+      <span class="more-menu-option-copy"><b>Calendario</b><small>Cumpleaños y temporadas</small></span>
+      <span class="more-menu-chevron" aria-hidden="true">›</span>
+    </button>
+    <button type="button" class="more-menu-option" onclick="openMorePage('history')">
+      <span class="more-menu-option-icon" aria-hidden="true">📖</span>
+      <span class="more-menu-option-copy"><b>Historial</b><small>Consulta el movimiento de la app</small></span>
+      <span class="more-menu-chevron" aria-hidden="true">›</span>
+    </button>
+    <button type="button" class="more-menu-option" onclick="openMorePage('settings')">
+      <span class="more-menu-option-icon" aria-hidden="true">⚙️</span>
+      <span class="more-menu-option-copy"><b>Ajustes</b><small>Nombre, tema y animaciones</small></span>
+      <span class="more-menu-chevron" aria-hidden="true">›</span>
+    </button>
+  </section>
+</div>
 
 <!-- =====================================================
      TOAST
@@ -4247,15 +4248,6 @@ function toggleAnimations(event){
 }
 
 
-function openSettings(){
-
-  openPage("settings");
-
-  syncSettingsUI();
-
-}
-
-
 function clearLocalData(){
 
   const confirmed =
@@ -4506,6 +4498,7 @@ function openPage(page){
 
   target.classList.add("active");
 
+  if(page==="settings")syncSettingsUI();
 
   window.scrollTo({
     top:0,
@@ -4555,39 +4548,58 @@ function goHome(){
 }
 
 
+function toggleMoreMenu(){
+  const panel=document.getElementById("moreMenu");
+  const trigger=document.getElementById("moreNavButton");
+  if(!panel||!trigger)return;
+  if(panel.hidden){
+    panel.hidden=false;
+    trigger.setAttribute("aria-expanded","true");
+    const firstOption=panel.querySelector(".more-menu-option");
+    if(firstOption)firstOption.focus();
+  }else{
+    closeMoreMenu();
+  }
+}
+function closeMoreMenu(restoreFocus=true){
+  const panel=document.getElementById("moreMenu");
+  const trigger=document.getElementById("moreNavButton");
+  if(!panel||!trigger)return;
+  panel.hidden=true;
+  trigger.setAttribute("aria-expanded","false");
+  if(restoreFocus)trigger.focus();
+}
+function openMorePage(page){
+  closeMoreMenu(false);
+  openPage(page);
+  const backButton=document.querySelector("#"+page+"Page .back-button");
+  if(backButton)backButton.focus();
+}
+document.addEventListener("keydown",event=>{
+  const panel=document.getElementById("moreMenu");
+  if(!panel||panel.hidden)return;
+  if(event.key==="Escape"){
+    event.preventDefault();
+    closeMoreMenu();
+    return;
+  }
+  if(event.key!=="Tab")return;
+  const focusable=Array.from(panel.querySelectorAll(".more-menu-close,.more-menu-option"));
+  const first=focusable[0],last=focusable[focusable.length-1];
+  if(event.shiftKey&&document.activeElement===first){
+    event.preventDefault();last.focus();
+  }else if(!event.shiftKey&&document.activeElement===last){
+    event.preventDefault();first.focus();
+  }
+});
 function updateNavigation(page){
-
-  const buttons =
-    document.querySelectorAll(
-      ".nav-button"
-    );
-
-  buttons.forEach(
-    button=>
-      button.classList.remove("active")
-  );
-
-
-  if(page==="home"){
-    buttons[0].classList.add("active");
-  }
-
-  else if(page==="inventory"){
-    buttons[1].classList.add("active");
-  }
-
-  else if(page==="activities"){
-    buttons[2].classList.add("active");
-  }
-
-  else if(page==="recipes"){
-    buttons[3].classList.add("active");
-  }
-
-  else if(page==="history"){
-    buttons[4].classList.add("active");
-  }
-
+  const buttons=document.querySelectorAll(".nav-button");
+  buttons.forEach(button=>button.classList.remove("active"));
+  if(page==="home")buttons[0].classList.add("active");
+  else if(page==="activities")buttons[1].classList.add("active");
+  else if(page==="inventory")buttons[2].classList.add("active");
+  else if(page==="recipes")buttons[3].classList.add("active");
+  else buttons[4].classList.add("active");
 }
 
 
@@ -4783,6 +4795,7 @@ const products=[
   {nombre:"Chiles en vinagre",objetivo:1,group:"comida"},
   {nombre:"Mostaza",objetivo:1,group:"comida"},
   {nombre:"Papaya",objetivo:1,group:"comida"},
+  {nombre:"Premios para perritos",objetivo:1,group:"comida"},
   {nombre:"Aguacate",objetivo:18,group:"comida"},
   {nombre:"Salsa Maggi",objetivo:1,group:"comida"},
   {nombre:"Salsa inglesa",objetivo:1,group:"comida"},
@@ -5604,7 +5617,23 @@ function selectActivityType(type){
 function getActivityStorageKey(activityId){
   return "bearyActivity_"+getDailyChallengeDateKey(new Date())+"_"+activityId;
 }
+function updateScheduledActivityStates(){
+  const today=new Date().getDay();
+  document.querySelectorAll(".scheduled-activity[data-active-days]").forEach(item=>{
+    const activeDays=item.dataset.activeDays.split(",").map(Number);
+    const appliesToday=activeDays.includes(today);
+    const checkbox=item.querySelector("input[type=checkbox]");
+    const badge=item.querySelector(".activity-day-badge");
+    if(checkbox)checkbox.disabled=!appliesToday;
+    item.classList.toggle("is-for-today",appliesToday);
+    item.classList.toggle("not-for-today",!appliesToday);
+    item.setAttribute("aria-disabled",String(!appliesToday));
+    if(badge)badge.textContent=appliesToday?"HOY":"No toca hoy";
+  });
+}
+
 function loadActivities(){
+  updateScheduledActivityStates();
 
   document
     .querySelectorAll(
@@ -5661,10 +5690,7 @@ document
 
 function updateActivityProgress(type){
 
-  const checks =
-    document.querySelectorAll(
-      `[data-activity^="${type}-"]`
-    );
+  const checks=Array.from(document.querySelectorAll("[data-activity^=\"" + type + "-\"]")).filter(check=>!check.disabled);
 
   let completed=0;
 
@@ -5685,11 +5711,23 @@ function updateActivityProgress(type){
   const progressPercent=document.getElementById("closingProgressPercent");
   const progressTrack=document.getElementById("closingProgressTrack");
   if(type==="closing"){
+    const valueText=completed+" de "+total+" actividades completadas";
     if(progressBar)progressBar.style.width=percent+"%";
     if(progressPercent)progressPercent.textContent=percent+"%";
     if(progressTrack){
       progressTrack.setAttribute("aria-valuenow",String(percent));
-      progressTrack.setAttribute("aria-valuetext",completed+" de "+total+" actividades completadas");
+      progressTrack.setAttribute("aria-valuetext",valueText);
+    }
+    const homeBar=document.getElementById("homeClosingProgressBar");
+    const homePercent=document.getElementById("homeClosingProgressPercent");
+    const homeCount=document.getElementById("homeClosingProgress");
+    const homeTrack=document.getElementById("homeClosingProgressTrack");
+    if(homeBar)homeBar.style.width=percent+"%";
+    if(homePercent)homePercent.textContent=percent+"%";
+    if(homeCount)homeCount.textContent=valueText;
+    if(homeTrack){
+      homeTrack.setAttribute("aria-valuenow",String(percent));
+      homeTrack.setAttribute("aria-valuetext",valueText);
     }
   }
 
@@ -5763,6 +5801,15 @@ function getTodaysChallenge(){
   return selected;
 }
 
+function renderDailyChallengeCard(challenge,date){
+  const card=document.getElementById("homeDailyChallengeCard");
+  const goal=document.getElementById("homeDailyChallengeGoal");
+  const dateLabel=document.getElementById("homeDailyChallengeDate");
+  if(!card||!goal||!dateLabel||!challenge)return;
+  goal.textContent=challenge.text;
+  dateLabel.textContent=(date||new Date()).toLocaleDateString("es-MX",{weekday:"long",day:"numeric",month:"long"});
+  card.hidden=false;
+}
 function updateDailyChallengeButton(){
   const button=document.getElementById("heroStartButton");
   if(!button)return;
@@ -5778,11 +5825,16 @@ function updateDailyChallengeButton(){
 
   const hasToday=saved&&saved.date===today&&dailyChallengeGoals.some(goal=>goal.id===saved.id);
   button.textContent=hasToday?"Ver reto del día →":"Comenzar mi día →";
+  if(hasToday){
+    const savedChallenge=dailyChallengeGoals.find(goal=>goal.id===saved.id);
+    renderDailyChallengeCard(savedChallenge,new Date());
+  }
 }
 
 function openDailyChallenge(){
   const challenge=getTodaysChallenge();
   const now=new Date();
+  renderDailyChallengeCard(challenge,now);
 
   document.getElementById("heroStartButton").textContent="Ver reto del día →";
 
