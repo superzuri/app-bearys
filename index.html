@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -423,23 +424,24 @@ html.dark .brand-logo{
   padding-top:20px;
   padding-bottom:28px;
 
-  animation:pageIn .3s ease;
+  animation:none;
 }
 
 .page.active{
   display:block;
+  animation:pageIn .38s cubic-bezier(.22,.78,.24,1) both;
 }
 
 @keyframes pageIn{
 
   from{
     opacity:0;
-    transform:translateY(8px);
+    transform:translate3d(0,6px,0) scale(.995);
   }
 
   to{
     opacity:1;
-    transform:translateY(0);
+    transform:translate3d(0,0,0) scale(1);
   }
 }
 
@@ -1986,6 +1988,7 @@ html.dark .menu-card:hover{
   background:linear-gradient(145deg,rgba(255,255,255,.34),transparent 46%),var(--nav);
   user-select:none;
   -webkit-user-select:none;
+  touch-action:pan-y pinch-zoom;
 
   backdrop-filter:blur(28px) saturate(1.35);
   -webkit-backdrop-filter:blur(28px) saturate(1.35);
@@ -2010,7 +2013,7 @@ html.dark .menu-card:hover{
   backdrop-filter:blur(18px) saturate(1.5);
   -webkit-backdrop-filter:blur(18px) saturate(1.5);
   pointer-events:none;
-  transition:left .4s cubic-bezier(.2,.82,.25,1),width .28s ease,background .3s ease,box-shadow .3s ease;
+  transition:left .28s cubic-bezier(.2,.82,.25,1),width .24s ease,background .3s ease,box-shadow .3s ease,transform .22s ease;
 }
 
 .nav-liquid-indicator::before,.nav-liquid-indicator::after{
@@ -2036,6 +2039,8 @@ html.dark .menu-card:hover{
 
 .nav-liquid-indicator.gliding{box-shadow:0 6px 22px rgba(205,103,143,.24),inset 0 1px 0 rgba(255,255,255,.92)}
 .nav-liquid-indicator.gliding::after{animation:liquidNavSheen .6s ease both}
+.nav-liquid-indicator.is-dragging{transform:scale(.975,.97);transition:none;box-shadow:0 7px 24px rgba(205,103,143,.26),inset 0 1px 0 rgba(255,255,255,.92)}
+.nav-liquid-indicator.is-dragging::after{animation:liquidNavSheen .72s ease-in-out infinite alternate}
 
 @keyframes liquidNavSheen{to{transform:translateX(490%) skewX(-18deg)}}
 
@@ -2046,13 +2051,6 @@ html.dark .nav-liquid-indicator{
 }
 
 html.dark .nav-liquid-indicator::before{opacity:.35}
-
-/* Mantiene fija la navegación si las barras del navegador móvil cambian de altura. */
-@supports (height:100svh) and (height:100dvh){
-  .bottom-nav{
-    bottom:calc(8px + var(--safe-bottom, 0px) + 100dvh - 100svh);
-  }
-}
 
 html.dark .bottom-nav{
 
@@ -2605,9 +2603,9 @@ input, textarea, select {
 @keyframes editorReveal{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
 
 /* Animaciones sutiles al cambiar de sección y al interactuar */
-@keyframes cardArrival{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
+@keyframes cardArrival{from{opacity:0;transform:translate3d(0,6px,0) scale(.997)}to{opacity:1;transform:translate3d(0,0,0) scale(1)}}
 @keyframes buttonTap{0%,100%{transform:scale(1)}50%{transform:scale(.96)}}
-.page.active .hero,.page.active .menu-card,.page.active .phrase-card,.page.active .status-card,.page.active .inventory-hero,.page.active .inventory-area,.page.active .activity-card,.page.active .calendar-card,.page.active .calendar-legend,.page.active .calendar-editor-toggle,.page.active .recipe-intro,.page.active .recipe-searchbox,.page.active .recipe-filters,.page.active .recipe-category{animation:cardArrival .38s cubic-bezier(.2,.7,.25,1) both}
+.page.active .hero,.page.active .menu-card,.page.active .phrase-card,.page.active .status-card,.page.active .inventory-hero,.page.active .inventory-area,.page.active .activity-card,.page.active .calendar-card,.page.active .calendar-legend,.page.active .calendar-editor-toggle,.page.active .recipe-intro,.page.active .recipe-searchbox,.page.active .recipe-filters,.page.active .recipe-category{animation:cardArrival .34s cubic-bezier(.22,.78,.24,1) both}
 .page.active .menu-card:nth-child(2){animation-delay:.04s}
 .page.active .menu-card:nth-child(3){animation-delay:.08s}
 .page.active .menu-card:nth-child(4){animation-delay:.12s}
@@ -4638,10 +4636,7 @@ function openPage(page){
 
   if(page==="settings")syncSettingsUI();
 
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
+  window.scrollTo(0,0);
 
 
   updateNavigation(page);
@@ -4679,10 +4674,7 @@ function goHome(){
     .getElementById("homePage")
     .classList.add("active");
 
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
+  window.scrollTo(0,0);
 
   updateNavigation("home");
 
@@ -4810,7 +4802,7 @@ function slideLiquidNavTo(clientX){
   const maxLeft=lastRect.right-navRect.left-liquidNavElement.clientLeft-width;
   const left=Math.max(minLeft,Math.min(maxLeft,clientX-navRect.left-liquidNavElement.clientLeft-width/2));
   setLiquidNavPosition(left,width);
-  if(liquidNavIndicator)liquidNavIndicator.classList.add("gliding");
+  if(liquidNavIndicator)liquidNavIndicator.classList.add("is-dragging");
 }
 
 function selectLiquidNavButton(button){
@@ -4831,6 +4823,7 @@ function initializeLiquidNavigation(){
 
   liquidNavElement.addEventListener("pointerdown",event=>{
     liquidNavClickGuard=false;
+    if(liquidNavIndicator)liquidNavIndicator.classList.remove("is-dragging");
     const button=event.target.closest(".nav-button")||findLiquidNavButtonAt(event.clientX);
     if(!button||event.isPrimary===false||(event.pointerType==="mouse"&&event.button!==0))return;
     liquidNavPointer={id:event.pointerId,startX:event.clientX,startY:event.clientY,lastX:event.clientX,origin:button,dragging:false};
@@ -4844,6 +4837,7 @@ function initializeLiquidNavigation(){
     const deltaY=event.clientY-gesture.startY;
     if(!gesture.dragging&&Math.abs(deltaX)>9&&Math.abs(deltaX)>Math.abs(deltaY)*1.15){
       gesture.dragging=true;
+      if(liquidNavIndicator)liquidNavIndicator.classList.add("is-dragging");
       try{liquidNavElement.setPointerCapture(event.pointerId)}catch(error){}
     }
     if(gesture.dragging){
@@ -4862,6 +4856,8 @@ function initializeLiquidNavigation(){
       return;
     }
     event.preventDefault();
+    slideLiquidNavTo(event.clientX);
+    if(liquidNavIndicator)liquidNavIndicator.classList.remove("is-dragging");
     liquidNavClickGuard=true;
     setTimeout(()=>{liquidNavClickGuard=false},500);
     const target=findLiquidNavButtonAt(event.clientX);
@@ -4870,6 +4866,7 @@ function initializeLiquidNavigation(){
 
   liquidNavElement.addEventListener("pointercancel",()=>{
     liquidNavPointer=null;
+    if(liquidNavIndicator)liquidNavIndicator.classList.remove("is-dragging");
     const activeButton=liquidNavElement.querySelector(".nav-button.active")||liquidNavElement.querySelector(".nav-button[aria-expanded='true']");
     if(activeButton)moveLiquidNavTo(activeButton,true);
   });
@@ -6511,3 +6508,4 @@ initializeApp();
 
 </body>
 </html>
+
