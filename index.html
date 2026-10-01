@@ -661,6 +661,16 @@ html.dark .hero{
   font-size:17px;
 }
 
+.section-header h2::after{
+  content:"✦";
+  display:inline-block;
+  margin-left:6px;
+  color:var(--pink);
+  font-size:10px;
+  opacity:.62;
+  animation:welcomeTwinkle 3.2s ease-in-out infinite;
+}
+
 .section-header span{
 
   color:var(--muted);
@@ -719,6 +729,29 @@ html.dark .hero{
     border .25s ease;
 }
 
+.menu-card::after{
+  content:"";
+  position:absolute;
+  z-index:1;
+  top:-22%;
+  left:-72%;
+  width:42%;
+  height:145%;
+  background:linear-gradient(105deg,transparent,rgba(255,255,255,.34),transparent);
+  transform:translateX(-130%) skewX(-18deg);
+  pointer-events:none;
+}
+
+.menu-card:hover::after,.menu-card:focus-visible::after{
+  animation:menuGlassSweep .72s ease both;
+}
+
+.menu-card:active{transform:scale(.985)}
+
+@keyframes menuGlassSweep{
+  to{transform:translateX(390%) skewX(-18deg)}
+}
+
 .menu-card:before{
 
   content:"";
@@ -757,6 +790,9 @@ html.dark .menu-card:hover{
 }
 
 .menu-icon{
+
+  position:relative;
+  z-index:2;
 
   width:47px;
   height:47px;
@@ -1900,6 +1936,9 @@ html.dark .menu-card:hover{
 
   position:fixed;
 
+  isolation:isolate;
+  overflow:hidden;
+
   left:50%;
   bottom:
     max(
@@ -1944,17 +1983,80 @@ html.dark .menu-card:hover{
 
   border-radius:25px;
 
-  background:var(--nav);
+  background:linear-gradient(145deg,rgba(255,255,255,.34),transparent 46%),var(--nav);
+  user-select:none;
+  -webkit-user-select:none;
 
-  backdrop-filter:blur(25px);
-  -webkit-backdrop-filter:blur(25px);
+  backdrop-filter:blur(28px) saturate(1.35);
+  -webkit-backdrop-filter:blur(28px) saturate(1.35);
 
   box-shadow:
     0 18px 55px rgba(168,72,111,.16),
     0 0 22px rgba(255,121,173,.07);
 }
 
+.nav-liquid-indicator{
+  position:absolute;
+  z-index:0;
+  top:6px;
+  bottom:6px;
+  left:var(--nav-liquid-left,6px);
+  width:var(--nav-liquid-width,calc((100% - 26px)/5));
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.78);
+  border-radius:19px;
+  background:linear-gradient(135deg,rgba(255,255,255,.88),rgba(255,221,237,.62) 48%,rgba(255,255,255,.30));
+  box-shadow:0 5px 18px rgba(205,103,143,.16),inset 0 1px 0 rgba(255,255,255,.8),inset 0 -1px 0 rgba(255,255,255,.34);
+  backdrop-filter:blur(18px) saturate(1.5);
+  -webkit-backdrop-filter:blur(18px) saturate(1.5);
+  pointer-events:none;
+  transition:left .4s cubic-bezier(.2,.82,.25,1),width .28s ease,background .3s ease,box-shadow .3s ease;
+}
+
+.nav-liquid-indicator::before,.nav-liquid-indicator::after{
+  content:"";
+  position:absolute;
+  pointer-events:none;
+}
+
+.nav-liquid-indicator::before{
+  inset:0;
+  background:radial-gradient(ellipse at 28% 0%,rgba(255,255,255,.8),transparent 62%);
+  opacity:.78;
+}
+
+.nav-liquid-indicator::after{
+  top:-35%;
+  bottom:-35%;
+  left:-55%;
+  width:42%;
+  transform:translateX(-150%) skewX(-18deg);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.62),transparent);
+}
+
+.nav-liquid-indicator.gliding{box-shadow:0 6px 22px rgba(205,103,143,.24),inset 0 1px 0 rgba(255,255,255,.92)}
+.nav-liquid-indicator.gliding::after{animation:liquidNavSheen .6s ease both}
+
+@keyframes liquidNavSheen{to{transform:translateX(490%) skewX(-18deg)}}
+
+html.dark .nav-liquid-indicator{
+  border-color:rgba(255,255,255,.22);
+  background:linear-gradient(135deg,rgba(255,255,255,.23),rgba(255,130,178,.18) 48%,rgba(255,255,255,.07));
+  box-shadow:0 5px 18px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.24),inset 0 -1px 0 rgba(255,255,255,.1);
+}
+
+html.dark .nav-liquid-indicator::before{opacity:.35}
+
+/* Mantiene fija la navegación si las barras del navegador móvil cambian de altura. */
+@supports (height:100svh) and (height:100dvh){
+  .bottom-nav{
+    bottom:calc(8px + var(--safe-bottom, 0px) + 100dvh - 100svh);
+  }
+}
+
 html.dark .bottom-nav{
+
+  background:linear-gradient(145deg,rgba(255,255,255,.08),transparent 48%),var(--nav);
 
   box-shadow:
     0 18px 55px rgba(0,0,0,.42),
@@ -1962,6 +2064,9 @@ html.dark .bottom-nav{
 }
 
 .nav-button{
+
+  position:relative;
+  z-index:1;
 
   min-width:0;
 
@@ -1980,17 +2085,24 @@ html.dark .bottom-nav{
   color:var(--muted);
 
   cursor:pointer;
+
+  transition:color .22s ease,transform .22s ease;
+  touch-action:pan-y;
 }
 
 .nav-button.active,.nav-button[aria-expanded="true"]{
 
   color:var(--pink2);
-
-  background:var(--bg2);
+  background:transparent;
 }
+
+.nav-button:focus-visible{outline:2px solid var(--pink);outline-offset:-3px}
+.nav-button.active .nav-icon,.nav-button[aria-expanded="true"] .nav-icon{transform:translateY(-1px) scale(1.08)}
+.nav-button.just-selected .nav-icon{animation:navPop .44s cubic-bezier(.2,.8,.3,1)}
 
 .nav-icon{
   font-size:19px;
+  transition:transform .22s cubic-bezier(.2,.8,.3,1),filter .22s ease;
 }
 
 .nav-label{
@@ -3264,7 +3376,7 @@ input, textarea, select {
       class="inv-btn secondary"
       onclick="newInventoryList()"
     >
-      🔄 Nuevo conteo de inventario
+      🧹 Nueva lista
     </button>
 
   </div>
@@ -3280,11 +3392,11 @@ input, textarea, select {
     <div class="inventory-order-header">
       <div>
         <h2>📦 Lista de surtido</h2>
-        <p id="inventoryOrderState">Marca cada producto.</p>
+        <p id="inventoryOrderState">Marca cada producto; al terminar se separarán los pendientes.</p>
       </div>
       <span class="inventory-order-count" id="inventoryOrderCount">0 de 0 surtidos</span>
     </div>
-    <p class="inventory-order-note">Marca lo que sí se surtió. Al terminar, lo que quede sin surtir aparecerá como pendiente bajar. Esta lista se guarda en este dispositivo; al conectar la base de datos podremos compartirla entre los celulares.</p>
+    <p class="inventory-order-note">Marca lo que sí se surtió. Al terminar, lo que quede sin marcar aparecerá como pendiente bajar. Esta lista se guarda en este dispositivo; al conectar la base de datos podrá compartirse entre los celulares.</p>
     <div class="inventory-order-items" id="inventoryOrderItems"></div>
     <div class="inventory-order-actions">
       <button type="button" class="inv-btn primary" id="finishInventoryOrderButton" onclick="finishInventoryOrder()">✅ Terminar surtido</button>
@@ -3293,7 +3405,7 @@ input, textarea, select {
     <button type="button" class="inventory-order-new" onclick="startNewInventoryOrder()">🧹 Nueva lista</button>
     <section class="inventory-pending-panel" id="inventoryPendingPanel" hidden>
       <div class="inventory-pending-heading">
-        <h3>📌 Pendiente bajar</h3>
+        <h3>📌 Pendiente Bajar</h3>
         <span id="inventoryPendingCount"></span>
       </div>
       <div class="inventory-pending-items" id="inventoryPendingItems"></div>
@@ -3660,10 +3772,13 @@ input, textarea, select {
      BOTTOM NAV
 ===================================================== -->
 
-<nav class="bottom-nav">
+<nav class="bottom-nav" aria-label="Navegación principal">
+
+  <span class="nav-liquid-indicator" aria-hidden="true"></span>
 
   <button
     class="nav-button active"
+    aria-current="page"
     onclick="goHome()"
   >
 
@@ -4581,6 +4696,8 @@ function toggleMoreMenu(){
   if(panel.hidden){
     panel.hidden=false;
     trigger.setAttribute("aria-expanded","true");
+    moveLiquidNavTo(trigger,true);
+    animateNavSelection(trigger);
     const firstOption=panel.querySelector(".more-menu-option");
     if(firstOption)firstOption.focus();
   }else{
@@ -4593,6 +4710,8 @@ function closeMoreMenu(restoreFocus=true){
   if(!panel||!trigger)return;
   panel.hidden=true;
   trigger.setAttribute("aria-expanded","false");
+  const activeButton=document.querySelector(".bottom-nav .nav-button.active");
+  if(activeButton)moveLiquidNavTo(activeButton,true);
   if(restoreFocus)trigger.focus();
 }
 function openMorePage(page){
@@ -4620,12 +4739,154 @@ document.addEventListener("keydown",event=>{
 });
 function updateNavigation(page){
   const buttons=document.querySelectorAll(".nav-button");
-  buttons.forEach(button=>button.classList.remove("active"));
+  buttons.forEach(button=>{
+    button.classList.remove("active");
+    button.removeAttribute("aria-current");
+  });
   if(page==="home")buttons[0].classList.add("active");
   else if(page==="activities")buttons[1].classList.add("active");
   else if(page==="inventory")buttons[2].classList.add("active");
   else if(page==="recipes")buttons[3].classList.add("active");
   else buttons[4].classList.add("active");
+
+  const activeButton=document.querySelector(".bottom-nav .nav-button.active");
+  if(activeButton){
+    activeButton.setAttribute("aria-current","page");
+    moveLiquidNavTo(activeButton,true);
+    animateNavSelection(activeButton);
+  }
+}
+
+let liquidNavElement=null;
+let liquidNavIndicator=null;
+let liquidNavButtons=[];
+let liquidNavPointer=null;
+let liquidNavClickGuard=false;
+
+function setLiquidNavPosition(left,width){
+  if(!liquidNavElement)return;
+  liquidNavElement.style.setProperty("--nav-liquid-left",`${left}px`);
+  liquidNavElement.style.setProperty("--nav-liquid-width",`${width}px`);
+}
+
+function moveLiquidNavTo(button,glide=true){
+  if(!liquidNavElement||!button)return;
+  const navRect=liquidNavElement.getBoundingClientRect();
+  const buttonRect=button.getBoundingClientRect();
+  setLiquidNavPosition(buttonRect.left-navRect.left-liquidNavElement.clientLeft,buttonRect.width);
+  if(glide&&liquidNavIndicator){
+    liquidNavIndicator.classList.remove("gliding");
+    void liquidNavIndicator.offsetWidth;
+    liquidNavIndicator.classList.add("gliding");
+    setTimeout(()=>liquidNavIndicator&&liquidNavIndicator.classList.remove("gliding"),620);
+  }
+}
+
+function animateNavSelection(button){
+  if(!button)return;
+  button.classList.remove("just-selected");
+  void button.offsetWidth;
+  button.classList.add("just-selected");
+  setTimeout(()=>button.classList.remove("just-selected"),520);
+}
+
+function findLiquidNavButtonAt(clientX){
+  if(!liquidNavButtons.length)return null;
+  return liquidNavButtons.reduce((closest,button)=>{
+    const rect=button.getBoundingClientRect();
+    const distance=Math.abs(clientX-(rect.left+rect.width/2));
+    if(!closest||distance<closest.distance)return{button,distance};
+    return closest;
+  },null).button;
+}
+
+function slideLiquidNavTo(clientX){
+  if(!liquidNavElement||!liquidNavButtons.length)return;
+  const navRect=liquidNavElement.getBoundingClientRect();
+  const firstRect=liquidNavButtons[0].getBoundingClientRect();
+  const lastRect=liquidNavButtons[liquidNavButtons.length-1].getBoundingClientRect();
+  const width=firstRect.width;
+  const minLeft=firstRect.left-navRect.left-liquidNavElement.clientLeft;
+  const maxLeft=lastRect.right-navRect.left-liquidNavElement.clientLeft-width;
+  const left=Math.max(minLeft,Math.min(maxLeft,clientX-navRect.left-liquidNavElement.clientLeft-width/2));
+  setLiquidNavPosition(left,width);
+  if(liquidNavIndicator)liquidNavIndicator.classList.add("gliding");
+}
+
+function selectLiquidNavButton(button){
+  const index=liquidNavButtons.indexOf(button);
+  if(index===0)goHome();
+  else if(index===1)openPage("activities");
+  else if(index===2)openPage("inventory");
+  else if(index===3)openPage("recipes");
+  else if(index===4)toggleMoreMenu();
+}
+
+function initializeLiquidNavigation(){
+  liquidNavElement=document.querySelector(".bottom-nav");
+  if(!liquidNavElement)return;
+  liquidNavIndicator=liquidNavElement.querySelector(".nav-liquid-indicator");
+  liquidNavButtons=Array.from(liquidNavElement.querySelectorAll(".nav-button"));
+  moveLiquidNavTo(liquidNavElement.querySelector(".nav-button.active"),false);
+
+  liquidNavElement.addEventListener("pointerdown",event=>{
+    liquidNavClickGuard=false;
+    const button=event.target.closest(".nav-button")||findLiquidNavButtonAt(event.clientX);
+    if(!button||event.isPrimary===false||(event.pointerType==="mouse"&&event.button!==0))return;
+    liquidNavPointer={id:event.pointerId,startX:event.clientX,startY:event.clientY,lastX:event.clientX,origin:button,dragging:false};
+  });
+
+  liquidNavElement.addEventListener("pointermove",event=>{
+    const gesture=liquidNavPointer;
+    if(!gesture||event.pointerId!==gesture.id)return;
+    gesture.lastX=event.clientX;
+    const deltaX=event.clientX-gesture.startX;
+    const deltaY=event.clientY-gesture.startY;
+    if(!gesture.dragging&&Math.abs(deltaX)>9&&Math.abs(deltaX)>Math.abs(deltaY)*1.15){
+      gesture.dragging=true;
+      try{liquidNavElement.setPointerCapture(event.pointerId)}catch(error){}
+    }
+    if(gesture.dragging){
+      event.preventDefault();
+      slideLiquidNavTo(event.clientX);
+    }
+  });
+
+  liquidNavElement.addEventListener("pointerup",event=>{
+    const gesture=liquidNavPointer;
+    if(!gesture||event.pointerId!==gesture.id)return;
+    liquidNavPointer=null;
+    if(!gesture.dragging){
+      const activeButton=liquidNavElement.querySelector(".nav-button.active")||liquidNavElement.querySelector(".nav-button[aria-expanded='true']");
+      if(activeButton)moveLiquidNavTo(activeButton,false);
+      return;
+    }
+    event.preventDefault();
+    liquidNavClickGuard=true;
+    setTimeout(()=>{liquidNavClickGuard=false},500);
+    const target=findLiquidNavButtonAt(event.clientX);
+    if(target)selectLiquidNavButton(target);
+  });
+
+  liquidNavElement.addEventListener("pointercancel",()=>{
+    liquidNavPointer=null;
+    const activeButton=liquidNavElement.querySelector(".nav-button.active")||liquidNavElement.querySelector(".nav-button[aria-expanded='true']");
+    if(activeButton)moveLiquidNavTo(activeButton,true);
+  });
+
+  liquidNavElement.addEventListener("click",event=>{
+    if(!liquidNavClickGuard)return;
+    const button=event.target.closest(".nav-button");
+    if(!button)return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    liquidNavClickGuard=false;
+  },true);
+
+  window.addEventListener("resize",()=>{
+    const current=liquidNavElement.querySelector(".nav-button[aria-expanded='true']")||liquidNavElement.querySelector(".nav-button.active");
+    if(current)moveLiquidNavTo(current,false);
+  });
 }
 
 
@@ -4888,11 +5149,11 @@ const areaNames={
 
 const areaIcons={
 
-  bodega:"🧹",
+  bodega:"📦",
 
-  bebidas:"🥤",
+  bebidas:"☕",
 
-  comida:"🍓"
+  comida:"🥐"
 
 };
 
@@ -5434,7 +5695,7 @@ function renderInventoryOrder(){
   count.textContent=arrived+" de "+order.items.length+" surtidos";
   state.textContent=order.finalized
     ? "Surtido terminado. Puedes copiar lo que quedó pendiente."
-    : "Marca cada producto; al terminar se separarán los pendientes.";
+    : "Marca cada producto conforme llegue; al terminar se separarán los pendientes.";
   finishButton.hidden=Boolean(order.finalized);
   pendingPanel.hidden=!order.finalized;
   if(order.finalized){
@@ -6199,6 +6460,7 @@ function setupRecipeBook(){
 function initializeApp(){
 
   setupRecipeBook();
+  initializeLiquidNavigation();
   updateDailyChallengeButton();
 
   const savedTheme =
