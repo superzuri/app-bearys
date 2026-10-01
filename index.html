@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -35,6 +34,7 @@ html{
   color-scheme:light;
   overflow-x:hidden;
   -webkit-text-size-adjust:100%;
+  touch-action:manipulation;
 }
 
 html.dark{
@@ -48,6 +48,7 @@ body{
   min-height:100vh;
   min-height:100dvh;
   overflow-x:hidden;
+  touch-action:manipulation;
 
   font-family:
     Inter,
@@ -1942,14 +1943,7 @@ html.dark .menu-card:hover{
   overflow:hidden;
 
   left:50%;
-  bottom:
-    max(
-      8px,
-      calc(
-        8px +
-        var(--safe-bottom)
-      )
-    );
+  bottom:8px;
 
   transform:translateX(-50%);
 
@@ -1996,6 +1990,10 @@ html.dark .menu-card:hover{
   box-shadow:
     0 18px 55px rgba(168,72,111,.16),
     0 0 22px rgba(255,121,173,.07);
+}
+
+@media (display-mode:standalone), (display-mode:fullscreen){
+  .bottom-nav{bottom:calc(8px + var(--safe-bottom,0px))}
 }
 
 .nav-liquid-indicator{
@@ -6508,4 +6506,3 @@ initializeApp();
 
 </body>
 </html>
-
