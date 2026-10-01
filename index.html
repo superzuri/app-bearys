@@ -1413,38 +1413,32 @@ html.dark .menu-card:hover{
   color:var(--pink2);
 }
 
-.result-box{
-
-  width:100%;
-
-  min-height:130px;
-
-  resize:vertical;
-
-  border:
-    1px solid var(--border);
-
-  border-radius:18px;
-
-  padding:13px;
-
-  background:var(--surface);
-
-  color:var(--text);
-
-  outline:0;
-
-  font-family:
-    ui-monospace,
-    SFMono-Regular,
-    Menlo,
-    monospace;
-
-  font-size:12px !important;
-
-  line-height:1.5;
-}
-
+.inventory-order-panel{margin:12px 0 22px;padding:15px;border:1px solid var(--border);border-radius:20px;background:var(--surface);box-shadow:var(--shadow);animation:cardArrival .35s ease both}
+.inventory-order-panel[hidden],.inventory-pending-panel[hidden]{display:none}
+.inventory-order-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.inventory-order-header h2{margin:0;color:var(--text);font-size:14px}
+.inventory-order-header p{margin:5px 0 0;color:var(--muted);font-size:9px;line-height:1.45}
+.inventory-order-count{flex:0 0 auto;padding:6px 9px;border-radius:99px;background:var(--pinksoft);color:var(--pink2);font-size:8px;font-weight:900;white-space:nowrap}
+.inventory-order-note{margin:12px 0;color:var(--muted);font-size:9px;line-height:1.5}
+.inventory-order-items{display:grid;gap:6px;margin:12px 0}
+.inventory-order-item{display:flex;align-items:center;gap:9px;padding:10px;border:1px solid var(--border);border-radius:13px;background:var(--bg)}
+.inventory-order-item input{width:19px;height:19px;flex:0 0 19px;accent-color:var(--pink)}
+.inventory-order-item span{flex:1;min-width:0;color:var(--text);font-size:10px;line-height:1.35}
+.inventory-order-item input:checked+span{color:var(--muted);text-decoration:line-through}
+.inventory-order-item strong{flex:0 0 auto;color:var(--pink2);font-size:9px;white-space:nowrap}
+.inventory-order-empty{margin:10px 0;padding:13px;border-radius:13px;background:var(--pinksoft);color:var(--pink2);font-size:10px;font-weight:800;text-align:center}
+.inventory-order-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+.inventory-order-new{width:100%;margin-top:8px;padding:10px;border:1px solid var(--border);border-radius:12px;background:var(--bg2);color:var(--muted);font-size:9px;font-weight:850;cursor:pointer}
+.inventory-pending-panel{margin-top:14px;padding:13px;border:1px solid rgba(237,79,138,.24);border-radius:16px;background:var(--pinksoft)}
+.inventory-pending-heading{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.inventory-pending-heading h3{margin:0;color:var(--pink2);font-size:12px}
+.inventory-pending-heading span{color:var(--pink2);font-size:8px;font-weight:900}
+.inventory-pending-items{display:grid;gap:6px;margin:10px 0}
+.inventory-pending-item{display:flex;justify-content:space-between;gap:10px;padding:8px 10px;border-radius:11px;background:var(--surface);color:var(--text);font-size:10px}
+.inventory-pending-item strong{color:var(--pink2);white-space:nowrap}
+.inventory-pending-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}
+.inv-btn:disabled{opacity:.5;cursor:not-allowed}
+@media(max-width:360px){.inventory-order-actions,.inventory-pending-actions{grid-template-columns:1fr}.inventory-order-header{flex-wrap:wrap}}
 .inventory-message{
 
   min-height:20px;
@@ -1629,6 +1623,9 @@ html.dark .menu-card:hover{
 .closing-progress-percent{color:var(--pink2);font-size:12px;font-weight:900}
 .closing-progress-track{height:10px;margin-top:8px}
 .closing-progress-track .progress-fill{position:relative;overflow:hidden}
+.closing-progress-actions{display:flex;justify-content:flex-end;margin-top:9px}
+.closing-reset-button{padding:8px 10px;border:1px solid var(--border);border-radius:11px;background:var(--surface);color:var(--muted);font-size:8px;font-weight:850;cursor:pointer;transition:transform .18s ease,background .18s ease}
+.closing-reset-button:hover{transform:translateY(-1px);background:var(--pinksoft);color:var(--pink2)}
 .closing-progress-track .progress-fill::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 25%,rgba(255,255,255,.45) 50%,transparent 75%);background-size:200% 100%;animation:progressShine 2.8s linear infinite}
 @keyframes progressShine{to{background-position:-200% 0}}
 
@@ -2730,20 +2727,20 @@ input, textarea, select {
   <div class="home-progress-card">
     <div class="home-progress-top">
       <div class="home-progress-heading">
-        <div class="home-progress-icon" aria-hidden="true">🌙</div>
+        <div class="home-progress-icon" id="homeActivityProgressIcon" aria-hidden="true">🌙</div>
         <div>
-          <span class="home-progress-eyebrow">AVANCE DE HOY</span>
-          <strong>Cierre de hoy</strong>
+          <span class="home-progress-eyebrow" id="homeActivityProgressEyebrow">AVANCE DE HOY</span>
+          <strong id="homeActivityProgressTitle">Cierre de hoy</strong>
         </div>
       </div>
-      <strong class="home-progress-percent" id="homeClosingProgressPercent">0%</strong>
+      <strong class="home-progress-percent" id="homeActivityProgressPercent">0%</strong>
     </div>
-    <div class="progress-track home-progress-track" id="homeClosingProgressTrack" role="progressbar" aria-label="Avance del checklist de cierre de hoy" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0 actividades completadas">
-      <div class="progress-fill" id="homeClosingProgressBar"></div>
+    <div class="progress-track home-progress-track" id="homeActivityProgressTrack" role="progressbar" aria-label="Avance del checklist del turno de hoy" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0 actividades completadas">
+      <div class="progress-fill" id="homeActivityProgressBar"></div>
     </div>
     <div class="home-progress-footer">
-      <span class="home-progress-count" id="homeClosingProgress">0 de 0 actividades completadas</span>
-      <button type="button" class="home-progress-button" onclick="openPage('activities');selectActivityType('closing')">Abrir checklist <span aria-hidden="true">→</span></button>
+      <span class="home-progress-count" id="homeActivityProgress">0 de 0 actividades completadas</span>
+      <button type="button" class="home-progress-button" onclick="openHomeActivityChecklist()">Abrir checklist <span aria-hidden="true">→</span></button>
     </div>
   </div>
 
@@ -3267,7 +3264,7 @@ input, textarea, select {
       class="inv-btn secondary"
       onclick="newInventoryList()"
     >
-      🧹 Nueva lista
+      🔄 Nuevo conteo de inventario
     </button>
 
   </div>
@@ -3279,12 +3276,33 @@ input, textarea, select {
   ></div>
 
 
-  <textarea
-    id="inventoryResult"
-    class="result-box"
-    readonly
-    placeholder="Aquí aparecerá tu lista de faltantes..."
-  ></textarea>
+  <section class="inventory-order-panel" id="inventoryOrderPanel" hidden aria-live="polite">
+    <div class="inventory-order-header">
+      <div>
+        <h2>📦 Lista de surtido</h2>
+        <p id="inventoryOrderState">Marca cada producto.</p>
+      </div>
+      <span class="inventory-order-count" id="inventoryOrderCount">0 de 0 surtidos</span>
+    </div>
+    <p class="inventory-order-note">Marca lo que sí se surtió. Al terminar, lo que quede sin surtir aparecerá como pendiente bajar. Esta lista se guarda en este dispositivo; al conectar la base de datos podremos compartirla entre los celulares.</p>
+    <div class="inventory-order-items" id="inventoryOrderItems"></div>
+    <div class="inventory-order-actions">
+      <button type="button" class="inv-btn primary" id="finishInventoryOrderButton" onclick="finishInventoryOrder()">✅ Terminar surtido</button>
+      <button type="button" class="inv-btn secondary" onclick="copyInventoryOrder()">📋 Copiar lista completa</button>
+    </div>
+    <button type="button" class="inventory-order-new" onclick="startNewInventoryOrder()">🧹 Nueva lista</button>
+    <section class="inventory-pending-panel" id="inventoryPendingPanel" hidden>
+      <div class="inventory-pending-heading">
+        <h3>📌 Pendiente bajar</h3>
+        <span id="inventoryPendingCount"></span>
+      </div>
+      <div class="inventory-pending-items" id="inventoryPendingItems"></div>
+      <div class="inventory-pending-actions">
+        <button type="button" class="inv-btn primary" id="copyPendingInventoryButton" onclick="copyPendingInventory()">📋 Copiar pendientes</button>
+        <button type="button" class="inv-btn secondary" id="resumeInventoryOrderButton" onclick="resumeInventoryOrder()">↩️ Seguir marcando</button>
+      </div>
+    </section>
+  </section>
 
 </section>
 
@@ -3360,7 +3378,7 @@ input, textarea, select {
   >
     <div class="activity-card">
       <div class="activity-title">📋 Checklist de cierre</div>
-      <p class="activity-group-note">Marca cada tarea al terminar. El avance se guarda por día y cuenta solo las tareas que aplican hoy.</p>
+      <p class="activity-group-note">Marca cada tarea al terminar. El avance se guarda por jornada y cuenta solo las tareas que aplican hoy.</p>
       <div class="closing-progress-panel">
         <div class="closing-progress-summary">
           <span class="activity-progress" id="closingProgress">0 / 0 completadas</span>
@@ -3368,6 +3386,10 @@ input, textarea, select {
         </div>
         <div class="progress-track closing-progress-track" id="closingProgressTrack" role="progressbar" aria-label="Avance de actividades de cierre" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0 actividades completadas">
           <div class="progress-fill" id="closingProgressBar"></div>
+        </div>
+        
+        <div class="closing-progress-actions">
+          <button type="button" class="closing-reset-button" onclick="clearClosingActivities()" aria-label="Destachar todas las actividades de cierre">🧹 Limpiar actividades</button>
         </div>
       </div>
       <label class="activity-item"><input type="checkbox" data-activity="closing-urgentes-envio"><span>Preparar y enviar los urgentes antes de las 5:00 p. m.</span></label>
@@ -3414,6 +3436,7 @@ input, textarea, select {
       <label class="activity-item"><input type="checkbox" data-activity="closing-staff"><span>Cerrar staff.</span></label>
       <label class="activity-item scheduled-activity" data-active-days="3" aria-disabled="true"><input type="checkbox" data-activity="closing-tamales-miercoles"><span>Miércoles por la noche: enviar el total de tamales.</span><small class="activity-day-badge"></small></label>
       <label class="activity-item scheduled-activity" data-active-days="0,1,3,5" aria-disabled="true"><input type="checkbox" data-activity="closing-agua-caliente-dias"><span>Lunes, miércoles, viernes y domingo: echar un poco de agua caliente en las tarjas y la máquina de café.</span><small class="activity-day-badge"></small></label>
+
     </div>
   </div>
 </section>
@@ -4508,6 +4531,8 @@ function openPage(page){
 
   updateNavigation(page);
 
+  if(page==="activities")refreshScheduledActivityView(true);
+
 
   if(page==="calendar" && typeof renderCalendar === "function"){
     renderCalendar();
@@ -4519,6 +4544,7 @@ function openPage(page){
     buildInventory();
 
     updateInventoryStats();
+    renderInventoryOrder();
 
   }
 
@@ -5330,295 +5356,360 @@ function updateInventoryStats(){
 
 
 /* =========================================================
-   GENERAR LISTA
+   LISTA DE SURTIDO Y PENDIENTES
 ========================================================= */
+const INVENTORY_ORDER_KEY="bearyRestockOrder";
+
+function readInventoryOrder(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(INVENTORY_ORDER_KEY)||"null");
+    if(saved&&Array.isArray(saved.items)){
+      if(saved.items.length===0){
+        localStorage.removeItem(INVENTORY_ORDER_KEY);
+        return null;
+      }
+      return saved;
+    }
+  }catch(error){}
+  return null;
+}
+
+function saveInventoryOrder(order){
+  localStorage.setItem(INVENTORY_ORDER_KEY,JSON.stringify(order));
+}
+
+function renderInventoryOrder(){
+  const panel=document.getElementById("inventoryOrderPanel");
+  if(!panel)return;
+  const order=readInventoryOrder();
+  panel.hidden=!order;
+  if(!order)return;
+
+  const itemsBox=document.getElementById("inventoryOrderItems");
+  const state=document.getElementById("inventoryOrderState");
+  const count=document.getElementById("inventoryOrderCount");
+  const finishButton=document.getElementById("finishInventoryOrderButton");
+  const pendingPanel=document.getElementById("inventoryPendingPanel");
+  const pendingBox=document.getElementById("inventoryPendingItems");
+  const pendingCount=document.getElementById("inventoryPendingCount");
+  const copyPendingButton=document.getElementById("copyPendingInventoryButton");
+  const resumeButton=document.getElementById("resumeInventoryOrderButton");
+  const arrived=order.items.filter(item=>item.received).length;
+  const pending=order.items.filter(item=>!item.received);
+
+  itemsBox.innerHTML="";
+  if(order.items.length===0){
+    const empty=document.createElement("p");
+    empty.className="inventory-order-empty";
+    empty.textContent="No hay faltantes urgentes en este inventario. 🧸";
+    itemsBox.appendChild(empty);
+  }else{
+    order.items.forEach((item,index)=>{
+      const row=document.createElement("label");
+      row.className="inventory-order-item";
+      const checkbox=document.createElement("input");
+      checkbox.type="checkbox";
+      checkbox.checked=Boolean(item.received);
+      checkbox.disabled=Boolean(order.finalized);
+      checkbox.setAttribute("aria-label","Marcar como surtido: "+item.name);
+      const name=document.createElement("span");
+      name.textContent=item.name;
+      const amount=document.createElement("strong");
+      amount.textContent="Faltan: "+formatNumber(item.amount);
+      checkbox.addEventListener("change",()=>{
+        const latest=readInventoryOrder();
+        if(!latest||!latest.items[index])return;
+        latest.items[index].received=checkbox.checked;
+        latest.updatedAt=new Date().toISOString();
+        saveInventoryOrder(latest);
+        renderInventoryOrder();
+      });
+      row.appendChild(checkbox);
+      row.appendChild(name);
+      row.appendChild(amount);
+      itemsBox.appendChild(row);
+    });
+  }
+
+  count.textContent=arrived+" de "+order.items.length+" surtidos";
+  state.textContent=order.finalized
+    ? "Surtido terminado. Puedes copiar lo que quedó pendiente."
+    : "Marca cada producto; al terminar se separarán los pendientes.";
+  finishButton.hidden=Boolean(order.finalized);
+  pendingPanel.hidden=!order.finalized;
+  if(order.finalized){
+    pendingBox.innerHTML="";
+    if(pending.length===0){
+      const empty=document.createElement("p");
+      empty.className="inventory-order-empty";
+      empty.textContent="¡Todo llegó! No quedaron productos pendientes. 🐻";
+      pendingBox.appendChild(empty);
+    }else{
+      pending.forEach(item=>{
+        const row=document.createElement("div");
+        row.className="inventory-pending-item";
+        const name=document.createElement("span");
+        name.textContent=item.name;
+        const amount=document.createElement("strong");
+        amount.textContent=formatNumber(item.amount);
+        row.appendChild(name);
+        row.appendChild(amount);
+        pendingBox.appendChild(row);
+      });
+    }
+    pendingCount.textContent=pending.length+" producto"+(pending.length===1?"":"s");
+    copyPendingButton.disabled=pending.length===0;
+    resumeButton.hidden=pending.length===0;
+  }
+}
+
+function inventoryOrderText(items,title){
+  if(items.length===0)return title+"\n\n"+(title==="URGENTES"?"No hay faltantes urgentes. 🧸☕":"No hay productos pendientes. 🧸");
+  return title+"\n\n"+items.map(item=>item.name+": "+formatNumber(item.amount)).join("\n");
+}
 
 function generateInventoryList(){
-
-  let missing=[];
-
-
+  const missing=[];
+  let answered=0;
   products.forEach(product=>{
-
-    const value =
-      getQuantity(
-        product.nombre
-      );
-
-
-    if(value===""){
-      return;
-    }
-
-
-    const number =
-      parseFloat(value);
-
-
-    if(isNaN(number)){
-      return;
-    }
-
-
-    const difference =
-      product.objetivo-number;
-
-
-    if(difference>0){
-
-      missing.push({
-
-        name:
-          product.nombre,
-
-        amount:
-          difference
-
-      });
-
-    }
-
+    const value=getQuantity(product.nombre).trim();
+    if(value==="")return;
+    const number=parseFloat(value);
+    if(isNaN(number))return;
+    answered++;
+    const difference=product.objetivo-number;
+    if(difference>0)missing.push({name:product.nombre,amount:difference,received:false});
   });
 
+  const message=document.getElementById("inventoryMessage");
+  if(answered===0){
+    message.textContent="Registra las existencias para revisar si hay productos urgentes.";
+    return;
+  }
 
-  let result =
-    "URGENTES\n\n";
-
-
+  const existing=readInventoryOrder();
+  const pendingExisting=existing?existing.items.filter(item=>!item.received).length:0;
+  const hasOpenItems=existing&&(!existing.finalized||pendingExisting>0);
   if(missing.length===0){
-
-    result +=
-      "No hay faltantes urgentes. 🧸☕";
-
-  }
-
-  else{
-
-    missing.forEach(item=>{
-
-      result +=
-        item.name +
-        ": " +
-        formatNumber(
-          item.amount
-        ) +
-        "\n";
-
-    });
-
-  }
-
-
-  const textarea =
-    document.getElementById(
-      "inventoryResult"
-    );
-
-  textarea.value=result;
-
-
-  navigator.clipboard
-    .writeText(result)
-    .then(()=>{
-
-      showBearCopied();
-
-    })
-    .catch(()=>{
-
-      textarea.select();
-
-      try{
-
-        document.execCommand(
-          "copy"
-        );
-
-        showBearCopied();
-
-      }catch(error){
-
-        showToast(
-          "📋 Lista generada"
-        );
-
+    const remaining=products.length-answered;
+    const noNeedsMessage=remaining===0
+      ? "No hacen falta productos urgentes. 🧸☕"
+      : "No se encontraron urgentes entre los "+answered+" productos revisados; faltan "+remaining+" por contar.";
+    if(hasOpenItems){
+      const prompt=pendingExisting>0
+        ? "No se encontraron urgentes nuevos, pero hay "+pendingExisting+" productos pendientes en la lista anterior. ¿Quieres borrarla también?"
+        : "No se encontraron urgentes nuevos, pero hay una lista anterior sin cerrar. ¿Quieres borrarla?";
+      if(!confirm(prompt)){
+        message.textContent=noNeedsMessage+" Se conservó la lista anterior.";
+        return;
       }
+    }
+    localStorage.removeItem(INVENTORY_ORDER_KEY);
+    renderInventoryOrder();
+    message.textContent=noNeedsMessage;
+    return;
+  }
 
-    });
+  if(hasOpenItems&&!confirm("Hay una lista de surtido activa o con productos pendientes. ¿Quieres reemplazarla por una nueva?")){
+    message.textContent="Se conservó la lista de surtido anterior.";
+    return;
+  }
 
+  const order={
+    id:Date.now().toString(36),
+    items:missing,
+    finalized:false,
+    createdAt:new Date().toISOString(),
+    updatedAt:new Date().toISOString()
+  };
+  saveInventoryOrder(order);
+  renderInventoryOrder();
+  copyInventoryText(inventoryOrderText(missing,"URGENTES"),"¡Lista urgente copiada! 🧸✨");
+}
+function finishInventoryOrder(){
+  const order=readInventoryOrder();
+  if(!order)return;
+  order.finalized=true;
+  order.updatedAt=new Date().toISOString();
+  saveInventoryOrder(order);
+  renderInventoryOrder();
+  const pending=order.items.filter(item=>!item.received).length;
+  showToast(pending?"📌 Quedaron "+pending+" productos pendientes de surtir":"🎉 ¡Todo quedó surtido!");
 }
 
+function resumeInventoryOrder(){
+  const order=readInventoryOrder();
+  if(!order)return;
+  order.finalized=false;
+  order.updatedAt=new Date().toISOString();
+  saveInventoryOrder(order);
+  renderInventoryOrder();
+}
+
+function copyInventoryOrder(){
+  const order=readInventoryOrder();
+  if(!order)return;
+  copyInventoryText(inventoryOrderText(order.items,"URGENTES"),"¡Lista urgente copiada! 🧸✨");
+}
+
+function copyPendingInventory(){
+  const order=readInventoryOrder();
+  if(!order)return;
+  const pending=order.items.filter(item=>!item.received);
+  copyInventoryText(inventoryOrderText(pending,"PENDIENTE BAJAR"),"¡Pendientes copiados! 📋✨");
+}
+
+function clearInventoryOrder(successMessage){
+  const order=readInventoryOrder();
+  if(!order){
+    showToast("No hay una lista de surtido activa");
+    return true;
+  }
+  const pending=order.items.filter(item=>!item.received).length;
+  const message=pending
+    ? "Quedan "+pending+" productos pendientes. Cópialos antes de limpiar. ¿Quieres borrar esta lista?"
+    : "¿Quieres limpiar el checklist de surtido actual?";
+  if(!confirm(message))return false;
+  localStorage.removeItem(INVENTORY_ORDER_KEY);
+  renderInventoryOrder();
+  showToast(successMessage);
+  return true;
+}
+
+function startNewInventoryOrder(){
+  clearInventoryOrder("Lista anterior limpia. Ya puedes generar una nueva.");
+}
+function copyInventoryText(text,successText){
+  const fallback=()=>{
+    const temporary=document.createElement("textarea");
+    temporary.value=text;
+    temporary.setAttribute("readonly","");
+    temporary.style.position="fixed";
+    temporary.style.left="-9999px";
+    document.body.appendChild(temporary);
+    temporary.select();
+    let copied=false;
+    try{copied=document.execCommand("copy")}catch(error){}
+    temporary.remove();
+    if(copied)showBearCopied(successText);
+    else showToast("📋 La lista está lista para copiar");
+  };
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>showBearCopied(successText)).catch(fallback);
+  }else{
+    fallback();
+  }
+}
 
 function formatNumber(number){
-
   return Number.isInteger(number)
-
     ? number
-
-    : number
-        .toFixed(2)
-        .replace(
-          /\.?0+$/,
-          ""
-        );
-
+    : number.toFixed(2).replace(/\.?0+$/g,"");
 }
-
 
 function newInventoryList(){
-
   products.forEach(product=>{
-
-    localStorage.removeItem(
-      inventoryKey(
-        product.nombre
-      )
-    );
-
+    localStorage.removeItem(inventoryKey(product.nombre));
   });
-
-
-  document
-    .getElementById(
-      "inventoryResult"
-    )
-    .value="";
-
-
-  document
-    .getElementById(
-      "inventoryMessage"
-    )
-    .textContent="";
-
-
+  document.getElementById("inventoryMessage").textContent="";
   buildInventory();
-
   updateInventoryStats();
-
-
-  showToast(
-    "🧹 Inventario listo para comenzar de nuevo"
-  );
-
+  showToast("🧹 Inventario listo para comenzar de nuevo");
 }
 
-
-function showBearCopied(){
-
-  const pop =
-    document.getElementById(
-      "bearPop"
-    );
-
-
-  pop.classList.add(
-    "show"
-  );
-
-
-  setTimeout(()=>{
-
-    pop.classList.remove(
-      "show"
-    );
-
-  },1800);
-
-
-  const message =
-    document.getElementById(
-      "inventoryMessage"
-    );
-
-  message.textContent=
-    "¡Lista copiada! 🧸✨";
-
-
-  setTimeout(()=>{
-
-    message.textContent="";
-
-  },2200);
-
+function showBearCopied(successText="¡Lista copiada! 🧸✨"){
+  const pop=document.getElementById("bearPop");
+  pop.classList.add("show");
+  setTimeout(()=>pop.classList.remove("show"),1800);
+  const message=document.getElementById("inventoryMessage");
+  message.textContent=successText;
+  setTimeout(()=>{message.textContent=""},2200);
 }
-
 
 /* =========================================================
    ACTIVIDADES
 ========================================================= */
 
-function selectActivityType(type){
+let activeActivityType="opening";
+let lastScheduledActivityType=null;
+let lastActivityWorkdayKey=null;
 
-  const opening =
-    document.getElementById(
-      "openingActivities"
-    );
-
-  const closing =
-    document.getElementById(
-      "closingActivities"
-    );
-
-  const openingTab =
-    document.getElementById(
-      "openingTab"
-    );
-
-  const closingTab =
-    document.getElementById(
-      "closingTab"
-    );
-
-
-  if(type==="opening"){
-
-    opening.style.display=
-      "block";
-
-    closing.style.display=
-      "none";
-
-    openingTab.classList.add(
-      "active"
-    );
-
-    closingTab.classList.remove(
-      "active"
-    );
-
-  }
-
-  else{
-
-    opening.style.display=
-      "none";
-
-    closing.style.display=
-      "block";
-
-    openingTab.classList.remove(
-      "active"
-    );
-
-    closingTab.classList.add(
-      "active"
-    );
-
-  }
-
+function getActivityOpeningMinute(day){
+  return day===0||day===6?7*60+30:6*60+30;
 }
 
+function getActivityWorkdayDate(date){
+  const workday=new Date(date.getFullYear(),date.getMonth(),date.getDate());
+  const minutes=date.getHours()*60+date.getMinutes();
+  if(minutes<getActivityOpeningMinute(date.getDay()))workday.setDate(workday.getDate()-1);
+  return workday;
+}
+
+function getActivityWorkdayKey(date){
+  const workday=getActivityWorkdayDate(date);
+  return workday.getFullYear()+"-"+String(workday.getMonth()+1).padStart(2,"0")+"-"+String(workday.getDate()).padStart(2,"0");
+}
+
+function getScheduledActivityType(date){
+  const day=date.getDay();
+  const minutes=date.getHours()*60+date.getMinutes();
+  const openingMinute=getActivityOpeningMinute(day);
+  const closingMinute=day===0?16*60:14*60;
+  return minutes>=openingMinute&&minutes<closingMinute?"opening":"closing";
+}
+
+function refreshScheduledActivityView(forceScheduledType){
+  const now=new Date();
+  const workdayKey=getActivityWorkdayKey(now);
+  if(workdayKey!==lastActivityWorkdayKey){
+    lastActivityWorkdayKey=workdayKey;
+    loadActivities();
+  }
+  const scheduledType=getScheduledActivityType(now);
+  if(forceScheduledType||scheduledType!==lastScheduledActivityType){
+    lastScheduledActivityType=scheduledType;
+    selectActivityType(scheduledType);
+  }
+}
+
+function openHomeActivityChecklist(){
+  openPage("activities");
+  selectActivityType(activeActivityType);
+}
+
+function selectActivityType(type){
+  const opening=document.getElementById("openingActivities");
+  const closing=document.getElementById("closingActivities");
+  const openingTab=document.getElementById("openingTab");
+  const closingTab=document.getElementById("closingTab");
+  const isOpening=type==="opening";
+
+  opening.style.display=isOpening?"block":"none";
+  closing.style.display=isOpening?"none":"block";
+  openingTab.classList.toggle("active",isOpening);
+  closingTab.classList.toggle("active",!isOpening);
+  activeActivityType=type;
+
+  const icon=document.getElementById("homeActivityProgressIcon");
+  const eyebrow=document.getElementById("homeActivityProgressEyebrow");
+  const title=document.getElementById("homeActivityProgressTitle");
+  const track=document.getElementById("homeActivityProgressTrack");
+  if(icon)icon.textContent=isOpening?"🌅":"🌙";
+  if(eyebrow)eyebrow.textContent=isOpening?"AVANCE DE APERTURA":"AVANCE DE CIERRE";
+  if(title)title.textContent=isOpening?"Apertura de hoy":"Cierre de hoy";
+  if(track)track.setAttribute("aria-label","Avance del checklist de "+(isOpening?"apertura":"cierre")+" de hoy");
+  updateActivityProgress(type);
+}
 
 /* =========================================================
    ACTIVIDADES STORAGE
 ========================================================= */
 
 function getActivityStorageKey(activityId){
-  return "bearyActivity_"+getDailyChallengeDateKey(new Date())+"_"+activityId;
+  return "bearyActivity_"+getActivityWorkdayKey(new Date())+"_"+activityId;
 }
 function updateScheduledActivityStates(){
-  const today=new Date().getDay();
+  const today=getActivityWorkdayDate(new Date()).getDay();
   document.querySelectorAll(".scheduled-activity[data-active-days]").forEach(item=>{
     const activeDays=item.dataset.activeDays.split(",").map(Number);
     const appliesToday=activeDays.includes(today);
@@ -5677,6 +5768,7 @@ document
             : "false"
         );
 
+
         updateActivityProgress(
           check.dataset.activity
             .split("-")[0]
@@ -5688,40 +5780,40 @@ document
   });
 
 
-function updateActivityProgress(type){
-
-  const checks=Array.from(document.querySelectorAll("[data-activity^=\"" + type + "-\"]")).filter(check=>!check.disabled);
-
-  let completed=0;
-
-
-  checks.forEach(check=>{
-
-    if(check.checked){
-      completed++;
-    }
-
+function clearClosingActivities(){
+  document.querySelectorAll("#closingActivities [data-activity]").forEach(check=>{
+    check.checked=false;
+    localStorage.removeItem(getActivityStorageKey(check.dataset.activity));
   });
-
-
-  const total =
-    checks.length;
+  updateActivityProgress("closing");
+  showToast("🧹 Checklist de cierre reiniciado");
+}
+function updateActivityProgress(type){
+  const checks=Array.from(document.querySelectorAll("[data-activity^=\""+type+"-\"]")).filter(check=>!check.disabled);
+  const completed=checks.filter(check=>check.checked).length;
+  const total=checks.length;
   const percent=total?Math.round((completed/total)*100):0;
-  const progressBar=document.getElementById("closingProgressBar");
-  const progressPercent=document.getElementById("closingProgressPercent");
-  const progressTrack=document.getElementById("closingProgressTrack");
+  const valueText=total
+    ? completed+" de "+total+" actividades completadas"
+    : "Aún no hay actividades cargadas";
+
   if(type==="closing"){
-    const valueText=completed+" de "+total+" actividades completadas";
+    const progressBar=document.getElementById("closingProgressBar");
+    const progressPercent=document.getElementById("closingProgressPercent");
+    const progressTrack=document.getElementById("closingProgressTrack");
     if(progressBar)progressBar.style.width=percent+"%";
     if(progressPercent)progressPercent.textContent=percent+"%";
     if(progressTrack){
       progressTrack.setAttribute("aria-valuenow",String(percent));
       progressTrack.setAttribute("aria-valuetext",valueText);
     }
-    const homeBar=document.getElementById("homeClosingProgressBar");
-    const homePercent=document.getElementById("homeClosingProgressPercent");
-    const homeCount=document.getElementById("homeClosingProgress");
-    const homeTrack=document.getElementById("homeClosingProgressTrack");
+  }
+
+  if(type===activeActivityType){
+    const homeBar=document.getElementById("homeActivityProgressBar");
+    const homePercent=document.getElementById("homeActivityProgressPercent");
+    const homeCount=document.getElementById("homeActivityProgress");
+    const homeTrack=document.getElementById("homeActivityProgressTrack");
     if(homeBar)homeBar.style.width=percent+"%";
     if(homePercent)homePercent.textContent=percent+"%";
     if(homeCount)homeCount.textContent=valueText;
@@ -5731,27 +5823,9 @@ function updateActivityProgress(type){
     }
   }
 
-
-  const element =
-    document.getElementById(
-      type==="opening"
-        ? "openingProgress"
-        : "closingProgress"
-    );
-
-
-  if(element){
-
-    element.textContent=
-      completed +
-      " / " +
-      total +
-      " completadas";
-
-  }
-
+  const element=document.getElementById(type==="opening"?"openingProgress":"closingProgress");
+  if(element)element.textContent=total?completed+" / "+total+" completadas":"Aún no hay actividades cargadas";
 }
-
 
 /* =========================================================
    TOAST
@@ -6150,6 +6224,7 @@ function initializeApp(){
   loadName();
 
 
+  lastActivityWorkdayKey=getActivityWorkdayKey(new Date());
   loadActivities();
 
 
@@ -6159,9 +6234,11 @@ function initializeApp(){
   updateInventoryStats();
 
 
-  selectActivityType(
-    "opening"
-  );
+  refreshScheduledActivityView();
+  setInterval(refreshScheduledActivityView,30000);
+  document.addEventListener("visibilitychange",()=>{
+    if(!document.hidden)refreshScheduledActivityView();
+  });
 
 }
 
