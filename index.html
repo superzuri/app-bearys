@@ -2767,6 +2767,8 @@ input, textarea, select {
   <button
     class="theme-toggle"
     id="themeToggle"
+    type="button"
+    aria-label="Cambiar modo de color"
     onclick="toggleTheme()"
   >
     🌙
@@ -3137,7 +3139,7 @@ input, textarea, select {
           Modo claro
         </b>
 
-        <small>
+        <small id="appearanceDescription">
           Cambia entre rosa bebé y modo noche
         </small>
 
@@ -3148,6 +3150,32 @@ input, textarea, select {
       </span>
 
     </button>
+
+    <div class="setting-row">
+
+      <span>
+
+        <b>
+          📱 Seguir tema del teléfono
+        </b>
+
+        <small>
+          La app se adapta al modo claro u oscuro del sistema
+        </small>
+
+      </span>
+
+      <button
+        class="mini-toggle"
+        id="systemThemeToggle"
+        type="button"
+        aria-label="Activar tema automático del teléfono"
+        onclick="toggleSystemTheme(event)"
+      >
+        ON
+      </button>
+
+    </div>
 
 
     <div class="setting-row">
@@ -4193,6 +4221,17 @@ function updateBrandDate(){
    TEMA
 ========================================================= */
 
+function getThemeMode(){
+  const saved=localStorage.getItem("bearyThemeMode");
+  return saved==="light"||saved==="dark"?saved:"system";
+}
+
+function getSystemTheme(){
+  return window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches
+    ?"dark"
+    :"light";
+}
+
 function applyTheme(theme){
 
   const dark =
@@ -4224,6 +4263,13 @@ function applyTheme(theme){
         ? "☀️"
         : "🌙";
 
+  const themeToggle=document.getElementById("themeToggle");
+  if(themeToggle){
+    const targetLabel=dark?"modo claro":"modo oscuro";
+    themeToggle.setAttribute("aria-label",`Cambiar manualmente a ${targetLabel}`);
+    themeToggle.title=`Cambiar manualmente a ${targetLabel}`;
+  }
+
   document
     .getElementById("themeColor")
     .setAttribute(
@@ -4253,18 +4299,41 @@ function toggleTheme(){
       .classList
       .contains("dark");
 
-  applyTheme(
-    isDark
-      ? "light"
-      : "dark"
-  );
+  const nextTheme=isDark?"light":"dark";
+  localStorage.setItem("bearyThemeMode",nextTheme);
+  applyTheme(nextTheme);
 
   showToast(
-    isDark
-      ? "☀️ Modo claro activado"
-      : "🌙 Modo noche activado"
+    nextTheme==="dark"
+      ? "🌙 Modo noche manual activado"
+      : "☀️ Modo claro manual activado"
   );
 
+}
+
+function toggleSystemTheme(event){
+  if(event)event.stopPropagation();
+  const currentlyAutomatic=getThemeMode()==="system";
+  if(currentlyAutomatic){
+    const currentTheme=document.documentElement.classList.contains("dark")?"dark":"light";
+    localStorage.setItem("bearyThemeMode",currentTheme);
+    applyTheme(currentTheme);
+    showToast("🎨 Tema automático desactivado");
+  }else{
+    localStorage.setItem("bearyThemeMode","system");
+    applyTheme(getSystemTheme());
+    showToast("📱 Tema del teléfono activado");
+  }
+}
+
+function listenForSystemThemeChanges(){
+  if(!window.matchMedia)return;
+  const preference=window.matchMedia("(prefers-color-scheme: dark)");
+  const update=()=>{
+    if(getThemeMode()==="system")applyTheme(preference.matches?"dark":"light");
+  };
+  if(typeof preference.addEventListener==="function")preference.addEventListener("change",update);
+  else if(typeof preference.addListener==="function")preference.addListener(update);
 }
 
 
@@ -4304,6 +4373,9 @@ function syncSettingsUI(){
     document.getElementById(
       "settingsThemeIcon"
     );
+  const description=document.getElementById("appearanceDescription");
+  const systemThemeToggle=document.getElementById("systemThemeToggle");
+  const automaticTheme=getThemeMode()==="system";
 
   if(title){
     title.textContent=
@@ -4317,6 +4389,21 @@ function syncSettingsUI(){
       dark
         ? "🌙"
         : "☀️";
+  }
+
+  if(description){
+    description.textContent=automaticTheme
+      ?"Sigue el tema actual de tu teléfono. Toca para elegir otro."
+      :"Modo manual · toca para cambiar entre claro y oscuro.";
+  }
+
+  if(systemThemeToggle){
+    systemThemeToggle.textContent=automaticTheme?"ON":"OFF";
+    systemThemeToggle.classList.toggle("off",!automaticTheme);
+    systemThemeToggle.setAttribute("aria-pressed",String(automaticTheme));
+    systemThemeToggle.setAttribute("aria-label",automaticTheme
+      ?"Desactivar tema automático del teléfono"
+      :"Activar tema automático del teléfono");
   }
 
 
@@ -6491,15 +6578,9 @@ function initializeApp(){
   initializeLiquidNavigation();
   updateDailyChallengeButton();
 
-  const savedTheme =
-    localStorage.getItem(
-      "bearyTheme"
-    ) || "light";
-
-
-  applyTheme(
-    savedTheme
-  );
+  const themeMode=getThemeMode();
+  applyTheme(themeMode==="system"?getSystemTheme():themeMode);
+  listenForSystemThemeChanges();
 
 
   updateBrandDate();
