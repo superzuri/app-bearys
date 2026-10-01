@@ -2728,6 +2728,30 @@ input, textarea, select {
 .more-menu-option-copy small{display:block;margin-top:3px;color:var(--muted);font-size:9px}
 .more-menu-chevron{color:var(--pink2);font-size:24px}
 @keyframes moreMenuIn{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+/* En móviles, desplaza el contenido dentro de la app y deja la navegación fija al viewport. */
+@media(max-width:760px),(hover:none) and (pointer:coarse){
+  html,body{
+    height:100%;
+    min-height:100%;
+    overflow:clip;
+  }
+  body{
+    height:100vh;
+    height:100dvh;
+    min-height:100vh;
+    min-height:100dvh;
+  }
+  .app{
+    height:100vh;
+    height:100dvh;
+    min-height:0;
+    overflow-x:clip;
+    overflow-y:auto;
+    overscroll-behavior-y:contain;
+    -webkit-overflow-scrolling:touch;
+  }
+}
 </style>
 </head>
 
@@ -4728,6 +4752,13 @@ function addSeason(){
 }
 function removeSeason(index){seasons.splice(index,1);saveCalendarData();renderCalendar();showToast("Temporada eliminada")}
 
+function resetAppScroll(){
+ const app=document.querySelector(".app");
+ const mobileScroll=window.matchMedia("(max-width:760px), (hover:none) and (pointer:coarse)").matches;
+ if(mobileScroll&&app){app.scrollTop=0;return}
+ window.scrollTo(0,0);
+}
+
 function openPage(page){
 
   const target =
@@ -4757,7 +4788,7 @@ function openPage(page){
 
   if(page==="settings")syncSettingsUI();
 
-  window.scrollTo(0,0);
+  resetAppScroll();
 
 
   updateNavigation(page);
@@ -4801,7 +4832,7 @@ function goHome(){
     .getElementById("homePage")
     .classList.add("active");
 
-  window.scrollTo(0,0);
+  resetAppScroll();
 
   updateNavigation("home");
 
