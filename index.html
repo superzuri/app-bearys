@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -1945,7 +1944,7 @@ html.dark .menu-card:hover{
   overflow:hidden;
 
   left:50%;
-  bottom:calc(8px + var(--visual-viewport-bottom-gap,0px));
+  bottom:18px;
 
   transform:translateX(-50%);
 
@@ -1995,7 +1994,7 @@ html.dark .menu-card:hover{
 }
 
 @media (display-mode:standalone), (display-mode:fullscreen){
-  .bottom-nav{bottom:calc(8px + var(--safe-bottom,0px) + var(--visual-viewport-bottom-gap,0px))}
+  .bottom-nav{bottom:calc(18px + var(--safe-bottom,0px))}
 }
 
 .nav-liquid-indicator{
@@ -4702,14 +4701,6 @@ function removeSeason(index){seasons.splice(index,1);saveCalendarData();renderCa
 
 function openPage(page){
 
-  document
-    .querySelectorAll(".page")
-    .forEach(
-      p=>
-        p.classList.remove("active")
-    );
-
-
   const target =
     document.getElementById(
       page+"Page"
@@ -4718,6 +4709,20 @@ function openPage(page){
   if(!target){
     return;
   }
+
+  const currentPage=document.querySelector(".page.active");
+  if(currentPage===target){
+    updateNavigation(page);
+    return;
+  }
+
+  document
+    .querySelectorAll(".page")
+    .forEach(
+      p=>
+        p.classList.remove("active")
+    );
+
 
   target.classList.add("active");
 
@@ -4749,6 +4754,12 @@ function openPage(page){
 
 
 function goHome(){
+
+  const homePage=document.getElementById("homePage");
+  if(document.querySelector(".page.active")===homePage){
+    updateNavigation("home");
+    return;
+  }
 
   document
     .querySelectorAll(".page")
@@ -4841,29 +4852,12 @@ let liquidNavIndicator=null;
 let liquidNavButtons=[];
 let liquidNavPointer=null;
 let liquidNavClickGuard=false;
-let bottomNavViewportSyncFrame=0;
 let lastTouchStartAt=0;
 
 document.addEventListener("dblclick",event=>{
   if(Date.now()-lastTouchStartAt<1000&&event.cancelable)event.preventDefault();
 },{capture:true});
 document.addEventListener("touchstart",()=>{lastTouchStartAt=Date.now()},{capture:true,passive:true});
-
-function syncBottomNavToVisibleViewport(){
-  const viewport=window.visualViewport;
-  const bottomGap=viewport
-    ?Math.round(window.innerHeight-viewport.offsetTop-viewport.height)
-    :0;
-  document.documentElement.style.setProperty("--visual-viewport-bottom-gap",`${bottomGap}px`);
-}
-
-function queueBottomNavViewportSync(){
-  if(bottomNavViewportSyncFrame)return;
-  bottomNavViewportSyncFrame=requestAnimationFrame(()=>{
-    bottomNavViewportSyncFrame=0;
-    syncBottomNavToVisibleViewport();
-  });
-}
 
 function setLiquidNavPosition(left,width){
   if(!liquidNavElement)return;
@@ -4930,14 +4924,6 @@ function initializeLiquidNavigation(){
   liquidNavIndicator=liquidNavElement.querySelector(".nav-liquid-indicator");
   liquidNavButtons=Array.from(liquidNavElement.querySelectorAll(".nav-button"));
   moveLiquidNavTo(liquidNavElement.querySelector(".nav-button.active"),false);
-
-  syncBottomNavToVisibleViewport();
-  window.addEventListener("resize",queueBottomNavViewportSync,{passive:true});
-  window.addEventListener("orientationchange",queueBottomNavViewportSync,{passive:true});
-  if(window.visualViewport){
-    window.visualViewport.addEventListener("resize",queueBottomNavViewportSync,{passive:true});
-    window.visualViewport.addEventListener("scroll",queueBottomNavViewportSync,{passive:true});
-  }
 
   liquidNavElement.addEventListener("pointerdown",event=>{
     liquidNavClickGuard=false;
@@ -6620,21 +6606,3 @@ initializeApp();
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
