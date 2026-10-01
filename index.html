@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -1938,13 +1939,14 @@ html.dark .menu-card:hover{
 
 .bottom-nav{
 
-  position:fixed;
+  position:fixed !important;
 
   isolation:isolate;
   overflow:hidden;
 
   left:50%;
-  bottom:18px;
+  top:auto !important;
+  bottom:30px !important;
 
   transform:translateX(-50%);
 
@@ -1994,7 +1996,7 @@ html.dark .menu-card:hover{
 }
 
 @media (display-mode:standalone), (display-mode:fullscreen){
-  .bottom-nav{bottom:calc(18px + var(--safe-bottom,0px))}
+  .bottom-nav{bottom:calc(30px + var(--safe-bottom,0px)) !important}
 }
 
 .nav-liquid-indicator{
@@ -4921,6 +4923,9 @@ function selectLiquidNavButton(button){
 function initializeLiquidNavigation(){
   liquidNavElement=document.querySelector(".bottom-nav");
   if(!liquidNavElement)return;
+  if(liquidNavElement.parentElement!==document.body){
+    document.body.appendChild(liquidNavElement);
+  }
   liquidNavIndicator=liquidNavElement.querySelector(".nav-liquid-indicator");
   liquidNavButtons=Array.from(liquidNavElement.querySelectorAll(".nav-button"));
   moveLiquidNavTo(liquidNavElement.querySelector(".nav-button.active"),false);
@@ -6606,3 +6611,21 @@ initializeApp();
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
