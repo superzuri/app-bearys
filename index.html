@@ -35,6 +35,7 @@ html{
   background:#fff8fb;
   color-scheme:light;
   overflow-x:hidden;
+  overflow-x:clip;
   -webkit-text-size-adjust:100%;
   touch-action:manipulation;
 }
@@ -50,6 +51,7 @@ body{
   min-height:100vh;
   min-height:100dvh;
   overflow-x:hidden;
+  overflow-x:clip;
   touch-action:manipulation;
 
   font-family:
@@ -217,7 +219,7 @@ html.dark{
 
   padding-bottom:
     calc(
-      94px +
+      124px +
       var(--safe-bottom)
     );
 }
@@ -1946,7 +1948,7 @@ html.dark .menu-card:hover{
 
   left:50%;
   top:auto !important;
-  bottom:30px !important;
+  bottom:42px !important;
 
   transform:translateX(-50%);
 
@@ -1996,7 +1998,7 @@ html.dark .menu-card:hover{
 }
 
 @media (display-mode:standalone), (display-mode:fullscreen){
-  .bottom-nav{bottom:calc(30px + var(--safe-bottom,0px)) !important}
+  .bottom-nav{bottom:calc(42px + var(--safe-bottom,0px)) !important}
 }
 
 .nav-liquid-indicator{
@@ -2560,6 +2562,7 @@ html, body {
   max-width:100%;
   min-width:0;
   overflow-x:hidden;
+  overflow-x:clip;
   -webkit-text-size-adjust:100%;
 }
 
@@ -2592,9 +2595,10 @@ input, textarea, select {
 .calendar-day{position:relative;min-height:46px;border-radius:13px;background:var(--bg2);border:1px solid transparent;color:var(--text);padding:6px 5px;text-align:left;cursor:default}.calendar-day.empty{background:transparent;cursor:default}.calendar-day.today{border-color:var(--pink);box-shadow:0 0 0 2px rgba(255,121,173,.10)}.calendar-day-number{font-size:10px;font-weight:850}.calendar-event-dot{display:inline-block;width:5px;height:5px;border-radius:50%;margin:7px 2px 0 0}.calendar-event-dot.birthday{background:#ff79ad}.calendar-event-dot.season{background:#c58b4e}.calendar-event-emoji{display:inline-block;margin:6px 2px 0 0;font-size:10px;line-height:1;vertical-align:middle}.calendar-event-count{font-size:7px;color:var(--muted)}
 .calendar-legend{display:flex;gap:15px;margin:-3px 3px 14px;color:var(--muted);font-size:9px}.calendar-legend span{display:flex;align-items:center;gap:5px}.dot{width:8px;height:8px;border-radius:50%;display:inline-block}.dot.birthday{background:#ff79ad}.dot.season{background:#c58b4e}
 .calendar-section-title{font-size:13px;font-weight:900}.calendar-help{margin-top:5px;color:var(--muted);font-size:9px;line-height:1.5}.calendar-form-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:8px;margin-top:11px}.calendar-input{width:100%;padding:11px 10px;border-radius:13px;border:1px solid var(--border);background:var(--surface);color:var(--text);outline:0}.calendar-input:focus{border-color:var(--pink)}.calendar-add-button{width:100%;margin-top:8px;padding:12px;border-radius:14px;background:var(--pink);color:white;font-weight:850;cursor:pointer}.event-list{margin-top:10px;display:grid;gap:7px}.event-item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 11px;border-radius:14px;background:var(--bg2);border:1px solid var(--border)}.event-item-main{min-width:0}.event-item-title{font-size:11px;font-weight:850}.event-item-meta{margin-top:3px;color:var(--muted);font-size:8px}.event-item button{flex:0 0 auto;padding:7px 9px;border-radius:10px;background:var(--surface);color:var(--danger);font-size:9px;font-weight:800;cursor:pointer}
-.season-edit{display:grid;grid-template-columns:58px minmax(0,1fr) 104px 104px auto;gap:7px;align-items:end}
+.season-edit{display:grid;grid-template-columns:52px minmax(80px,1fr) 88px 88px 104px auto;gap:7px;align-items:end}
 .season-field{display:grid;gap:4px;min-width:0;color:var(--muted);font-size:8px;font-weight:750}
 .season-field input{width:100%;min-width:0;padding:9px 7px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);font-size:16px!important}
+.season-field select{width:100%;min-width:0;padding:10px 7px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);font-size:12px;font-weight:700}
 .season-emoji-input{text-align:center;font-size:19px!important}
 .season-edit button{padding:9px;border-radius:10px;background:var(--pinksoft);color:var(--pink2);font-size:9px;font-weight:800;cursor:pointer}
 .season-event-item{display:block}
@@ -3736,7 +3740,7 @@ input, textarea, select {
  <button type="button" id="seasonEditorToggle" class="calendar-editor-toggle" aria-expanded="false" aria-controls="seasonEditorPanel" onclick="toggleSeasonEditor()">🗓️ Modificar temporadas</button>
  <div id="seasonEditorPanel" class="calendar-card season-editor-panel" hidden>
   <div class="calendar-section-title">🎃 Temporadas y temáticas</div>
-  <p class="calendar-help">Edita el nombre, emoji y fechas de cada temporada. Se repiten cada año; usa formato día/mes.</p>
+  <p class="calendar-help">Edita el nombre, emoji, fechas y frecuencia de cada temporada. Usa formato día/mes.</p>
   <div id="seasonList" class="event-list"></div>
   <button class="calendar-add-button" onclick="addSeason()">✨ Agregar temporada</button>
  </div>
@@ -4524,13 +4528,15 @@ const defaultSeasons=[
  {id:"reyes",emoji:"👑",name:"Temporada de Reyes",start:"01-01",end:"01-06"},
  {id:"febrero",emoji:"💗",name:"Febrero / San Valentín",start:"02-01",end:"02-14"},
  {id:"primavera",emoji:"🌸",name:"Primavera",start:"03-20",end:"05-31"},
+ {id:"mundial",emoji:"⚽",name:"Mundial de fútbol",start:"06-11",end:"07-19",intervalYears:4,anchorYear:2026},
 
  {id:"independencia",emoji:"🇲🇽",name:"Independencia de México",start:"09-01",end:"09-16"},
  {id:"otono",emoji:"🍂",name:"Otoño",start:"09-21",end:"11-02"},
  {id:"halloween",emoji:"🎃",name:"Halloween",start:"10-15",end:"10-31"},
  {id:"navidad",emoji:"🎄",name:"Temporada de Navidad",start:"11-03",end:"12-31"}
 ];
-const seasonEmojiOptions=["👑","💗","🌸","☀️","🇲🇽","🍂","🎃","🎄","✨","❄️","🌷"];
+const SEASON_SCHEMA_VERSION="4";
+const seasonEmojiOptions=["👑","💗","🌸","☀️","🇲🇽","🍂","🎃","🎄","⚽","✨","❄️","🌷"];
 function readStoredArray(key){
  try{
   const value=JSON.parse(localStorage.getItem(key)||"null");
@@ -4564,21 +4570,25 @@ function normalizeSeasonRecord(record,index){
  const oldEmoji=seasonEmojiOptions.find(emoji=>rawName.startsWith(emoji))||"";
  const emoji=String(item.emoji||oldEmoji||fallback?.emoji||"✨").trim()||"✨";
  const name=(oldEmoji?rawName.slice(oldEmoji.length):rawName).trim()||fallback?.name||"Temporada";
- return {id:String(item.id||fallback?.id||`custom-${index+1}`),emoji,name,start:normalizeSeasonDate(item.start,fallback?.start||"01-01"),end:normalizeSeasonDate(item.end,fallback?.end||"01-01")};
+ const intervalCandidate=Number(item.intervalYears??fallback?.intervalYears??1);
+ const intervalYears=intervalCandidate===4?4:1;
+ const anchorCandidate=Number(item.anchorYear??fallback?.anchorYear??new Date().getFullYear());
+ const anchorYear=Number.isInteger(anchorCandidate)?anchorCandidate:new Date().getFullYear();
+ return {id:String(item.id||fallback?.id||`custom-${index+1}`),emoji,name,start:normalizeSeasonDate(item.start,fallback?.start||"01-01"),end:normalizeSeasonDate(item.end,fallback?.end||"01-01"),intervalYears,anchorYear};
 }
 function loadSeasons(){
  const saved=readStoredArray("bearySeasons");
  if(saved===null){
-  try{localStorage.setItem("bearySeasonsSchema","3")}catch(error){}
+  try{localStorage.setItem("bearySeasonsSchema",SEASON_SCHEMA_VERSION)}catch(error){}
   return defaultSeasons.map(season=>({...season}));
  }
  const loaded=saved.map(normalizeSeasonRecord).filter(season=>season.id!=="verano");
  const hadRemovedSummer=saved.some(item=>item&&item.id==="verano");
- if(localStorage.getItem("bearySeasonsSchema")!=="3"||hadRemovedSummer){
+ if(localStorage.getItem("bearySeasonsSchema")!==SEASON_SCHEMA_VERSION||hadRemovedSummer){
   defaultSeasons.forEach(season=>{
    if(!loaded.some(item=>item.id===season.id))loaded.push({...season});
   });
-  try{localStorage.setItem("bearySeasons",JSON.stringify(loaded));localStorage.setItem("bearySeasonsSchema","3")}catch(error){}
+  try{localStorage.setItem("bearySeasons",JSON.stringify(loaded));localStorage.setItem("bearySeasonsSchema",SEASON_SCHEMA_VERSION)}catch(error){}
  }
  return loaded;
 }
@@ -4587,7 +4597,7 @@ function saveCalendarData(){
  try{
   localStorage.setItem("bearyBirthdays",JSON.stringify(birthdays));
   localStorage.setItem("bearySeasons",JSON.stringify(seasons));
-  localStorage.setItem("bearySeasonsSchema","3");
+  localStorage.setItem("bearySeasonsSchema",SEASON_SCHEMA_VERSION);
  }catch(error){showToast("No se pudieron guardar los cambios")}
 }
 function dateKey(y,m,d){return `${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`}
@@ -4600,6 +4610,16 @@ function parseSeasonDateInput(value){
  if(month<1||month>12||day<1||day>new Date(2000,month,0).getDate())return null;
  return `${String(month).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
 }
+function seasonIsActiveOnDate(season,year,monthDay){
+ const wrapsYear=season.start>season.end;
+ const inRange=wrapsYear?monthDay>=season.start||monthDay<=season.end:monthDay>=season.start&&monthDay<=season.end;
+ if(!inRange)return false;
+ const interval=Number(season.intervalYears)||1;
+ if(interval<=1)return true;
+ const occurrenceStartYear=wrapsYear&&monthDay<=season.end?year-1:year;
+ const anchorYear=Number(season.anchorYear)||occurrenceStartYear;
+ return ((occurrenceStartYear-anchorYear)%interval+interval)%interval===0;
+}
 function calendarEventsForDate(y,m,d){
  const monthDay=`${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
  const list=[];
@@ -4608,7 +4628,7 @@ function calendarEventsForDate(y,m,d){
   if(birthdayDate.getMonth()===m&&birthdayDate.getDate()===d)list.push({type:"birthday",title:birthday.name,id:index});
  });
  seasons.forEach((season,index)=>{
-  const active=season.start<=season.end?monthDay>=season.start&&monthDay<=season.end:monthDay>=season.start||monthDay<=season.end;
+  const active=seasonIsActiveOnDate(season,y,monthDay);
   if(active)list.push({type:"season",title:`${season.emoji} ${season.name}`,emoji:season.emoji,id:index});
  });
  return list;
@@ -4680,7 +4700,7 @@ function toggleSeasonEditor(force){
 function renderSeasonList(){
  const box=document.getElementById("seasonList");if(!box)return;
  if(!seasons.length){box.innerHTML='<div class="event-item"><div class="event-item-main"><div class="event-item-title">No hay temporadas guardadas</div><div class="event-item-meta">Agrega una para verla en el calendario.</div></div></div>';return}
- box.innerHTML=seasons.map((season,index)=>`<div class="event-item season-event-item"><div class="season-edit"><label class="season-field"><span>Emoji</span><input class="season-emoji-input" type="text" maxlength="12" aria-label="Emoji de ${escapeHtml(season.name)}" value="${escapeHtml(season.emoji)}" onchange="updateSeason(${index},'emoji',this.value)"></label><label class="season-field"><span>Temporada</span><input type="text" maxlength="50" aria-label="Nombre de temporada" value="${escapeHtml(season.name)}" onchange="updateSeason(${index},'name',this.value)"></label><label class="season-field season-date-field"><span>Inicio (DD/MM)</span><input type="text" inputmode="numeric" maxlength="5" placeholder="DD/MM" aria-label="Fecha de inicio de ${escapeHtml(season.name)}" value="${formatSeasonDate(season.start)}" onchange="updateSeasonDate(${index},'start',this.value)"></label><label class="season-field season-date-field"><span>Fin (DD/MM)</span><input type="text" inputmode="numeric" maxlength="5" placeholder="DD/MM" aria-label="Fecha de fin de ${escapeHtml(season.name)}" value="${formatSeasonDate(season.end)}" onchange="updateSeasonDate(${index},'end',this.value)"></label><button type="button" onclick="removeSeason(${index})" aria-label="Eliminar ${escapeHtml(season.name)}">Eliminar</button></div></div>`).join("");
+ box.innerHTML=seasons.map((season,index)=>`<div class="event-item season-event-item"><div class="season-edit"><label class="season-field"><span>Emoji</span><input class="season-emoji-input" type="text" maxlength="12" aria-label="Emoji de ${escapeHtml(season.name)}" value="${escapeHtml(season.emoji)}" onchange="updateSeason(${index},'emoji',this.value)"></label><label class="season-field"><span>Temporada</span><input type="text" maxlength="50" aria-label="Nombre de temporada" value="${escapeHtml(season.name)}" onchange="updateSeason(${index},'name',this.value)"></label><label class="season-field season-date-field"><span>Inicio (DD/MM)</span><input type="text" inputmode="numeric" maxlength="5" placeholder="DD/MM" aria-label="Fecha de inicio de ${escapeHtml(season.name)}" value="${formatSeasonDate(season.start)}" onchange="updateSeasonDate(${index},'start',this.value)"></label><label class="season-field season-date-field"><span>Fin (DD/MM)</span><input type="text" inputmode="numeric" maxlength="5" placeholder="DD/MM" aria-label="Fecha de fin de ${escapeHtml(season.name)}" value="${formatSeasonDate(season.end)}" onchange="updateSeasonDate(${index},'end',this.value)"></label><label class="season-field"><span>Frecuencia</span><select aria-label="Frecuencia de ${escapeHtml(season.name)}" onchange="updateSeasonFrequency(${index},this.value)"><option value="1" ${season.intervalYears===4?"":"selected"}>Cada año</option><option value="4" ${season.intervalYears===4?"selected":""}>Cada 4 años</option></select></label><button type="button" onclick="removeSeason(${index})" aria-label="Eliminar ${escapeHtml(season.name)}">Eliminar</button></div></div>`).join("");
 }
 function updateSeason(index,field,value){
  const season=seasons[index];if(!season)return;
@@ -4695,8 +4715,15 @@ function updateSeasonDate(index,field,value){
  if(!parsed){showToast("Usa el formato día/mes, por ejemplo 03/11");renderSeasonList();return}
  season[field]=parsed;saveCalendarData();renderCalendar(false);showToast("🗓️ Temporada actualizada");
 }
+function updateSeasonFrequency(index,value){
+ const season=seasons[index];if(!season)return;
+ const nextInterval=Number(value)===4?4:1;
+ if(nextInterval===4&&Number(season.intervalYears)!==4)season.anchorYear=new Date().getFullYear();
+ season.intervalYears=nextInterval;
+ saveCalendarData();renderCalendar(false);showToast("🗓️ Frecuencia actualizada");
+}
 function addSeason(){
- seasons.push({id:`custom-${Date.now()}`,emoji:"✨",name:"Nueva temporada",start:"01-01",end:"01-01"});
+ seasons.push({id:`custom-${Date.now()}`,emoji:"✨",name:"Nueva temporada",start:"01-01",end:"01-01",intervalYears:1,anchorYear:new Date().getFullYear()});
  saveCalendarData();renderCalendar();showToast("✨ Temporada agregada");
 }
 function removeSeason(index){seasons.splice(index,1);saveCalendarData();renderCalendar();showToast("Temporada eliminada")}
@@ -6611,21 +6638,3 @@ initializeApp();
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
