@@ -5028,6 +5028,7 @@ function openPage(page){
   const currentPage=document.querySelector(".page.active");
   if(currentPage===target){
     updateNavigation(page);
+    settleLiquidNavigationViewport();
     return;
   }
 
@@ -5047,6 +5048,7 @@ function openPage(page){
 
 
   updateNavigation(page);
+  settleLiquidNavigationViewport();
 
   if(page==="activities")refreshScheduledActivityView(true);
 
@@ -5075,6 +5077,7 @@ function goHome(){
   const homePage=document.getElementById("homePage");
   if(document.querySelector(".page.active")===homePage){
     updateNavigation("home");
+    settleLiquidNavigationViewport();
     return;
   }
 
@@ -5092,6 +5095,7 @@ function goHome(){
   resetAppScroll();
 
   updateNavigation("home");
+  settleLiquidNavigationViewport();
 
 }
 
@@ -5171,6 +5175,7 @@ let liquidNavPointer=null;
 let liquidNavClickGuard=false;
 let lastTouchStartAt=0;
 let liquidNavViewportFrame=0;
+let liquidNavStableViewportHeight=Math.max(Number(window.innerHeight)||0,Number(document.documentElement.clientHeight)||0);
 
 function isAppleMobileBrowser(){
   const ua=navigator.userAgent||"";
@@ -5183,26 +5188,52 @@ function syncLiquidNavigationViewport(){
   if(liquidNavViewportFrame)cancelAnimationFrame(liquidNavViewportFrame);
   liquidNavViewportFrame=requestAnimationFrame(()=>{
     liquidNavViewportFrame=0;
-    const height=Number(viewport.height);
-    if(!Number.isFinite(height)||height<200)return;
+    const reportedHeight=Number(viewport.height);
+    const layoutHeight=Math.max(Number(window.innerHeight)||0,Number(document.documentElement.clientHeight)||0);
+    if(!Number.isFinite(reportedHeight)||reportedHeight<200||layoutHeight<200)return;
+    const fullHeightCandidate=Math.max(layoutHeight,reportedHeight);
 
     const focused=document.activeElement;
     const isTextEntry=!!focused&&(focused.isContentEditable||focused.tagName==="TEXTAREA"||(
       focused.tagName==="INPUT"&&!/^(button|submit|reset|checkbox|radio|file|range|color|image|hidden)$/i.test(focused.type||"text")
     ));
-    const screenHeight=Number(window.screen&&window.screen.height)||window.innerHeight;
-    const keyboardOpen=isTextEntry&&height<Math.max(200,screenHeight-160);
-    const top=keyboardOpen?Math.max(0,Number(viewport.offsetTop)||0):0;
+    const viewportStillReduced=reportedHeight<liquidNavStableViewportHeight-120;
 
-    liquidNavElement.style.setProperty("--nav-viewport-top",`${top}px`);
-    liquidNavElement.style.setProperty("--nav-viewport-height",`${height}px`);
+    // Keep the last full app height while iOS reports the keyboard's smaller viewport.
+    // This also covers the case where the keyboard closes but the input keeps focus.
+    if(!viewportStillReduced&&!isTextEntry){
+      liquidNavStableViewportHeight=fullHeightCandidate;
+    }
+
+    if(!Number.isFinite(liquidNavStableViewportHeight)||liquidNavStableViewportHeight<200){
+      liquidNavStableViewportHeight=layoutHeight;
+    }
+
+    liquidNavElement.style.setProperty("--nav-viewport-top","0px");
+    liquidNavElement.style.setProperty("--nav-viewport-height",`${liquidNavStableViewportHeight}px`);
     liquidNavElement.style.setProperty("--nav-live-height",`${liquidNavElement.getBoundingClientRect().height}px`);
     liquidNavElement.classList.add("viewport-synced");
   });
 }
 
 function settleLiquidNavigationViewport(){
-  [0,90,260,560].forEach(delay=>setTimeout(syncLiquidNavigationViewport,delay));
+  if(!liquidNavElement||!isAppleMobileBrowser()||!window.visualViewport)return;
+  [0,100,280,600,1000,1600].forEach(delay=>setTimeout(syncLiquidNavigationViewport,delay));
+}
+
+function refreshLiquidNavigationAfterOrientation(){
+  [120,360,760].forEach(delay=>setTimeout(()=>{
+    const focused=document.activeElement;
+    const isTextEntry=!!focused&&(focused.isContentEditable||focused.tagName==="TEXTAREA"||(
+      focused.tagName==="INPUT"&&!/^(button|submit|reset|checkbox|radio|file|range|color|image|hidden)$/i.test(focused.type||"text")
+    ));
+    const height=Math.min(
+      Math.max(Number(window.innerHeight)||0,Number(document.documentElement.clientHeight)||0),
+      Number(window.visualViewport&&window.visualViewport.height)||Infinity
+    );
+    if(!isTextEntry&&height>200)liquidNavStableViewportHeight=height;
+    syncLiquidNavigationViewport();
+  },delay));
 }
 
 document.addEventListener("dblclick",event=>{
@@ -5370,9 +5401,10 @@ function initializeLiquidNavigation(){
   });
 
   if(isAppleMobileBrowser()&&window.visualViewport){
+    document.querySelector(".app")?.addEventListener("scroll",syncLiquidNavigationViewport,{passive:true});
     window.visualViewport.addEventListener("resize",syncLiquidNavigationViewport,{passive:true});
     window.visualViewport.addEventListener("scroll",syncLiquidNavigationViewport,{passive:true});
-    window.addEventListener("orientationchange",settleLiquidNavigationViewport,{passive:true});
+    window.addEventListener("orientationchange",refreshLiquidNavigationAfterOrientation,{passive:true});
     window.addEventListener("pageshow",settleLiquidNavigationViewport,{passive:true});
     document.addEventListener("visibilitychange",()=>{
       if(document.visibilityState==="visible")settleLiquidNavigationViewport();
