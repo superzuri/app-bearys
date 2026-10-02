@@ -1956,8 +1956,8 @@ html.dark .menu-card:hover{
   isolation:isolate;
   overflow:hidden;
 
-  left:max(8px,var(--safe-left));
-  right:max(8px,var(--safe-right));
+  left:0;
+  right:0;
   top:auto !important;
   bottom:42px !important;
   margin-left:auto;
@@ -1965,6 +1965,7 @@ html.dark .menu-card:hover{
 
   z-index:2000;
 
+  width:calc(100% - max(16px,calc(var(--safe-left) + var(--safe-right))));
   max-width:590px;
 
   height:68px;
@@ -2814,27 +2815,26 @@ input, textarea, select {
 .more-menu-chevron{color:var(--pink2);font-size:24px}
 @keyframes moreMenuIn{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 
-/* En móviles, desplaza el contenido dentro de la app y deja la navegación fija al viewport. */
+/* En móviles, usa el scroll del documento para que iOS mantenga estables los elementos fijos. */
 @media(max-width:760px),(hover:none) and (pointer:coarse){
   html,body{
-    height:100%;
+    height:auto;
     min-height:100%;
-    overflow:clip;
+    overflow-x:clip;
+    overflow-y:visible;
   }
   body{
-    height:100vh;
-    height:100svh;
+    height:auto;
     min-height:100vh;
-    min-height:100svh;
+    min-height:100dvh;
   }
   .app{
-    height:100vh;
-    height:100svh;
-    min-height:0;
-    overflow-x:clip;
-    overflow-y:auto;
-    overscroll-behavior-y:contain;
-    -webkit-overflow-scrolling:touch;
+    height:auto;
+    min-height:100vh;
+    min-height:100dvh;
+    overflow:visible;
+    overscroll-behavior-y:auto;
+    -webkit-overflow-scrolling:auto;
   }
 }
 
@@ -4995,7 +4995,7 @@ function removeSeason(index){seasons.splice(index,1);saveCalendarData();renderCa
 function resetAppScroll(){
  const app=document.querySelector(".app");
  const mobileScroll=window.matchMedia("(max-width:760px), (hover:none) and (pointer:coarse)").matches;
- if(mobileScroll&&app){app.scrollTop=0;return}
+ if(mobileScroll&&app&&getComputedStyle(app).overflowY==="auto")app.scrollTop=0;
  window.scrollTo(0,0);
 }
 
