@@ -9,7 +9,7 @@
   content="width=device-width, initial-scale=1.0, viewport-fit=cover"
 >
 
-<meta name="theme-color" content="#fff8fb" id="themeColor">
+<meta name="theme-color" content="#fff0f2" id="themeColor">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -32,7 +32,7 @@
 html{
   width:100%;
   min-height:100%;
-  background:#fff8fb;
+  background:var(--bg);
   color-scheme:light;
   overflow-x:hidden;
   overflow-x:clip;
@@ -64,19 +64,19 @@ body{
   background:
     radial-gradient(
       circle at 5% 4%,
-      rgba(255,188,214,.35),
+      rgba(250,190,196,.42),
       transparent 24%
     ),
     radial-gradient(
       circle at 96% 20%,
-      rgba(255,213,229,.4),
+      rgba(255,203,210,.4),
       transparent 25%
     ),
     linear-gradient(
       180deg,
-      #fff8fb 0%,
-      #fff0f6 55%,
-      #fff8fb 100%
+      #fff0f2 0%,
+      #ffe6e9 55%,
+      #fff0f2 100%
     );
 
   color:#452c38;
@@ -137,24 +137,28 @@ button:active{
 
 :root{
 
-  --bg:#fff4f8;
-  --surface:#fffafb;
-  --surface2:rgba(255,250,252,.95);
+  --bg:#fff0f2;
+  --bg2:#fae5e8;
+  --surface:#fff6f7;
+  --surface2:rgba(255,243,245,.97);
 
   --text:#452c38;
-  --muted:#987684;
+  --muted:#805e6b;
 
   --pink:#ff79ad;
   --pink2:#ed4f8a;
 
-  --pinksoft:#ffdce9;
-  --border:#f4cbdc;
+  --pinksoft:#f9dce2;
+  --border:#edc5cd;
 
   --shadow:
     0 14px 35px rgba(187,83,125,.13);
 
-  --nav:
-    rgba(255,255,255,.94);
+  --nav:rgba(255,237,241,.66);
+  --nav-edge:rgba(255,255,255,.72);
+  --nav-highlight:rgba(255,255,255,.6);
+  --nav-tint:rgba(245,188,197,.22);
+  --nav-shadow:rgba(145,77,90,.14);
 
   --success:#51c88a;
   --danger:#ef6289;
@@ -163,7 +167,7 @@ button:active{
   --safe-bottom:env(safe-area-inset-bottom);
   --safe-left:env(safe-area-inset-left);
   --safe-right:env(safe-area-inset-right);
-  --chrome-bg:#fff8fb;
+  --chrome-bg:#fff0f2;
 }
 
 
@@ -174,6 +178,7 @@ button:active{
 html.dark{
 
   --bg:#171216;
+  --bg2:#33232b;
   --surface:#281d24;
   --surface2:rgba(40,29,36,.96);
 
@@ -189,8 +194,11 @@ html.dark{
   --shadow:
     0 16px 38px rgba(0,0,0,.30);
 
-  --nav:
-    rgba(30,22,27,.96);
+  --nav:rgba(30,22,27,.66);
+  --nav-edge:rgba(255,255,255,.2);
+  --nav-highlight:rgba(255,255,255,.12);
+  --nav-tint:rgba(255,112,165,.1);
+  --nav-shadow:rgba(0,0,0,.38);
 
   --success:#67d69b;
   --danger:#ff779d;
@@ -1979,22 +1987,25 @@ html.dark .menu-card:hover{
 
   padding:6px;
 
-  border:
-    1px solid var(--border);
+  border:1px solid var(--nav-edge);
 
-  border-radius:25px;
+  border-radius:34px;
 
-  background:linear-gradient(145deg,rgba(255,255,255,.34),transparent 46%),var(--nav);
+  background:
+    linear-gradient(150deg,var(--nav-highlight),transparent 44%),
+    linear-gradient(315deg,var(--nav-tint),transparent 62%),
+    var(--nav);
   user-select:none;
   -webkit-user-select:none;
   touch-action:pan-y pinch-zoom;
 
-  backdrop-filter:blur(28px) saturate(1.35);
-  -webkit-backdrop-filter:blur(28px) saturate(1.35);
+  backdrop-filter:blur(24px) saturate(1.38) brightness(1.03);
+  -webkit-backdrop-filter:blur(24px) saturate(1.38) brightness(1.03);
 
   box-shadow:
-    0 18px 55px rgba(168,72,111,.16),
-    0 0 22px rgba(255,121,173,.07);
+    0 12px 34px var(--nav-shadow),
+    inset 0 1px 0 var(--nav-highlight),
+    inset 0 -1px 0 rgba(105,61,81,.05);
 }
 
 @media (display-mode:standalone), (display-mode:fullscreen){
@@ -2006,17 +2017,20 @@ html.dark .menu-card:hover{
   z-index:0;
   top:6px;
   bottom:6px;
-  left:var(--nav-liquid-left,6px);
+  left:0;
   width:var(--nav-liquid-width,calc((100% - 26px)/5));
   overflow:hidden;
-  border:1px solid rgba(255,255,255,.78);
-  border-radius:19px;
-  background:linear-gradient(135deg,rgba(255,255,255,.88),rgba(255,221,237,.62) 48%,rgba(255,255,255,.30));
-  box-shadow:0 5px 18px rgba(205,103,143,.16),inset 0 1px 0 rgba(255,255,255,.8),inset 0 -1px 0 rgba(255,255,255,.34);
-  backdrop-filter:blur(18px) saturate(1.5);
-  -webkit-backdrop-filter:blur(18px) saturate(1.5);
+  border:1px solid rgba(255,255,255,.64);
+  border-radius:28px;
+  background:linear-gradient(150deg,rgba(255,255,255,.32),rgba(255,239,246,.17) 58%,rgba(247,219,231,.13));
+  box-shadow:0 2px 9px rgba(108,57,80,.09),inset 0 1px 0 rgba(255,255,255,.78),inset 0 -1px 0 rgba(112,68,88,.08);
+  backdrop-filter:blur(16px) saturate(1.26) contrast(1.02);
+  -webkit-backdrop-filter:blur(16px) saturate(1.26) contrast(1.02);
   pointer-events:none;
-  transition:left .28s cubic-bezier(.2,.82,.25,1),width .24s ease,background .3s ease,box-shadow .3s ease,transform .22s ease;
+  transform:translate3d(var(--nav-liquid-left,6px),0,0);
+  transform-origin:center;
+  will-change:transform;
+  transition:transform .36s cubic-bezier(.2,.78,.24,1),width .28s ease,box-shadow .24s ease,background .24s ease;
 }
 
 .nav-liquid-indicator::before,.nav-liquid-indicator::after{
@@ -2026,42 +2040,54 @@ html.dark .menu-card:hover{
 }
 
 .nav-liquid-indicator::before{
-  inset:0;
-  background:radial-gradient(ellipse at 28% 0%,rgba(255,255,255,.8),transparent 62%);
-  opacity:.78;
+  left:var(--nav-light-x,24%);
+  top:var(--nav-light-y,10px);
+  width:68px;
+  height:46px;
+  border-radius:50%;
+  background:radial-gradient(ellipse,rgba(255,255,255,.56),rgba(255,255,255,.16) 42%,transparent 74%);
+  filter:blur(4px);
+  opacity:.32;
+  transform:translate(-50%,-50%);
+  transition:left .14s ease-out,top .14s ease-out,opacity .2s ease,filter .2s ease;
 }
 
 .nav-liquid-indicator::after{
-  top:-35%;
-  bottom:-35%;
-  left:-55%;
-  width:42%;
-  transform:translateX(-150%) skewX(-18deg);
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.62),transparent);
+  inset:auto 11px 1px;
+  height:1px;
+  border-radius:99px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.48),transparent);
+  opacity:.7;
 }
 
-.nav-liquid-indicator.gliding{box-shadow:0 6px 22px rgba(205,103,143,.24),inset 0 1px 0 rgba(255,255,255,.92)}
-.nav-liquid-indicator.gliding::after{animation:liquidNavSheen .6s ease both}
-.nav-liquid-indicator.is-dragging{transform:scale(.975,.97);transition:none;box-shadow:0 7px 24px rgba(205,103,143,.26),inset 0 1px 0 rgba(255,255,255,.92)}
-.nav-liquid-indicator.is-dragging::after{animation:liquidNavSheen .72s ease-in-out infinite alternate}
-
-@keyframes liquidNavSheen{to{transform:translateX(490%) skewX(-18deg)}}
+.nav-liquid-indicator.gliding{transform:translate3d(var(--nav-liquid-left,6px),0,0) scaleX(1.035);box-shadow:0 3px 11px rgba(108,57,80,.12),inset 0 1px 0 rgba(255,255,255,.86)}
+.nav-liquid-indicator.is-dragging{transform:translate3d(var(--nav-liquid-left,6px),0,0) scaleX(1.035) scaleY(.98);transition:none;box-shadow:0 3px 11px rgba(108,57,80,.12),inset 0 1px 0 rgba(255,255,255,.86)}
+.nav-liquid-indicator.is-pressed::before,.nav-liquid-indicator.is-dragging::before{opacity:.82;filter:blur(6px)}
 
 html.dark .nav-liquid-indicator{
-  border-color:rgba(255,255,255,.22);
-  background:linear-gradient(135deg,rgba(255,255,255,.23),rgba(255,130,178,.18) 48%,rgba(255,255,255,.07));
-  box-shadow:0 5px 18px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.24),inset 0 -1px 0 rgba(255,255,255,.1);
+  border-color:rgba(255,255,255,.27);
+  background:linear-gradient(150deg,rgba(255,255,255,.17),rgba(255,130,178,.1) 58%,rgba(255,255,255,.06));
+  box-shadow:0 2px 9px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.29),inset 0 -1px 0 rgba(255,255,255,.08);
 }
 
-html.dark .nav-liquid-indicator::before{opacity:.35}
+html.dark .nav-liquid-indicator::before{background:radial-gradient(ellipse,rgba(255,255,255,.36),rgba(255,255,255,.12) 42%,transparent 74%);opacity:.22}
+html.dark .nav-liquid-indicator.is-pressed::before,html.dark .nav-liquid-indicator.is-dragging::before{opacity:.68}
+html.dark .nav-liquid-indicator::after{background:linear-gradient(90deg,transparent,rgba(255,255,255,.24),transparent);opacity:.6}
 
 html.dark .bottom-nav{
+  border-color:var(--nav-edge);
+  background:
+    linear-gradient(150deg,var(--nav-highlight),transparent 44%),
+    linear-gradient(315deg,var(--nav-tint),transparent 62%),
+    var(--nav);
+  box-shadow:0 12px 34px var(--nav-shadow),inset 0 1px 0 var(--nav-highlight),inset 0 -1px 0 rgba(0,0,0,.15);
+}
 
-  background:linear-gradient(145deg,rgba(255,255,255,.08),transparent 48%),var(--nav);
-
-  box-shadow:
-    0 18px 55px rgba(0,0,0,.42),
-    0 0 25px rgba(255,92,158,.08);
+@media(prefers-reduced-transparency:reduce){
+  :root{--nav:rgba(255,240,242,.97)}
+  html.dark{--nav:rgba(30,22,27,.97)}
+  .bottom-nav,.nav-liquid-indicator{backdrop-filter:none;-webkit-backdrop-filter:none}
+  .nav-liquid-indicator{background:var(--surface);border-color:var(--border)}
 }
 
 .nav-button{
@@ -2098,8 +2124,8 @@ html.dark .bottom-nav{
 }
 
 .nav-button:focus-visible{outline:2px solid var(--pink);outline-offset:-3px}
-.nav-button.active .nav-icon,.nav-button[aria-expanded="true"] .nav-icon{transform:translateY(-1px) scale(1.08)}
-.nav-button.just-selected .nav-icon{animation:navPop .44s cubic-bezier(.2,.8,.3,1)}
+.nav-button.active .nav-icon,.nav-button[aria-expanded="true"] .nav-icon{transform:translateY(-1px) scale(1.045)}
+.nav-button.just-selected .nav-icon{animation:navPop .34s cubic-bezier(.2,.8,.3,1)}
 
 .nav-icon{
   font-size:19px;
@@ -2293,7 +2319,7 @@ html.dark .bottom-nav{
 
   bottom:
     calc(
-      91px +
+      122px +
       var(--safe-bottom)
     );
 
@@ -2623,7 +2649,7 @@ input, textarea, select {
 @keyframes checkPop{0%{transform:scale(1)}45%{transform:scale(1.28)}100%{transform:scale(1)}}
 @keyframes taskCheck{0%{transform:translateX(0)}35%{transform:translateX(4px)}100%{transform:translateX(0)}}
 @keyframes phraseBearBob{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-5px) rotate(4deg)}}
-@keyframes navPop{0%,100%{transform:translateY(0) scale(1)}45%{transform:translateY(-4px) scale(1.14)}}
+@keyframes navPop{0%,100%{transform:translateY(0) scale(1)}45%{transform:translateY(-2px) scale(1.06)}}
 @keyframes todayPulse{0%,100%{box-shadow:0 0 0 2px rgba(255,121,173,.08)}50%{box-shadow:0 0 0 4px rgba(255,121,173,.19)}}
 .menu-icon{transform-origin:center;transition:transform .25s ease}
 .phrase-bear{transform-origin:center bottom;animation:phraseBearBob 3.8s ease-in-out infinite}
@@ -2644,6 +2670,69 @@ input, textarea, select {
 
 /* Calendario: mantener anti-zoom en campos editables */
 .calendar-input,.season-edit input{font-size:16px!important}
+
+
+/* LIMPIEZA PROFUNDA */
+.cleaning-intro,.cleaning-section{margin:10px 0 14px;padding:15px;border:1px solid var(--border);border-radius:21px;background:var(--surface);box-shadow:var(--shadow)}
+.cleaning-intro{display:flex;align-items:flex-start;gap:12px}
+.cleaning-intro-icon{width:44px;height:44px;flex:0 0 44px;display:grid;place-items:center;border-radius:15px;background:var(--pinksoft);font-size:24px}
+.cleaning-intro h2,.cleaning-section h2{margin:0;color:var(--text);font-size:14px;font-weight:900}
+.cleaning-intro p{margin:5px 0 0;color:var(--muted);font-size:10px;line-height:1.5}
+.cleaning-local-note{margin:11px 0 0;padding:9px 10px;border:1px solid var(--border);border-radius:13px;background:var(--bg2);color:var(--muted);font-size:9px;line-height:1.45}
+.cleaning-progress-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.cleaning-progress-label{color:var(--muted);font-size:10px;font-weight:800}
+.cleaning-progress-number{color:var(--pink2);font-size:12px;font-weight:900}
+.cleaning-progress-track{height:9px;margin-top:9px;overflow:hidden;border-radius:999px;background:var(--bg2)}
+.cleaning-progress-fill{height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,var(--pink),#ffb16e);transition:width .35s ease}
+.cleaning-summary{margin-top:7px;color:var(--muted);font-size:9px}
+.cleaning-picker-toggle{width:100%;margin-top:12px;padding:12px;border:1px solid var(--border);border-radius:14px;background:var(--pinksoft);color:var(--pink2);font-size:10px;font-weight:900;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease}
+.cleaning-picker-toggle:active{transform:scale(.985)}
+.cleaning-picker-close{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.cleaning-picker-close button{padding:7px 10px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--muted);font-size:9px;font-weight:850;cursor:pointer}
+.cleaning-search{width:100%;margin:11px 0 8px;padding:12px 13px;border:1px solid var(--border);border-radius:14px;outline:0;background:var(--bg);color:var(--text);font-size:16px!important}
+.cleaning-search:focus{border-color:var(--pink);box-shadow:0 0 0 3px rgba(255,121,173,.12)}
+.cleaning-task-list{display:grid;gap:6px}
+.cleaning-task-option{display:flex;align-items:flex-start;gap:10px;padding:10px 11px;border:1px solid var(--border);border-radius:14px;background:var(--bg);color:var(--text);font-size:10px;line-height:1.45;cursor:pointer;transition:border-color .18s ease,background .18s ease,transform .18s ease}
+.cleaning-task-option:has(input:checked){border-color:var(--pink);background:var(--pinksoft)}
+.cleaning-selection-note{margin:8px 0;color:var(--muted);font-size:9px;line-height:1.45}
+.cleaning-task-option input,.cleaning-assignment-check{width:18px;height:18px;flex:0 0 18px;margin:0;accent-color:var(--pink);cursor:pointer}
+.cleaning-task-option span{flex:1}
+.cleaning-no-search{padding:16px;text-align:center;color:var(--muted);font-size:10px}
+.cleaning-assign-button,.cleaning-save-button{width:100%;margin-top:10px;padding:13px;border-radius:14px;background:var(--pink);color:#fff;font-size:11px;font-weight:900;cursor:pointer;transition:transform .18s ease,opacity .18s ease}
+.cleaning-assign-button:disabled{opacity:.48;cursor:not-allowed}
+.cleaning-assign-button:not(:disabled):active,.cleaning-save-button:active{transform:scale(.98)}
+.cleaning-assignment-form{margin-top:12px;padding:13px;border:1px solid var(--border);border-radius:16px;background:var(--bg2)}
+.cleaning-assignment-form[hidden]{display:none}
+.cleaning-form-title{margin:0 0 10px;color:var(--text);font-size:12px;font-weight:900}
+.cleaning-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.cleaning-form-field{display:grid;gap:5px;color:var(--muted);font-size:9px;font-weight:800}
+.cleaning-form-field select,.cleaning-form-field input{width:100%;min-width:0;padding:11px 9px;border:1px solid var(--border);border-radius:11px;background:var(--surface);color:var(--text);font-size:16px!important}
+.cleaning-form-actions{display:flex;gap:8px}
+.cleaning-cancel-button{flex:0 0 auto;margin-top:10px;padding:12px 14px;border:1px solid var(--border);border-radius:14px;background:var(--surface);color:var(--muted);font-size:10px;font-weight:850;cursor:pointer}
+.cleaning-assignment-list{display:grid;gap:8px;margin-top:11px}
+.cleaning-person-group{overflow:hidden;border:1px solid var(--border);border-radius:16px;background:var(--bg)}
+.cleaning-person-group summary{display:flex;align-items:center;gap:10px;padding:12px;cursor:pointer;list-style:none}
+.cleaning-person-group summary::-webkit-details-marker{display:none}
+.cleaning-person-avatar{width:37px;height:37px;flex:0 0 37px;display:grid;place-items:center;border-radius:13px;background:var(--pinksoft);color:var(--pink2);font-size:11px;font-weight:950}
+.cleaning-person-summary{flex:1;min-width:0}
+.cleaning-person-name{color:var(--text);font-size:11px;font-weight:900}
+.cleaning-person-meta{margin-top:3px;color:var(--muted);font-size:9px;line-height:1.4}
+.cleaning-person-arrow{color:var(--muted);font-size:17px;transition:transform .2s ease}
+.cleaning-person-group[open] .cleaning-person-arrow{transform:rotate(90deg)}
+.cleaning-person-tasks{display:grid;gap:7px;padding:0 9px 9px}
+.cleaning-person-clear{justify-self:end;padding:8px 10px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--danger);font-size:9px;font-weight:850;cursor:pointer}
+.cleaning-assignment-card{display:flex;align-items:flex-start;gap:10px;padding:12px;border:1px solid var(--border);border-radius:15px;background:var(--bg)}
+.cleaning-assignment-card.is-complete{opacity:.68}
+.cleaning-assignment-card.is-complete .cleaning-assignment-task{text-decoration:line-through}
+.cleaning-assignment-content{flex:1;min-width:0}
+.cleaning-assignment-task{color:var(--text);font-size:11px;font-weight:850;line-height:1.4}
+.cleaning-assignment-meta{margin-top:5px;color:var(--muted);font-size:9px;line-height:1.45}
+.cleaning-assignment-meta strong{color:var(--text)}
+.cleaning-overdue{color:var(--danger)!important;font-weight:900}
+.cleaning-delete-button{flex:0 0 auto;width:30px;height:30px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--muted);font-size:17px;cursor:pointer}
+.cleaning-empty{padding:18px 12px;border:1px dashed var(--border);border-radius:15px;color:var(--muted);font-size:10px;line-height:1.5;text-align:center}
+.cleaning-clear-button{display:block;margin:10px 0 0 auto;padding:8px 10px;border:1px solid var(--border);border-radius:11px;background:var(--surface);color:var(--muted);font-size:9px;font-weight:850;cursor:pointer}
+@media(max-width:430px){.cleaning-form-grid{grid-template-columns:1fr}.cleaning-intro,.cleaning-section{padding:13px}}
 
 
 
@@ -2751,6 +2840,120 @@ input, textarea, select {
     overscroll-behavior-y:contain;
     -webkit-overflow-scrolling:touch;
   }
+}
+
+/* Ajustes de lectura y tacto para teléfonos */
+@media(max-width:620px){
+  button,summary{min-height:44px}
+  input:not([type="checkbox"]):not([type="radio"]),select,textarea{min-height:44px}
+  button:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--pink2);outline-offset:2px}
+
+  .brand-subtitle{font-size:9px;letter-spacing:.45px}
+  .brand-date{font-size:10px}
+  .theme-toggle{width:44px;height:44px;flex-basis:44px}
+  .inner-title p{font-size:11px}
+  .menu-card-description{font-size:11px;line-height:1.35}
+  .home-progress-eyebrow,.home-progress-count,.home-challenge-label,.home-challenge-date{font-size:10px}
+  .home-progress-button{min-height:44px;font-size:11px}
+  .status-description{font-size:11px}
+
+  .inventory-top span,.inventory-area-title span,.inv-stat small,.product-meta,.inventory-message{font-size:10px}
+  .product-name{font-size:14px;line-height:1.35}
+  .inv-btn{min-height:48px;font-size:12px}
+  .inventory-order-header p,.inventory-order-note,.inventory-order-item span,.inventory-pending-item{font-size:11px;line-height:1.45}
+  .inventory-order-item{min-height:48px}
+  .inventory-order-count,.inventory-order-item strong,.inventory-pending-heading span{font-size:9px}
+  .inventory-order-new{min-height:44px;font-size:10px}
+
+  .activity-tab{min-height:46px;font-size:12px}
+  .activity-group-note{font-size:11px}
+  .activity-item{min-height:50px;gap:12px;padding:13px 0}
+  .activity-item input{width:22px;height:22px;flex-basis:22px}
+  .activity-item span{font-size:13px;line-height:1.45}
+  .activity-day-badge{min-height:25px;font-size:9px}
+  .activity-progress{font-size:11px}
+  .closing-reset-button{min-height:44px;padding:10px 12px;font-size:10px}
+
+  .settings-profile span,.setting-row small{font-size:10px}
+  .settings-profile button,.mini-toggle{min-height:44px;font-size:10px}
+  .settings-title,.setting-row b{font-size:13px}
+
+  .nav-button{min-height:52px}
+  .nav-icon{font-size:20px}
+  .nav-label{font-size:9px;letter-spacing:-.15px}
+
+  .calendar-head small{font-size:10px}
+  .calendar-arrow{width:44px;height:44px}
+  .calendar-week span{font-size:9px}
+  .calendar-day{min-height:48px;padding:6px 4px}
+  .calendar-day-number{font-size:11px}
+  .calendar-event-emoji{font-size:11px}
+  .calendar-event-count{font-size:8px}
+  .calendar-legend{flex-wrap:wrap;gap:8px 14px;font-size:10px}
+  .calendar-section-title{font-size:14px}
+  .calendar-help{font-size:11px}
+  .event-item-title{font-size:12px}
+  .event-item-meta{font-size:10px;line-height:1.4}
+  .event-item button,.season-edit button{min-height:44px;padding:9px 11px;font-size:10px}
+  .calendar-editor-toggle{min-height:48px;font-size:12px}
+  .season-field{font-size:10px}
+  .season-field select{font-size:16px}
+
+  .recipe-intro strong{font-size:14px}
+  .recipe-intro p,.recipe-group-note,.recipe-note,.recipe-no-results p{font-size:11px}
+  .recipe-filter{min-height:44px;font-size:11px}
+  .recipe-category-count{font-size:10px}
+  .recipe-card summary{font-size:14px}
+  .recipe-details li{font-size:13px;line-height:1.5}
+
+  .cleaning-intro p,.cleaning-local-note,.cleaning-selection-note{font-size:11px}
+  .cleaning-section h2{font-size:15px}
+  .cleaning-summary,.cleaning-assignment-meta{font-size:10px;line-height:1.5}
+  .cleaning-picker-toggle,.cleaning-assign-button,.cleaning-save-button{min-height:48px;font-size:12px}
+  .cleaning-picker-close button,.cleaning-cancel-button,.cleaning-clear-button,.cleaning-person-clear{min-height:44px;font-size:10px}
+  .cleaning-task-option{font-size:12px;line-height:1.5}
+  .cleaning-task-option input,.cleaning-assignment-check{width:22px;height:22px;flex-basis:22px}
+  .cleaning-form-title{font-size:14px}
+  .cleaning-assignment-task{font-size:13px;line-height:1.45}
+  .cleaning-delete-button{width:44px;height:44px;min-height:44px}
+  .cleaning-person-name{font-size:12px}
+  .cleaning-person-meta{font-size:10px}
+
+  .more-menu-sheet{max-height:82dvh}
+  .more-menu-header h2{font-size:19px}
+  .more-menu-option{min-height:60px;padding:10px 12px}
+  .more-menu-option-copy b{font-size:13px}
+  .more-menu-option-copy small{font-size:10px;line-height:1.4}
+  .more-menu-close{width:44px;height:44px}
+  .toast{max-width:calc(100vw - 28px);width:max-content;text-align:center;font-size:12px;line-height:1.4}
+  .name-modal p,.daily-challenge-copy,.activity-placeholder p{font-size:11px}
+  .name-save,.daily-challenge-primary{min-height:48px;font-size:13px}
+  .name-change{min-height:44px;font-size:10px}
+  .daily-challenge-close{width:44px;height:44px}
+}
+
+@media(max-width:360px){
+  .brand-subtitle{font-size:8px}
+  .brand-date{font-size:9px}
+  .menu-grid{gap:7px}
+  .menu-card{padding:11px}
+  .menu-card-title{font-size:12px}
+  .menu-card-description{font-size:10px}
+  .nav-label{font-size:9px;letter-spacing:-.2px}
+  .calendar-grid,.calendar-week{gap:3px}
+  .calendar-day{min-height:44px;padding:5px 3px}
+  .event-item{gap:6px;padding:9px}
+  .event-item-title{font-size:11px}
+}
+
+@media(hover:none){
+  .menu-card:hover,.home-progress-button:hover,.closing-reset-button:hover,.more-menu-option:hover{transform:none}
+  .menu-card:hover{box-shadow:var(--shadow)}
+  html.dark .menu-card:hover{box-shadow:var(--shadow)}
+  .menu-card:hover::after{animation:none}
+  .home-progress-button:hover{box-shadow:none}
+  .closing-reset-button:hover{background:var(--surface);color:var(--muted)}
+  .more-menu-option:hover{border-color:var(--border);background:var(--bg2)}
 }
 </style>
 </head>
@@ -2963,7 +3166,7 @@ input, textarea, select {
       </span>
 
       <span class="menu-card-description">
-        Todo limpio y en orden
+        Limpieza profunda y asignaciones
       </span>
 
     </button>
@@ -3642,22 +3845,63 @@ input, textarea, select {
   </div>
 
 
-  <div class="empty-module">
-
-    <div class="empty-icon">
-      🧼
+  <div class="cleaning-intro">
+    <div class="cleaning-intro-icon" aria-hidden="true">🧼</div>
+    <div>
+      <h2>Limpieza profunda semanal</h2>
+      <p>Elijan las tareas de esta semana, asígnenselas a alguien del equipo y pongan una fecha límite.</p>
+      <div class="cleaning-local-note">📱 Por ahora, las asignaciones se guardan en este dispositivo. Al conectar la base de datos, el equipo podrá ver los mismos cambios.</div>
     </div>
-
-    <h2>
-      Lista de limpieza
-    </h2>
-
-    <p>
-      Aquí construiremos la checklist
-      completa de limpieza de Beary's.
-    </p>
-
   </div>
+
+  <section class="cleaning-section" aria-labelledby="cleaningPlanTitle">
+    <div class="cleaning-progress-head">
+      <h2 id="cleaningPlanTitle">Avance de las asignaciones</h2>
+      <span class="cleaning-progress-number" id="cleaningProgressPercent">0%</span>
+    </div>
+    <div class="cleaning-progress-track" role="progressbar" aria-label="Avance de limpieza profunda" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="cleaningProgressTrack"><div class="cleaning-progress-fill" id="cleaningProgressFill"></div></div>
+    <div class="cleaning-summary" id="cleaningProgressSummary">Todavía no hay tareas asignadas.</div>
+    <button type="button" class="cleaning-picker-toggle" id="cleaningPickerToggle" onclick="toggleCleaningTaskPicker()">＋ Repartir tareas</button>
+  </section>
+
+  <section class="cleaning-section" id="cleaningTaskPicker" aria-labelledby="cleaningTasksTitle" hidden>
+    <div class="cleaning-picker-close">
+      <h2 id="cleaningTasksTitle">Elige las tareas</h2>
+      <button type="button" onclick="closeCleaningTaskPicker()">Cerrar</button>
+    </div>
+    <p class="cleaning-selection-note">Elige todas las tareas de una tanda para la misma persona. Después, no podrás asignarle otra tanda hasta quitar las tareas que tiene.</p>
+    <input class="cleaning-search" id="cleaningTaskSearch" type="search" placeholder="Buscar en la lista de limpieza…" aria-label="Buscar tareas de limpieza">
+    <div class="cleaning-task-list" id="cleaningTaskList"></div>
+    <button type="button" class="cleaning-assign-button" id="cleaningAssignButton" onclick="openCleaningAssignmentForm()" disabled>Selecciona tareas para continuar</button>
+    <form class="cleaning-assignment-form" id="cleaningAssignmentForm" hidden onsubmit="assignDeepCleaningTasks(event)">
+      <h3 class="cleaning-form-title" id="cleaningFormTitle">Asignar tareas</h3>
+      <div class="cleaning-form-grid">
+        <label class="cleaning-form-field">Compañero
+          <select id="cleaningAssignee" required>
+            <option value="">Elige a quién asignarlas</option>
+          </select>
+        </label>
+        <label class="cleaning-form-field">Fecha límite · próximos 7 días
+          <select id="cleaningDueDate" required>
+            <option value="">Elige el día</option>
+          </select>
+        </label>
+      </div>
+      <div class="cleaning-form-actions">
+        <button type="submit" class="cleaning-save-button">Guardar asignación</button>
+        <button type="button" class="cleaning-cancel-button" onclick="closeCleaningAssignmentForm()">Cancelar</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="cleaning-section" aria-labelledby="cleaningAssignmentsTitle">
+    <div class="cleaning-progress-head">
+      <h2 id="cleaningAssignmentsTitle">Asignadas por persona</h2>
+      <span class="cleaning-progress-label" id="cleaningAssignmentCount">0 tareas</span>
+    </div>
+    <div class="cleaning-assignment-list" id="cleaningAssignmentList" aria-live="polite"></div>
+    <button type="button" class="cleaning-clear-button" id="cleaningClearCompleted" onclick="clearCompletedCleaningTasks()" hidden>Quitar terminadas del plan</button>
+  </section>
 
 </section>
 
@@ -3928,7 +4172,7 @@ input, textarea, select {
     </div>
     <button type="button" class="more-menu-option" onclick="openMorePage('cleaning')">
       <span class="more-menu-option-icon" aria-hidden="true">🧼</span>
-      <span class="more-menu-option-copy"><b>Limpieza</b><small>Rutinas y pendientes del local</small></span>
+      <span class="more-menu-option-copy"><b>Limpieza</b><small>Limpieza profunda y asignaciones</small></span>
       <span class="more-menu-chevron" aria-hidden="true">›</span>
     </button>
     <button type="button" class="more-menu-option" onclick="openMorePage('calendar')">
@@ -4277,7 +4521,7 @@ function applyTheme(theme){
   const pageBackground =
     dark
       ? "#171216"
-      : "#fff8fb";
+      : "#fff0f2";
 
   document.documentElement.style.backgroundColor =
     pageBackground;
@@ -4305,7 +4549,7 @@ function applyTheme(theme){
       "content",
       dark
         ? "#171216"
-        : "#fff8fb"
+        : "#fff0f2"
     );
 
 
@@ -4795,6 +5039,8 @@ function openPage(page){
 
   if(page==="activities")refreshScheduledActivityView(true);
 
+  if(page==="cleaning")renderDeepCleaning();
+
 
   if(page==="calendar" && typeof renderCalendar === "function"){
     renderCalendar();
@@ -4925,6 +5171,22 @@ function setLiquidNavPosition(left,width){
   liquidNavElement.style.setProperty("--nav-liquid-width",`${width}px`);
 }
 
+function updateLiquidNavLight(clientX,clientY){
+  if(!liquidNavIndicator)return;
+  const rect=liquidNavIndicator.getBoundingClientRect();
+  const x=Math.max(8,Math.min(rect.width-8,clientX-rect.left));
+  const y=Math.max(6,Math.min(rect.height-6,clientY-rect.top));
+  liquidNavIndicator.style.setProperty("--nav-light-x",`${x}px`);
+  liquidNavIndicator.style.setProperty("--nav-light-y",`${y}px`);
+}
+
+function resetLiquidNavLight(){
+  if(!liquidNavIndicator)return;
+  liquidNavIndicator.classList.remove("is-pressed");
+  liquidNavIndicator.style.setProperty("--nav-light-x","24%");
+  liquidNavIndicator.style.setProperty("--nav-light-y","10px");
+}
+
 function moveLiquidNavTo(button,glide=true){
   if(!liquidNavElement||!button)return;
   const navRect=liquidNavElement.getBoundingClientRect();
@@ -4994,6 +5256,10 @@ function initializeLiquidNavigation(){
     const button=event.target.closest(".nav-button")||findLiquidNavButtonAt(event.clientX);
     if(!button||event.isPrimary===false||(event.pointerType==="mouse"&&event.button!==0))return;
     liquidNavPointer={id:event.pointerId,startX:event.clientX,startY:event.clientY,lastX:event.clientX,origin:button,dragging:false};
+    if(liquidNavIndicator){
+      liquidNavIndicator.classList.add("is-pressed");
+      updateLiquidNavLight(event.clientX,event.clientY);
+    }
   });
 
   liquidNavElement.addEventListener("pointermove",event=>{
@@ -5011,6 +5277,7 @@ function initializeLiquidNavigation(){
       event.preventDefault();
       slideLiquidNavTo(event.clientX);
     }
+    updateLiquidNavLight(event.clientX,event.clientY);
   });
 
   liquidNavElement.addEventListener("pointerup",event=>{
@@ -5018,13 +5285,16 @@ function initializeLiquidNavigation(){
     if(!gesture||event.pointerId!==gesture.id)return;
     liquidNavPointer=null;
     if(!gesture.dragging){
+      resetLiquidNavLight();
       const activeButton=liquidNavElement.querySelector(".nav-button.active")||liquidNavElement.querySelector(".nav-button[aria-expanded='true']");
       if(activeButton)moveLiquidNavTo(activeButton,false);
       return;
     }
     event.preventDefault();
     slideLiquidNavTo(event.clientX);
+    updateLiquidNavLight(event.clientX,event.clientY);
     if(liquidNavIndicator)liquidNavIndicator.classList.remove("is-dragging");
+    resetLiquidNavLight();
     liquidNavClickGuard=true;
     setTimeout(()=>{liquidNavClickGuard=false},500);
     const target=findLiquidNavButtonAt(event.clientX);
@@ -5034,6 +5304,7 @@ function initializeLiquidNavigation(){
   liquidNavElement.addEventListener("pointercancel",()=>{
     liquidNavPointer=null;
     if(liquidNavIndicator)liquidNavIndicator.classList.remove("is-dragging");
+    resetLiquidNavLight();
     const activeButton=liquidNavElement.querySelector(".nav-button.active")||liquidNavElement.querySelector(".nav-button[aria-expanded='true']");
     if(activeButton)moveLiquidNavTo(activeButton,true);
   });
@@ -6352,6 +6623,291 @@ function closeDailyChallenge(accepted){
     document.getElementById("heroStartButton").focus();
   }
 }
+
+const DEEP_CLEANING_TASKS=[
+  "Repisas de polvos, vasos, tazas, jarras y pared",
+  "Área de bebidas (máquina, molinos, mamilas, pared y utensilios)",
+  "Tarja, escurridor y rejilla de bebidas",
+  "Contenedor de vasos y contenedor de servilletas, popotes y azúcar",
+  "Polar",
+  "Frigobar",
+  "Paredes de abajo de la tarja y de garrafones",
+  "Repisas de tuppers, platos, leches y osos",
+  "Barra de licuadoras, vaporera y parrilla",
+  "Mueble gris",
+  "Pared de oso completa y pared de atrás de los tuppers y esquinas",
+  "Carrito y pared de carrito",
+  "Vitrina de tartas por dentro y debajo de ella",
+  "Vitrina de pan",
+  "Vidrios y espejo",
+  "Rejas",
+  "Sillones y pared de sillones completa (abajo y arriba)",
+  "Mesas y sillas",
+  "Refrigerador",
+  "Bodega",
+  "Carrito de limpieza y pared de atrás del refrigerador",
+  "Pisos",
+  "Baño y puerta de baño por ambos lados",
+  "Pared del extintor",
+  "Aire",
+  "Lámparas",
+  "Botes de basura (5 en total)",
+  "Bote grande",
+  "Jardinera",
+  "Banqueta",
+  "Cortinas del toldo y pérgola",
+  "Aspiradora",
+  "Pared de afuera y piso",
+  "Pérgola por dentro y por fuera",
+  "Platos de perrito",
+  "Cajones de mochilas",
+  "Pared gris",
+  "Letrero",
+  "Pantalla",
+  "Toldo",
+  "Horno por detrás",
+  "Detrás del refrigerador y frigobar (pollo)",
+  "Techo",
+  "Tapete"
+];
+const CLEANING_TEAM=["Zuri","Carmen","Chavita","Kris","Magy","Tania","Xime"];
+const DEEP_CLEANING_STORAGE_KEY="bearyDeepCleaningAssignments_v1";
+const selectedCleaningTasks=new Set();
+
+function cleaningEscape(value){
+  return String(value).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;").replace(/'/g,"&#39;");
+}
+function cleaningToday(){
+  const now=new Date();
+  return [now.getFullYear(),String(now.getMonth()+1).padStart(2,"0"),String(now.getDate()).padStart(2,"0")].join("-");
+}
+function populateCleaningDueDates(){
+  const select=document.getElementById("cleaningDueDate");
+  if(!select)return;
+  const today=cleaningToday();
+  const previous=select.value;
+  const start=new Date();
+  start.setHours(12,0,0,0);
+  const options=[];
+  for(let offset=0;offset<7;offset++){
+    const date=new Date(start);
+    date.setDate(start.getDate()+offset);
+    const value=[date.getFullYear(),String(date.getMonth()+1).padStart(2,"0"),String(date.getDate()).padStart(2,"0")].join("-");
+    const label=date.toLocaleDateString("es-MX",{weekday:"long",day:"numeric",month:"long"});
+    options.push('<option value="'+value+'">'+cleaningEscape(label.charAt(0).toLocaleUpperCase("es-MX")+label.slice(1))+"</option>");
+  }
+  select.innerHTML='<option value="">Elige el día</option>'+options.join("");
+  if(previous>=today&&options.some(option=>option.includes('value="'+previous+'"')))select.value=previous;
+}
+function getDeepCleaningAssignments(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(DEEP_CLEANING_STORAGE_KEY)||"[]");
+    return Array.isArray(saved)?saved.filter(item=>item&&typeof item.id==="string"&&typeof item.task==="string"&&CLEANING_TEAM.includes(item.assignee)&&/^\d{4}-\d{2}-\d{2}$/.test(item.dueDate)):[];
+  }catch(error){return []}
+}
+function saveDeepCleaningAssignments(assignments){
+  try{
+    localStorage.setItem(DEEP_CLEANING_STORAGE_KEY,JSON.stringify(assignments));
+    return true;
+  }catch(error){
+    showToast("No se pudo guardar. Revisa el espacio disponible del dispositivo.");
+    return false;
+  }
+}
+function cleaningDateLabel(value){
+  const date=new Date(value+"T12:00:00");
+  const label=date.toLocaleDateString("es-MX",{weekday:"long",day:"numeric",month:"long"});
+  return label.charAt(0).toLocaleUpperCase("es-MX")+label.slice(1);
+}
+function renderCleaningTaskOptions(){
+  const list=document.getElementById("cleaningTaskList");
+  if(!list)return;
+  const query=(document.getElementById("cleaningTaskSearch")?.value||"").trim().toLocaleLowerCase("es-MX");
+  const matches=DEEP_CLEANING_TASKS.map((task,index)=>({task,index})).filter(item=>item.task.toLocaleLowerCase("es-MX").includes(query));
+  list.innerHTML=matches.length?matches.map(({task,index})=>'<label class="cleaning-task-option"><input type="checkbox" data-cleaning-task-index="'+index+'" '+(selectedCleaningTasks.has(index)?"checked":"")+'><span>'+cleaningEscape(task)+"</span></label>").join(''):'<div class="cleaning-no-search">No encontramos tareas con ese nombre.</div>';
+  list.querySelectorAll("[data-cleaning-task-index]").forEach(input=>input.addEventListener("change",()=>{
+    const index=Number(input.dataset.cleaningTaskIndex);
+    if(input.checked)selectedCleaningTasks.add(index);else selectedCleaningTasks.delete(index);
+    updateCleaningAssignButton();
+  }));
+  updateCleaningAssignButton();
+}
+function updateCleaningAssignButton(){
+  const button=document.getElementById("cleaningAssignButton");
+  if(!button)return;
+  const count=selectedCleaningTasks.size;
+  button.disabled=count===0;
+  button.textContent=count?"Elegir compañero y fecha · "+count+(count===1?" tarea":" tareas"):"Selecciona tareas para continuar";
+}
+function updateCleaningPickerToggle(){
+  const picker=document.getElementById("cleaningTaskPicker");
+  const button=document.getElementById("cleaningPickerToggle");
+  if(!picker||!button)return;
+  const isOpen=!picker.hidden;
+  button.textContent=isOpen?"Cerrar selección":"＋ Repartir tareas";
+  button.setAttribute("aria-expanded",String(isOpen));
+  button.setAttribute("aria-controls","cleaningTaskPicker");
+}
+function toggleCleaningTaskPicker(){
+  const picker=document.getElementById("cleaningTaskPicker");
+  if(!picker)return;
+  if(picker.hidden){
+    picker.hidden=false;
+    renderCleaningTaskOptions();
+    updateCleaningPickerToggle();
+  }else closeCleaningTaskPicker();
+}
+function closeCleaningTaskPicker(clearSelection=true){
+  const picker=document.getElementById("cleaningTaskPicker");
+  const search=document.getElementById("cleaningTaskSearch");
+  if(picker)picker.hidden=true;
+  closeCleaningAssignmentForm();
+  if(clearSelection)selectedCleaningTasks.clear();
+  if(search)search.value="";
+  renderCleaningTaskOptions();
+  updateCleaningPickerToggle();
+}
+function renderDeepCleaning(){
+  const select=document.getElementById("cleaningAssignee");
+  if(select){
+    const previous=select.value;
+    const assignments=getDeepCleaningAssignments();
+    select.innerHTML='<option value="">Elige a quién asignarlas</option>'+CLEANING_TEAM.map(name=>{
+      const count=assignments.filter(item=>item.assignee===name).length;
+      const label=count?name+" · ya tiene "+count+" "+(count===1?"tarea":"tareas"):name;
+      return '<option value="'+cleaningEscape(name)+'" '+(count?"disabled":"")+'>'+cleaningEscape(label)+"</option>";
+    }).join("");
+    if(previous&&CLEANING_TEAM.includes(previous)&&!assignments.some(item=>item.assignee===previous))select.value=previous;
+  }
+  populateCleaningDueDates();
+  updateCleaningPickerToggle();
+  renderCleaningTaskOptions();
+  renderCleaningAssignmentCards();
+}
+function openCleaningAssignmentForm(){
+  if(!selectedCleaningTasks.size)return;
+  const form=document.getElementById("cleaningAssignmentForm");
+  const heading=document.getElementById("cleaningFormTitle");
+  if(!form)return;
+  if(heading)heading.textContent="Asignar "+selectedCleaningTasks.size+(selectedCleaningTasks.size===1?" tarea":" tareas")+" a una persona";
+  form.hidden=false;
+  document.getElementById("cleaningAssignee")?.focus();
+}
+function closeCleaningAssignmentForm(){
+  const form=document.getElementById("cleaningAssignmentForm");
+  if(form)form.hidden=true;
+}
+function assignDeepCleaningTasks(event){
+  event.preventDefault();
+  const assignee=document.getElementById("cleaningAssignee").value;
+  const dueDate=document.getElementById("cleaningDueDate").value;
+  if(!CLEANING_TEAM.includes(assignee)||!dueDate||dueDate<cleaningToday()||!selectedCleaningTasks.size)return;
+  const assignments=getDeepCleaningAssignments();
+  const currentPersonCount=assignments.filter(item=>item.assignee===assignee).length;
+  if(currentPersonCount){
+    renderDeepCleaning();
+    showToast(assignee+" ya tiene tareas asignadas. Quita esas tareas para asignarle más.");
+    return;
+  }
+  const createdAt=new Date().toISOString();
+  selectedCleaningTasks.forEach(index=>assignments.push({
+    id:(window.crypto&&crypto.randomUUID)?crypto.randomUUID():"clean-"+Date.now()+"-"+Math.random().toString(36).slice(2,9),
+    taskId:index,
+    task:DEEP_CLEANING_TASKS[index],
+    assignee,
+    dueDate,
+    completed:false,
+    createdAt
+  }));
+  if(!saveDeepCleaningAssignments(assignments))return;
+  selectedCleaningTasks.clear();
+  event.target.reset();
+  closeCleaningAssignmentForm();
+  closeCleaningTaskPicker(false);
+  renderDeepCleaning();
+  showToast("🧼 Tareas asignadas a "+assignee);
+}
+function renderCleaningAssignmentCards(){
+  const list=document.getElementById("cleaningAssignmentList");
+  if(!list)return;
+  const assignments=getDeepCleaningAssignments();
+  const completed=assignments.filter(item=>item.completed).length;
+  const pending=assignments.length-completed;
+  const overdue=assignments.filter(item=>!item.completed&&item.dueDate<cleaningToday()).length;
+  const percent=assignments.length?Math.round(completed/assignments.length*100):0;
+  const percentNode=document.getElementById("cleaningProgressPercent");
+  const fill=document.getElementById("cleaningProgressFill");
+  const track=document.getElementById("cleaningProgressTrack");
+  const summary=document.getElementById("cleaningProgressSummary");
+  const count=document.getElementById("cleaningAssignmentCount");
+  const clearButton=document.getElementById("cleaningClearCompleted");
+  if(percentNode)percentNode.textContent=percent+"%";
+  if(fill)fill.style.width=percent+"%";
+  if(track)track.setAttribute("aria-valuenow",String(percent));
+  if(summary)summary.textContent=assignments.length?completed+" terminadas · "+pending+" pendientes"+(overdue?" · "+overdue+" vencidas":""):"Todavía no hay tareas asignadas.";
+  if(count)count.textContent=assignments.length+" "+(assignments.length===1?"tarea":"tareas");
+  if(clearButton)clearButton.hidden=completed===0;
+  const personGroups=CLEANING_TEAM.map(name=>({name,items:assignments.filter(item=>item.assignee===name)})).filter(group=>group.items.length);
+  list.innerHTML=personGroups.length?personGroups.map(group=>{
+    const ordered=[...group.items].sort((a,b)=>Number(Boolean(a.completed))-Number(Boolean(b.completed))||a.dueDate.localeCompare(b.dueDate)||a.task.localeCompare(b.task,"es"));
+    const done=ordered.filter(item=>item.completed).length;
+    const open=ordered.filter(item=>!item.completed);
+    const overdueForPerson=open.filter(item=>item.dueDate<cleaningToday()).length;
+    const nextDue=open.map(item=>item.dueDate).sort()[0];
+    const status=open.length?(overdueForPerson?"Vencida · ":"Vence ")+cleaningDateLabel(nextDue):"Todas terminadas 🎉";
+    const taskCards=ordered.map(item=>{
+      const isOverdue=!item.completed&&item.dueDate<cleaningToday();
+      return '<article class="cleaning-assignment-card '+(item.completed?"is-complete":"")+'">'+
+        '<input class="cleaning-assignment-check" type="checkbox" data-cleaning-complete="'+cleaningEscape(item.id)+'" '+(item.completed?"checked":"")+' aria-label="Marcar como terminada: '+cleaningEscape(item.task)+'">'+
+        '<div class="cleaning-assignment-content"><div class="cleaning-assignment-task">'+cleaningEscape(item.task)+'</div><div class="cleaning-assignment-meta">Fecha límite: <strong class="'+(isOverdue?"cleaning-overdue":"")+'">'+cleaningEscape(cleaningDateLabel(item.dueDate))+(isOverdue?" · Vencida":"")+'</strong></div></div>'+
+        '<button type="button" class="cleaning-delete-button" data-cleaning-delete="'+cleaningEscape(item.id)+'" aria-label="Eliminar asignación">×</button></article>';
+    }).join("");
+    return `<details class="cleaning-person-group"><summary><span class="cleaning-person-avatar" aria-hidden="true">${cleaningEscape(group.name.slice(0,1).toLocaleUpperCase("es-MX"))}</span><span class="cleaning-person-summary"><span class="cleaning-person-name">${cleaningEscape(group.name)}</span><span class="cleaning-person-meta">${ordered.length} ${ordered.length===1?"tarea":"tareas"} · ${done} terminadas · ${cleaningEscape(status)}</span></span><span class="cleaning-person-arrow" aria-hidden="true">›</span></summary><div class="cleaning-person-tasks">${taskCards}<button type="button" class="cleaning-person-clear" data-cleaning-clear-person="${cleaningEscape(group.name)}">Quitar todas sus tareas</button></div></details>`;
+  }).join(""):'<div class="cleaning-empty">Aún no hay tareas repartidas. Cuando asignen la primera, aquí verán a cada persona y sus pendientes. 🐻</div>';
+  list.querySelectorAll("[data-cleaning-complete]").forEach(input=>input.addEventListener("change",()=>setCleaningTaskComplete(input.dataset.cleaningComplete,input.checked)));
+  list.querySelectorAll("[data-cleaning-delete]").forEach(button=>button.addEventListener("click",()=>deleteCleaningAssignment(button.dataset.cleaningDelete)));
+  list.querySelectorAll("[data-cleaning-clear-person]").forEach(button=>button.addEventListener("click",()=>clearPersonCleaningTasks(button.dataset.cleaningClearPerson)));
+}
+function setCleaningTaskComplete(id,completed){
+  const assignments=getDeepCleaningAssignments();
+  const target=assignments.find(item=>item.id===id);
+  if(!target)return;
+  target.completed=completed;
+  target.completedAt=completed?new Date().toISOString():null;
+  if(saveDeepCleaningAssignments(assignments))renderCleaningAssignmentCards();
+}
+function deleteCleaningAssignment(id){
+  const assignments=getDeepCleaningAssignments();
+  const remaining=assignments.filter(item=>item.id!==id);
+  if(remaining.length===assignments.length)return;
+  if(saveDeepCleaningAssignments(remaining)){
+    renderDeepCleaning();
+  }
+}
+function clearPersonCleaningTasks(name){
+  const assignments=getDeepCleaningAssignments();
+  const personTasks=assignments.filter(item=>item.assignee===name);
+  if(!personTasks.length)return;
+  if(!window.confirm("¿Quitar las "+personTasks.length+" tareas de "+name+"? Así podrá recibir una nueva asignación."))return;
+  const remaining=assignments.filter(item=>item.assignee!==name);
+  if(saveDeepCleaningAssignments(remaining)){
+    renderDeepCleaning();
+    showToast(name+" ya puede recibir una nueva asignación.");
+  }
+}
+function clearCompletedCleaningTasks(){
+  const assignments=getDeepCleaningAssignments();
+  const remaining=assignments.filter(item=>!item.completed);
+  if(remaining.length===assignments.length)return;
+  if(!window.confirm("¿Borrar las tareas de limpieza que ya aparecen como terminadas?"))return;
+  if(saveDeepCleaningAssignments(remaining)){
+    renderDeepCleaning();
+  }
+}
+document.getElementById("cleaningTaskSearch")?.addEventListener("input",renderCleaningTaskOptions);
+window.addEventListener("storage",event=>{
+  if(event.key===DEEP_CLEANING_STORAGE_KEY&&document.getElementById("cleaningPage")?.classList.contains("active"))renderDeepCleaning();
+});
 
 function showToast(message){
 
