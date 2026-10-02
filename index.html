@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -2959,6 +2958,52 @@ input, textarea, select {
 
 
 <body>
+
+<!-- =======================================================
+     NUEVO SPLASH SCREEN ADAPTABLE (MODO CLARO / OSCURO)
+     Reemplaza el bloque anterior con este código completo
+     ======================================================= -->
+<div id="bearys-splash-screen" class="bearys-splash-theme" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 99999; transition: opacity 0.3s ease, visibility 0.3s ease;">
+    <div style="font-size: 80px; animation: floatBearFast 1.2s ease-in-out infinite; margin-bottom: 20px;">🧸</div>
+    <h1 class="bearys-splash-title" style="font-family: Arial, sans-serif; font-size: 24px; margin: 0; font-weight: bold;">Beary's Coffee Shop</h1>
+    <p class="bearys-splash-subtitle" style="font-family: Arial, sans-serif; font-size: 14px; margin-top: 10px;">Preparando el rush... ☕</p>
+</div>
+
+<style>
+/* ☀️ ESTILOS POR DEFECTO: MODO CLARO */
+.bearys-splash-theme { background-color: #FFF0F5; } /* Rosa bebé */
+.bearys-splash-title { color: #8B5A2B; }            /* Café oscuro */
+.bearys-splash-subtitle { color: #CD853F; }         /* Café claro */
+
+/* 🌙 ESTILOS AUTOMÁTICOS: MODO OSCURO (Detecta el sistema del celular) */
+@media (prefers-color-scheme: dark) {
+    .bearys-splash-theme { background-color: #1E1B18; } /* Fondo café noche / casi negro */
+    .bearys-splash-title { color: #F5EBE6; }            /* Letras crema suave */
+    .bearys-splash-subtitle { color: #D4C5B9; }         /* Subtítulo arena */
+}
+
+/* Animación del osito */
+@keyframes floatBearFast { 
+    0% { transform: translateY(0px) rotate(0deg); } 
+    50% { transform: translateY(-12px) rotate(4deg); } 
+    100% { transform: translateY(0px) rotate(0deg); } 
+}
+</style>
+
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        const splash = document.getElementById('bearys-splash-screen');
+        if (splash) {
+            splash.style.opacity = '0';
+            splash.style.visibility = 'hidden';
+            setTimeout(() => { splash.remove(); }, 300);
+        }
+    }, 800); /* Duración de 0.8 segundos */
+});
+</script>
+<!-- ======================================================= -->
+
 
 <div class="app">
 
@@ -7259,21 +7304,3 @@ initializeApp();
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
