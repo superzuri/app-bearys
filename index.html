@@ -1949,6 +1949,8 @@ html.dark .menu-card:hover{
 
 .bottom-nav{
 
+  --nav-bottom-space:42px;
+
   position:fixed !important;
 
   isolation:isolate;
@@ -2009,7 +2011,16 @@ html.dark .menu-card:hover{
 }
 
 @media (display-mode:standalone), (display-mode:fullscreen){
-  .bottom-nav{bottom:calc(42px + var(--safe-bottom,0px)) !important}
+  .bottom-nav{
+    --nav-bottom-space:calc(42px + var(--safe-bottom,0px));
+    bottom:var(--nav-bottom-space) !important;
+  }
+}
+
+/* iOS puede dejar desfasada la posición fija tras cerrar el teclado. */
+.bottom-nav.viewport-synced{
+  top:calc(var(--nav-viewport-top,0px) + var(--nav-viewport-height,100dvh) - var(--nav-bottom-space,42px) - var(--nav-live-height,68px)) !important;
+  bottom:auto !important;
 }
 
 .nav-liquid-indicator{
@@ -5159,6 +5170,40 @@ let liquidNavButtons=[];
 let liquidNavPointer=null;
 let liquidNavClickGuard=false;
 let lastTouchStartAt=0;
+let liquidNavViewportFrame=0;
+
+function isAppleMobileBrowser(){
+  const ua=navigator.userAgent||"";
+  return /iPad|iPhone|iPod/.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+}
+
+function syncLiquidNavigationViewport(){
+  const viewport=window.visualViewport;
+  if(!liquidNavElement||!isAppleMobileBrowser()||!viewport)return;
+  if(liquidNavViewportFrame)cancelAnimationFrame(liquidNavViewportFrame);
+  liquidNavViewportFrame=requestAnimationFrame(()=>{
+    liquidNavViewportFrame=0;
+    const height=Number(viewport.height);
+    if(!Number.isFinite(height)||height<200)return;
+
+    const focused=document.activeElement;
+    const isTextEntry=!!focused&&(focused.isContentEditable||focused.tagName==="TEXTAREA"||(
+      focused.tagName==="INPUT"&&!/^(button|submit|reset|checkbox|radio|file|range|color|image|hidden)$/i.test(focused.type||"text")
+    ));
+    const screenHeight=Number(window.screen&&window.screen.height)||window.innerHeight;
+    const keyboardOpen=isTextEntry&&height<Math.max(200,screenHeight-160);
+    const top=keyboardOpen?Math.max(0,Number(viewport.offsetTop)||0):0;
+
+    liquidNavElement.style.setProperty("--nav-viewport-top",`${top}px`);
+    liquidNavElement.style.setProperty("--nav-viewport-height",`${height}px`);
+    liquidNavElement.style.setProperty("--nav-live-height",`${liquidNavElement.getBoundingClientRect().height}px`);
+    liquidNavElement.classList.add("viewport-synced");
+  });
+}
+
+function settleLiquidNavigationViewport(){
+  [0,90,260,560].forEach(delay=>setTimeout(syncLiquidNavigationViewport,delay));
+}
 
 document.addEventListener("dblclick",event=>{
   if(Date.now()-lastTouchStartAt<1000&&event.cancelable)event.preventDefault();
@@ -5321,7 +5366,21 @@ function initializeLiquidNavigation(){
   window.addEventListener("resize",()=>{
     const current=liquidNavElement.querySelector(".nav-button[aria-expanded='true']")||liquidNavElement.querySelector(".nav-button.active");
     if(current)moveLiquidNavTo(current,false);
+    syncLiquidNavigationViewport();
   });
+
+  if(isAppleMobileBrowser()&&window.visualViewport){
+    window.visualViewport.addEventListener("resize",syncLiquidNavigationViewport,{passive:true});
+    window.visualViewport.addEventListener("scroll",syncLiquidNavigationViewport,{passive:true});
+    window.addEventListener("orientationchange",settleLiquidNavigationViewport,{passive:true});
+    window.addEventListener("pageshow",settleLiquidNavigationViewport,{passive:true});
+    document.addEventListener("visibilitychange",()=>{
+      if(document.visibilityState==="visible")settleLiquidNavigationViewport();
+    });
+    document.addEventListener("focusin",settleLiquidNavigationViewport);
+    document.addEventListener("focusout",settleLiquidNavigationViewport);
+    settleLiquidNavigationViewport();
+  }
 }
 
 
@@ -7225,3 +7284,21 @@ initializeApp();
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
