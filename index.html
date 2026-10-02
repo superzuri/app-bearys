@@ -3012,38 +3012,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }, 700); // 0.7 segundos
 });
 
-// 2. 🛡️ PARCHE INTEGRADO PARA EL BOTÓN "SEGUIR TEMA DEL TELÉFONO"
-document.addEventListener('DOMContentLoaded', () => {
-    // Buscamos el interruptor en tus Ajustes. Si le pusiste un ID o clase específica, puedes cambiarlo aquí.
-    const switchTemaCelular = document.querySelector('input[type="checkbox"]') || document.getElementById('seguir-tema'); 
-    
-    // Al cargar la app, forzar que recuerde si el staff quería el modo automático activo
-    const estadoGuardado = localStorage.getItem('seguirTemaTelefono');
-    if (estadoGuardado === 'true' && switchTemaCelular) {
-        switchTemaCelular.checked = true;
-        forzarTemaSistema();
-    }
-
-    // Monitorear cuando encienden o apagan la opción para guardarla de inmediato sin errores
-    if (switchTemaCelular) {
-        switchTemaCelular.addEventListener('change', (e) => {
-            localStorage.setItem('seguirTemaTelefono', e.target.checked);
-            if (e.target.checked) {
-                localStorage.removeItem('themePreference'); // Borra elecciones manuales viejas que hagan corto
-                forzarTemaSistema();
-            }
-        });
-    }
-});
-
-function forzarTemaSistema() {
-    const esOscuro = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (esOscuro) {
-        document.documentElement.classList.add('dark');
-    } else {
-        document.documentElement.classList.remove('dark');
-    }
-}
+// El tema automático se gestiona por el sistema principal de preferencias.
 </script>
 <!-- ======================================================= -->
 
@@ -4865,6 +4834,8 @@ function clearLocalData(){
         localStorage.removeItem(key)
     );
 
+  inventoryCache.clear();
+
 
   localStorage.removeItem(
     "bearyUserName"
@@ -5732,38 +5703,50 @@ function inventoryKey(name){
 }
 
 
+/* Caché en memoria: evita leer localStorage una y otra vez mientras se edita.
+   La clave real de localStorage no cambia, así que esto conserva los datos existentes. */
+const inventoryCache = new Map();
+
 function getQuantity(name){
 
-  const value =
-    localStorage.getItem(
-      inventoryKey(name)
-    );
+  if(inventoryCache.has(name)){
+    return inventoryCache.get(name);
+  }
 
-  return value===null
-    ? ""
-    : value;
+  const stored = localStorage.getItem(inventoryKey(name));
+  const value = stored===null ? "" : stored;
+
+  inventoryCache.set(name,value);
+  return value;
 
 }
 
 
 function saveQuantity(name,value){
 
+  inventoryCache.set(name,value);
+
+  const key=inventoryKey(name);
+
   if(value===""){
-
-    localStorage.removeItem(
-      inventoryKey(name)
-    );
-
+    localStorage.removeItem(key);
   }else{
-
-    localStorage.setItem(
-      inventoryKey(name),
-      value
-    );
-
+    localStorage.setItem(key,value);
   }
 
 }
+
+/* Si otra pestaña/dispositivo del mismo origen modifica el inventario,
+   mantenemos el caché sincronizado sin afectar la interfaz. */
+window.addEventListener("storage",event=>{
+  if(!event.key || !event.key.startsWith("bearyInv_"))return;
+
+  const product=products.find(item=>inventoryKey(item.nombre)===event.key);
+  if(product){
+    inventoryCache.set(product.nombre,event.newValue===null?"":event.newValue);
+    updateInventoryStats();
+  }
+});
 
 
 /* =========================================================
@@ -6429,6 +6412,7 @@ function newInventoryList(){
   products.forEach(product=>{
     localStorage.removeItem(inventoryKey(product.nombre));
   });
+  inventoryCache.clear();
   document.getElementById("inventoryMessage").textContent="";
   buildInventory();
   updateInventoryStats();
@@ -7259,6 +7243,21 @@ function recipeText(value){
 function normalizeRecipeText(value){
   return String(value).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase("es");
 }
+
+/* Índice de búsqueda precalculado: el contenido del recetario es estático,
+   así que no necesitamos normalizar títulos/ingredientes en cada tecla. */
+const recipeSearchIndex=new Map();
+recipeGroups.forEach(group=>{
+  group.recipes.forEach(recipe=>{
+    recipeSearchIndex.set(
+      recipe,
+      normalizeRecipeText(
+        [group.title,recipe.name,...recipe.items,recipe.note||""].join(" ")
+      )
+    );
+  });
+});
+
 function renderRecipes(){
   const results=document.getElementById("recipeResults");
   if(!results)return;
@@ -7266,8 +7265,7 @@ function renderRecipes(){
   const markup=recipeGroups.map(group=>{
     if(activeRecipeCategory!=="all"&&group.id!==activeRecipeCategory)return "";
     const matches=group.recipes.filter(recipe=>{
-      const searchable=normalizeRecipeText([group.title,recipe.name,...recipe.items,recipe.note||""].join(" "));
-      return searchable.includes(query);
+      return (recipeSearchIndex.get(recipe)||"").includes(query);
     });
     if(!matches.length)return "";
     const note=group.note?'<p class="recipe-group-note">💡 '+recipeText(group.note)+'</p>':"";
