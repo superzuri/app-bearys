@@ -2960,7 +2960,7 @@ input, textarea, select {
 <body>
 
 <!-- =======================================================
-     BLOQUE MAESTRO PREMIUM: SPLASH + FLUIDEZ HARDWARE PURA
+     BLOQUE MAESTRO COMPACTO: SPLASH + FLUIDEZ + PARCHE "SEGUIR TEMA"
      Pega todo este bloque compacto justo debajo de <body>
      ======================================================= -->
 <div id="bearys-splash-screen" class="bearys-splash-theme" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 99999; transition: opacity 0.2s ease, visibility 0.2s ease;">
@@ -2970,50 +2970,38 @@ input, textarea, select {
 </div>
 
 <style>
-/* ☀️ ESTILOS SPLASH: MODO CLARO */
+/* ☀️ ESTILOS SPLASH: MODO CLARO (¡Cámbialo si quieres el rosa exacto de tu app!) */
 .bearys-splash-theme { background-color: #fdf2f8; }
 .bearys-splash-title { color: #8B5A2B; }
 .bearys-splash-subtitle { color: #CD853F; }
 
-/* 🌙 ESTILOS SPLASH: MODO OSCURO */
+/* 🌙 ESTILOS SPLASH: MODO OSCURO (¡Pon aquí tu color vinito favorito!) */
 @media (prefers-color-scheme: dark) {
-    .bearys-splash-theme { background-color: 		#1C1012; }
-    .bearys-splash-title { color: #F5EBE6; }
-    .bearys-splash-subtitle { color: #D4C5B9; }
+    .bearys-splash-theme { background-color: #1a1212; } 
+    .bearys-splash-title { color: #F5EBE6; }            
+    .bearys-splash-subtitle { color: #D4C5B9; }         
 }
 
-/* Animación ultra ligera optimizada */
+/* Animación ultra ligera del oso */
 @keyframes floatBearFast { 
     0% { transform: translateY(0px); } 
     50% { transform: translateY(-10px); } 
     100% { transform: translateY(0px); } 
 }
 
-/* =======================================================
-   🚀 OPTIMIZACIÓN LIGERA (SIN SATURAR PROCESADOR)
-   ======================================================= */
-/* Aplicar el efecto táctil ÚNICAMENTE a elementos interactivos reales para evitar lag */
-button:active, 
-.tab-item:active, 
-[role="button"]:active,
-nav a:active {
+/* 🚀 OPTIMIZACIÓN DE BOTONES (Efecto Táctil) */
+button:active, .tab-item:active, [role="button"]:active, nav a:active {
     transform: scale(0.96) !important;
 }
-
-/* Forzar transiciones fluidas en los botones interactivos */
 button, .tab-item, [role="button"], nav a {
     transition: transform 0.1s ease-out !important;
 }
-
-/* Scroll nativo de alto rendimiento para pantallas móviles */
-body {
-    -webkit-overflow-scrolling: touch;
-}
+body { -webkit-overflow-scrolling: touch; }
 </style>
 
 <script>
+// 1. Temporizador del Splash Screen
 window.addEventListener('DOMContentLoaded', () => {
-    // Quitamos retardos innecesarios para que la app responda al instante
     setTimeout(() => {
         const splash = document.getElementById('bearys-splash-screen');
         if (splash) {
@@ -3021,8 +3009,41 @@ window.addEventListener('DOMContentLoaded', () => {
             splash.style.visibility = 'hidden';
             setTimeout(() => { splash.remove(); }, 200);
         }
-    }, 700); // Reducido a 0.7 segundos para máxima rapidez
+    }, 700); // 0.7 segundos
 });
+
+// 2. 🛡️ PARCHE INTEGRADO PARA EL BOTÓN "SEGUIR TEMA DEL TELÉFONO"
+document.addEventListener('DOMContentLoaded', () => {
+    // Buscamos el interruptor en tus Ajustes. Si le pusiste un ID o clase específica, puedes cambiarlo aquí.
+    const switchTemaCelular = document.querySelector('input[type="checkbox"]') || document.getElementById('seguir-tema'); 
+    
+    // Al cargar la app, forzar que recuerde si el staff quería el modo automático activo
+    const estadoGuardado = localStorage.getItem('seguirTemaTelefono');
+    if (estadoGuardado === 'true' && switchTemaCelular) {
+        switchTemaCelular.checked = true;
+        forzarTemaSistema();
+    }
+
+    // Monitorear cuando encienden o apagan la opción para guardarla de inmediato sin errores
+    if (switchTemaCelular) {
+        switchTemaCelular.addEventListener('change', (e) => {
+            localStorage.setItem('seguirTemaTelefono', e.target.checked);
+            if (e.target.checked) {
+                localStorage.removeItem('themePreference'); // Borra elecciones manuales viejas que hagan corto
+                forzarTemaSistema();
+            }
+        });
+    }
+});
+
+function forzarTemaSistema() {
+    const esOscuro = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (esOscuro) {
+        document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark');
+    }
+}
 </script>
 <!-- ======================================================= -->
 
