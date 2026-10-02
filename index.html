@@ -2007,6 +2007,11 @@ html.dark .menu-card:hover{
   }
 }
 
+.bottom-nav.keyboard-open{
+  top:var(--keyboard-nav-top,0px) !important;
+  bottom:auto !important;
+}
+
 .nav-liquid-indicator{
   position:absolute;
   z-index:0;
@@ -2637,6 +2642,10 @@ input, textarea, select {
 .page.active .menu-card:nth-child(2){animation-delay:.04s}
 .page.active .menu-card:nth-child(3){animation-delay:.08s}
 .page.active .menu-card:nth-child(4){animation-delay:.12s}
+.page.active .more-page-intro,.page.active .more-page-option{animation:cardArrival .34s cubic-bezier(.22,.78,.24,1) both}
+.page.active .more-page-option:nth-child(2){animation-delay:.04s}
+.page.active .more-page-option:nth-child(3){animation-delay:.08s}
+.page.active .more-page-option:nth-child(4){animation-delay:.12s}
 .tap-feedback{animation:buttonTap .24s ease}
 @media(hover:hover){.calendar-card,.activity-card,.recipe-card,.calendar-editor-toggle{transition:transform .2s ease,box-shadow .2s ease}.calendar-card:hover,.activity-card:hover,.recipe-card:hover,.calendar-editor-toggle:hover{transform:translateY(-2px)}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
@@ -2798,22 +2807,18 @@ input, textarea, select {
 .activity-placeholder .activity-title{justify-content:center;margin:0 0 7px;text-align:center}
 .activity-placeholder p{max-width:280px;margin:0;color:var(--muted);font-size:10px;line-height:1.55}
 
-.more-menu[hidden]{display:none}
-.more-menu{position:fixed;inset:0;z-index:5200;display:flex;align-items:flex-end;justify-content:center;padding:14px 14px calc(14px + var(--safe-bottom));background:rgba(39,20,29,.42);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px)}
-.more-menu-sheet{width:min(100%,440px);max-height:82vh;overflow-y:auto;padding:15px 17px 18px;border:1px solid var(--border);border-radius:26px;background:var(--surface);color:var(--text);box-shadow:0 25px 70px rgba(49,19,34,.28);animation:moreMenuIn .24s cubic-bezier(.2,.75,.25,1) both}
-.more-menu-handle{width:38px;height:4px;margin:0 auto 13px;border-radius:99px;background:var(--border)}
-.more-menu-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 2px 10px}
-.more-menu-eyebrow{color:var(--pink2);font-size:8px;font-weight:900;letter-spacing:.1em}
-.more-menu-header h2{margin-top:3px;font-size:17px;font-weight:900}
-.more-menu-close{width:34px;height:34px;border-radius:11px;background:var(--bg2);color:var(--muted);font-size:23px;line-height:1;cursor:pointer}
-.more-menu-option{width:100%;display:flex;align-items:center;gap:11px;margin-top:7px;padding:10px 11px;border:1px solid var(--border);border-radius:15px;background:var(--bg2);color:var(--text);text-align:left;cursor:pointer;transition:transform .18s ease,border-color .18s ease,background .18s ease}
-.more-menu-option:hover{transform:translateX(3px);border-color:var(--pink);background:var(--pinksoft)}
-.more-menu-option-icon{width:38px;height:38px;flex:0 0 38px;display:grid;place-items:center;border-radius:13px;background:var(--surface);font-size:20px}
-.more-menu-option-copy{min-width:0;flex:1}
-.more-menu-option-copy b{display:block;font-size:11px;font-weight:850}
-.more-menu-option-copy small{display:block;margin-top:3px;color:var(--muted);font-size:9px}
-.more-menu-chevron{color:var(--pink2);font-size:24px}
-@keyframes moreMenuIn{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.more-page-intro{display:flex;align-items:center;gap:12px;margin:0 0 16px;padding:16px;border:1px solid var(--border);border-radius:20px;background:linear-gradient(135deg,var(--pinksoft),var(--surface));box-shadow:var(--shadow)}
+.more-page-intro-icon{width:48px;height:48px;flex:0 0 48px;display:grid;place-items:center;border-radius:16px;background:var(--surface);font-size:25px}
+.more-page-intro strong{display:block;font-size:13px;font-weight:900}
+.more-page-intro p{margin-top:4px;color:var(--muted);font-size:10px;line-height:1.45}
+.more-page-list{display:grid;gap:10px}
+.more-page-option{width:100%;min-height:76px;display:flex;align-items:center;gap:12px;padding:13px;border:1px solid var(--border);border-radius:18px;background:var(--surface);color:var(--text);text-align:left;box-shadow:var(--shadow);cursor:pointer;transition:transform .18s ease,border-color .18s ease,background .18s ease}
+.more-page-option:hover{transform:translateY(-2px);border-color:var(--pink);background:var(--pinksoft)}
+.more-page-option-icon{width:46px;height:46px;flex:0 0 46px;display:grid;place-items:center;border-radius:15px;background:var(--pinksoft);font-size:23px}
+.more-page-option-copy{min-width:0;flex:1}
+.more-page-option-copy b{display:block;font-size:13px;font-weight:900}
+.more-page-option-copy small{display:block;margin-top:4px;color:var(--muted);font-size:10px;line-height:1.4}
+.more-page-chevron{color:var(--pink2);font-size:25px}
 
 /* En móviles, usa el scroll del documento para que iOS mantenga estables los elementos fijos. */
 @media(max-width:760px),(hover:none) and (pointer:coarse){
@@ -2915,12 +2920,10 @@ input, textarea, select {
   .cleaning-person-name{font-size:12px}
   .cleaning-person-meta{font-size:10px}
 
-  .more-menu-sheet{max-height:82dvh}
-  .more-menu-header h2{font-size:19px}
-  .more-menu-option{min-height:60px;padding:10px 12px}
-  .more-menu-option-copy b{font-size:13px}
-  .more-menu-option-copy small{font-size:10px;line-height:1.4}
-  .more-menu-close{width:44px;height:44px}
+  .more-page-intro{padding:15px}
+  .more-page-option{min-height:76px;padding:12px}
+  .more-page-option-copy b{font-size:14px}
+  .more-page-option-copy small{font-size:11px;line-height:1.4}
   .toast{max-width:calc(100vw - 28px);width:max-content;text-align:center;font-size:12px;line-height:1.4}
   .name-modal p,.daily-challenge-copy,.activity-placeholder p{font-size:11px}
   .name-save,.daily-challenge-primary{min-height:48px;font-size:13px}
@@ -2943,13 +2946,13 @@ input, textarea, select {
 }
 
 @media(hover:none){
-  .menu-card:hover,.home-progress-button:hover,.closing-reset-button:hover,.more-menu-option:hover{transform:none}
+  .menu-card:hover,.home-progress-button:hover,.closing-reset-button:hover,.more-page-option:hover{transform:none}
   .menu-card:hover{box-shadow:var(--shadow)}
   html.dark .menu-card:hover{box-shadow:var(--shadow)}
   .menu-card:hover::after{animation:none}
   .home-progress-button:hover{box-shadow:none}
   .closing-reset-button:hover{background:var(--surface);color:var(--muted)}
-  .more-menu-option:hover{border-color:var(--border);background:var(--bg2)}
+  .more-page-option:hover{border-color:var(--border);background:var(--surface)}
 }
 </style>
 </head>
@@ -4060,6 +4063,52 @@ input, textarea, select {
 
 </section>
 
+
+<!-- =====================================================
+     MÁS
+===================================================== -->
+
+<section class="page" id="morePage">
+  <div class="inner-header">
+    <button class="back-button" type="button" onclick="goHome()" aria-label="Volver a inicio">←</button>
+    <div class="inner-title">
+      <h1>Más opciones ✨</h1>
+      <p>Herramientas para el equipo</p>
+    </div>
+  </div>
+
+  <div class="more-page-intro">
+    <span class="more-page-intro-icon" aria-hidden="true">🧸</span>
+    <div>
+      <strong>Todo en un mismo lugar</strong>
+      <p>Abre una sección para consultar y administrar sus opciones.</p>
+    </div>
+  </div>
+
+  <div class="more-page-list" aria-label="Más secciones">
+    <button type="button" class="more-page-option" onclick="openPage('cleaning')">
+      <span class="more-page-option-icon" aria-hidden="true">🧼</span>
+      <span class="more-page-option-copy"><b>Limpieza</b><small>Limpieza profunda y asignaciones del equipo</small></span>
+      <span class="more-page-chevron" aria-hidden="true">›</span>
+    </button>
+    <button type="button" class="more-page-option" onclick="openPage('calendar')">
+      <span class="more-page-option-icon" aria-hidden="true">🗓️</span>
+      <span class="more-page-option-copy"><b>Calendario</b><small>Cumpleaños y temporadas de Beary's</small></span>
+      <span class="more-page-chevron" aria-hidden="true">›</span>
+    </button>
+    <button type="button" class="more-page-option" onclick="openPage('history')">
+      <span class="more-page-option-icon" aria-hidden="true">📖</span>
+      <span class="more-page-option-copy"><b>Historial</b><small>Consulta el movimiento de la app</small></span>
+      <span class="more-page-chevron" aria-hidden="true">›</span>
+    </button>
+    <button type="button" class="more-page-option" onclick="openPage('settings')">
+      <span class="more-page-option-icon" aria-hidden="true">⚙️</span>
+      <span class="more-page-option-copy"><b>Ajustes</b><small>Nombre, tema y animaciones</small></span>
+      <span class="more-page-chevron" aria-hidden="true">›</span>
+    </button>
+  </div>
+</section>
+
 </div>
 
 
@@ -4138,10 +4187,7 @@ input, textarea, select {
 
   <button
     class="nav-button"
-    id="moreNavButton"
-    onclick="toggleMoreMenu()"
-    aria-controls="moreMenu"
-    aria-expanded="false"
+    onclick="openPage('more')"
   >
 
     <span class="nav-icon">
@@ -4155,39 +4201,6 @@ input, textarea, select {
   </button>
 
 </nav>
-
-<div class="more-menu" id="moreMenu" hidden onclick="if(event.target===this)closeMoreMenu()">
-  <section class="more-menu-sheet" role="dialog" aria-modal="true" aria-labelledby="moreMenuTitle" tabindex="-1">
-    <div class="more-menu-handle" aria-hidden="true"></div>
-    <div class="more-menu-header">
-      <div>
-        <span class="more-menu-eyebrow">BEARY'S COFFEE SHOP</span>
-        <h2 id="moreMenuTitle">Más opciones</h2>
-      </div>
-      <button type="button" class="more-menu-close" aria-label="Cerrar menú" onclick="closeMoreMenu()">×</button>
-    </div>
-    <button type="button" class="more-menu-option" onclick="openMorePage('cleaning')">
-      <span class="more-menu-option-icon" aria-hidden="true">🧼</span>
-      <span class="more-menu-option-copy"><b>Limpieza</b><small>Limpieza profunda y asignaciones</small></span>
-      <span class="more-menu-chevron" aria-hidden="true">›</span>
-    </button>
-    <button type="button" class="more-menu-option" onclick="openMorePage('calendar')">
-      <span class="more-menu-option-icon" aria-hidden="true">🗓️</span>
-      <span class="more-menu-option-copy"><b>Calendario</b><small>Cumpleaños y temporadas</small></span>
-      <span class="more-menu-chevron" aria-hidden="true">›</span>
-    </button>
-    <button type="button" class="more-menu-option" onclick="openMorePage('history')">
-      <span class="more-menu-option-icon" aria-hidden="true">📖</span>
-      <span class="more-menu-option-copy"><b>Historial</b><small>Consulta el movimiento de la app</small></span>
-      <span class="more-menu-chevron" aria-hidden="true">›</span>
-    </button>
-    <button type="button" class="more-menu-option" onclick="openMorePage('settings')">
-      <span class="more-menu-option-icon" aria-hidden="true">⚙️</span>
-      <span class="more-menu-option-copy"><b>Ajustes</b><small>Nombre, tema y animaciones</small></span>
-      <span class="more-menu-chevron" aria-hidden="true">›</span>
-    </button>
-  </section>
-</div>
 
 <!-- =====================================================
      TOAST
@@ -5081,54 +5094,6 @@ function goHome(){
 }
 
 
-function toggleMoreMenu(){
-  const panel=document.getElementById("moreMenu");
-  const trigger=document.getElementById("moreNavButton");
-  if(!panel||!trigger)return;
-  if(panel.hidden){
-    panel.hidden=false;
-    trigger.setAttribute("aria-expanded","true");
-    moveLiquidNavTo(trigger,true);
-    animateNavSelection(trigger);
-    const firstOption=panel.querySelector(".more-menu-option");
-    if(firstOption)firstOption.focus();
-  }else{
-    closeMoreMenu();
-  }
-}
-function closeMoreMenu(restoreFocus=true){
-  const panel=document.getElementById("moreMenu");
-  const trigger=document.getElementById("moreNavButton");
-  if(!panel||!trigger)return;
-  panel.hidden=true;
-  trigger.setAttribute("aria-expanded","false");
-  const activeButton=document.querySelector(".bottom-nav .nav-button.active");
-  if(activeButton)moveLiquidNavTo(activeButton,true);
-  if(restoreFocus)trigger.focus();
-}
-function openMorePage(page){
-  closeMoreMenu(false);
-  openPage(page);
-  const backButton=document.querySelector("#"+page+"Page .back-button");
-  if(backButton)backButton.focus();
-}
-document.addEventListener("keydown",event=>{
-  const panel=document.getElementById("moreMenu");
-  if(!panel||panel.hidden)return;
-  if(event.key==="Escape"){
-    event.preventDefault();
-    closeMoreMenu();
-    return;
-  }
-  if(event.key!=="Tab")return;
-  const focusable=Array.from(panel.querySelectorAll(".more-menu-close,.more-menu-option"));
-  const first=focusable[0],last=focusable[focusable.length-1];
-  if(event.shiftKey&&document.activeElement===first){
-    event.preventDefault();last.focus();
-  }else if(!event.shiftKey&&document.activeElement===last){
-    event.preventDefault();first.focus();
-  }
-});
 function updateNavigation(page){
   const buttons=document.querySelectorAll(".nav-button");
   buttons.forEach(button=>{
@@ -5155,6 +5120,65 @@ let liquidNavButtons=[];
 let liquidNavPointer=null;
 let liquidNavClickGuard=false;
 let lastTouchStartAt=0;
+let liquidNavKeyboardFrame=0;
+let liquidNavFullViewportHeight=Math.max(
+  Number(window.innerHeight)||0,
+  Number(document.documentElement.clientHeight)||0,
+  Number(window.visualViewport&&window.visualViewport.height)||0
+);
+
+function isTextEntryFocused(){
+  const focused=document.activeElement;
+  return !!focused&&(focused.isContentEditable||focused.tagName==="TEXTAREA"||focused.tagName==="SELECT"||(
+    focused.tagName==="INPUT"&&!/^(button|submit|reset|checkbox|radio|file|range|color|image|hidden)$/i.test(focused.type||"text")
+  ));
+}
+
+function updateNavigationForKeyboard(){
+  if(!liquidNavElement||!window.visualViewport)return;
+  if(liquidNavKeyboardFrame)cancelAnimationFrame(liquidNavKeyboardFrame);
+  liquidNavKeyboardFrame=requestAnimationFrame(()=>{
+    liquidNavKeyboardFrame=0;
+    const viewport=window.visualViewport;
+    const visibleHeight=Number(viewport.height);
+    const layoutHeight=Math.max(Number(window.innerHeight)||0,Number(document.documentElement.clientHeight)||0);
+    if(!Number.isFinite(visibleHeight)||visibleHeight<180)return;
+
+    const keyboardOpen=isTextEntryFocused()&&visibleHeight<liquidNavFullViewportHeight-100;
+    if(keyboardOpen){
+      const navHeight=liquidNavElement.getBoundingClientRect().height;
+      const visibleBottom=(Number(viewport.offsetTop)||0)+visibleHeight;
+      liquidNavElement.style.setProperty("--keyboard-nav-top",`${Math.max(0,visibleBottom-12-navHeight)}px`);
+      liquidNavElement.style.setProperty("--nav-live-height",`${navHeight}px`);
+      liquidNavElement.classList.add("keyboard-open");
+      return;
+    }
+
+    liquidNavElement.classList.remove("keyboard-open");
+    liquidNavElement.style.removeProperty("--keyboard-nav-top");
+    liquidNavElement.style.removeProperty("--nav-live-height");
+
+    if(!isTextEntryFocused()&&visibleHeight>=liquidNavFullViewportHeight-100){
+      liquidNavFullViewportHeight=Math.max(layoutHeight,visibleHeight);
+    }
+  });
+}
+
+function settleNavigationForKeyboard(){
+  [0,80,220,480].forEach(delay=>setTimeout(updateNavigationForKeyboard,delay));
+}
+
+function refreshNavigationViewportBaseline(){
+  [180,420].forEach(delay=>setTimeout(()=>{
+    if(!isTextEntryFocused()){
+      const viewportHeight=Number(window.visualViewport&&window.visualViewport.height)||0;
+      const layoutHeight=Math.max(Number(window.innerHeight)||0,Number(document.documentElement.clientHeight)||0);
+      const height=Math.min(layoutHeight||viewportHeight,viewportHeight||layoutHeight);
+      if(height>180)liquidNavFullViewportHeight=height;
+    }
+    updateNavigationForKeyboard();
+  },delay));
+}
 
 document.addEventListener("dblclick",event=>{
   if(Date.now()-lastTouchStartAt<1000&&event.cancelable)event.preventDefault();
@@ -5233,7 +5257,7 @@ function selectLiquidNavButton(button){
   else if(index===1)openPage("activities");
   else if(index===2)openPage("inventory");
   else if(index===3)openPage("recipes");
-  else if(index===4)toggleMoreMenu();
+  else if(index===4)openPage("more");
 }
 
 function initializeLiquidNavigation(){
@@ -5317,7 +5341,21 @@ function initializeLiquidNavigation(){
   window.addEventListener("resize",()=>{
     const current=liquidNavElement.querySelector(".nav-button[aria-expanded='true']")||liquidNavElement.querySelector(".nav-button.active");
     if(current)moveLiquidNavTo(current,false);
+    updateNavigationForKeyboard();
   });
+
+  if(window.visualViewport){
+    window.visualViewport.addEventListener("resize",updateNavigationForKeyboard,{passive:true});
+    window.visualViewport.addEventListener("scroll",updateNavigationForKeyboard,{passive:true});
+    document.addEventListener("focusin",settleNavigationForKeyboard);
+    document.addEventListener("focusout",settleNavigationForKeyboard);
+    window.addEventListener("orientationchange",refreshNavigationViewportBaseline,{passive:true});
+    window.addEventListener("pageshow",settleNavigationForKeyboard,{passive:true});
+    document.addEventListener("visibilitychange",()=>{
+      if(document.visibilityState==="visible")refreshNavigationViewportBaseline();
+    });
+    settleNavigationForKeyboard();
+  }
 }
 
 
