@@ -2969,17 +2969,11 @@ input, textarea, select {
 </div>
 
 <style>
-/* ☀️ ESTILOS SPLASH: MODO CLARO (¡Cámbialo si quieres el rosa exacto de tu app!) */
+/* ☀️ SPLASH: modo claro */
 .bearys-splash-theme { background-color: #fdf2f8; }
 .bearys-splash-title { color: #1a1212; }
-.bearys-splash-subtitle { color: #1a1212; }
-
-/* 🌙 ESTILOS SPLASH: MODO OSCURO (¡Pon aquí tu color vinito favorito!) */
-@media (prefers-color-scheme: dark) {
-    .bearys-splash-theme { background-color: #1a1212; } 
-    .bearys-splash-title { color: #fdf2f8; }            
-    .bearys-splash-subtitle { color: #fdf2f8; }         
-}
+.bearys-splash-theme.splash-dark { background-color: #1a1212; }
+.bearys-splash-theme.splash-dark .bearys-splash-title { color: #fdf2f8; }
 
 /* Animación ultra ligera del oso */
 @keyframes floatBearFast { 
@@ -2999,7 +2993,21 @@ body { -webkit-overflow-scrolling: touch; }
 </style>
 
 <script>
-// 1. Temporizador del Splash Screen
+/* 🎨 El splash respeta la preferencia guardada en Ajustes.
+   Si está en "Seguir tema del teléfono", usa el tema del sistema. */
+(function(){
+    const savedMode=localStorage.getItem("bearyThemeMode");
+    const systemDark=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const effectiveTheme=(savedMode==="light"||savedMode==="dark")
+        ? savedMode
+        : (systemDark ? "dark" : "light");
+    const splash=document.getElementById("bearys-splash-screen");
+    if(splash){
+        splash.classList.toggle("splash-dark",effectiveTheme==="dark");
+    }
+})();
+
+// Temporizador del Splash Screen
 window.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         const splash = document.getElementById('bearys-splash-screen');
@@ -3008,10 +3016,8 @@ window.addEventListener('DOMContentLoaded', () => {
             splash.style.visibility = 'hidden';
             setTimeout(() => { splash.remove(); }, 200);
         }
-    }, 700); // 0.7 segundos
+    }, 700);
 });
-
-// El tema automático se gestiona por el sistema principal de preferencias.
 </script>
 <!-- ======================================================= -->
 
@@ -3050,16 +3056,6 @@ window.addEventListener('DOMContentLoaded', () => {
     </div>
 
   </div>
-
-  <button
-    class="theme-toggle"
-    id="themeToggle"
-    type="button"
-    aria-label="Cambiar modo de color"
-    onclick="toggleTheme()"
-  >
-    🌙
-  </button>
 
 </header>
 
@@ -4593,20 +4589,6 @@ function applyTheme(theme){
 
   document.body.style.backgroundColor =
     pageBackground;
-
-  document
-    .getElementById("themeToggle")
-    .textContent=
-      dark
-        ? "☀️"
-        : "🌙";
-
-  const themeToggle=document.getElementById("themeToggle");
-  if(themeToggle){
-    const targetLabel=dark?"modo claro":"modo oscuro";
-    themeToggle.setAttribute("aria-label",`Cambiar manualmente a ${targetLabel}`);
-    themeToggle.title=`Cambiar manualmente a ${targetLabel}`;
-  }
 
   document
     .getElementById("themeColor")
