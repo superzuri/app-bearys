@@ -442,6 +442,7 @@ html.dark .brand-logo{
 .page.active{
   display:block;
   animation:pageIn .38s cubic-bezier(.22,.78,.24,1) both;
+  will-change:opacity,transform;
 }
 
 @keyframes pageIn{
@@ -455,6 +456,12 @@ html.dark .brand-logo{
     opacity:1;
     transform:translate3d(0,0,0) scale(1);
   }
+}
+
+/* Ahorro invisible: las animaciones siguen exactamente igual mientras usas la app,
+   pero no gastan frames cuando la pestaña/app queda en segundo plano. */
+body.app-paused *{
+  animation-play-state:paused !important;
 }
 
 
@@ -594,6 +601,7 @@ html.dark .hero{
 .hero-bear{
 
   position:absolute;
+  will-change:transform;
 
   right:7px;
   top:74px;
@@ -2657,7 +2665,7 @@ input, textarea, select {
 @keyframes navPop{0%,100%{transform:translateY(0) scale(1)}45%{transform:translateY(-2px) scale(1.06)}}
 @keyframes todayPulse{0%,100%{box-shadow:0 0 0 2px rgba(255,121,173,.08)}50%{box-shadow:0 0 0 4px rgba(255,121,173,.19)}}
 .menu-icon{transform-origin:center;transition:transform .25s ease}
-.phrase-bear{transform-origin:center bottom;animation:phraseBearBob 3.8s ease-in-out infinite}
+.phrase-bear{transform-origin:center bottom;animation:phraseBearBob 3.8s ease-in-out infinite;will-change:transform}
 .activity-item input{transition:transform .2s ease}
 .activity-item input:checked{animation:checkPop .32s cubic-bezier(.2,.8,.3,1)}
 .activity-item span{transition:color .22s ease,opacity .22s ease}
@@ -2969,11 +2977,17 @@ input, textarea, select {
 </div>
 
 <style>
-/* ☀️ SPLASH: modo claro */
+/* ☀️ ESTILOS SPLASH: MODO CLARO (¡Cámbialo si quieres el rosa exacto de tu app!) */
 .bearys-splash-theme { background-color: #fdf2f8; }
 .bearys-splash-title { color: #1a1212; }
-.bearys-splash-theme.splash-dark { background-color: #1a1212; }
-.bearys-splash-theme.splash-dark .bearys-splash-title { color: #fdf2f8; }
+.bearys-splash-subtitle { color: #1a1212; }
+
+/* 🌙 ESTILOS SPLASH: MODO OSCURO (¡Pon aquí tu color vinito favorito!) */
+@media (prefers-color-scheme: dark) {
+    .bearys-splash-theme { background-color: #1a1212; } 
+    .bearys-splash-title { color: #fdf2f8; }            
+    .bearys-splash-subtitle { color: #fdf2f8; }         
+}
 
 /* Animación ultra ligera del oso */
 @keyframes floatBearFast { 
@@ -2993,21 +3007,7 @@ body { -webkit-overflow-scrolling: touch; }
 </style>
 
 <script>
-/* 🎨 El splash respeta la preferencia guardada en Ajustes.
-   Si está en "Seguir tema del teléfono", usa el tema del sistema. */
-(function(){
-    const savedMode=localStorage.getItem("bearyThemeMode");
-    const systemDark=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const effectiveTheme=(savedMode==="light"||savedMode==="dark")
-        ? savedMode
-        : (systemDark ? "dark" : "light");
-    const splash=document.getElementById("bearys-splash-screen");
-    if(splash){
-        splash.classList.toggle("splash-dark",effectiveTheme==="dark");
-    }
-})();
-
-// Temporizador del Splash Screen
+// 1. Temporizador del Splash Screen
 window.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         const splash = document.getElementById('bearys-splash-screen');
@@ -3016,8 +3016,10 @@ window.addEventListener('DOMContentLoaded', () => {
             splash.style.visibility = 'hidden';
             setTimeout(() => { splash.remove(); }, 200);
         }
-    }, 700);
+    }, 700); // 0.7 segundos
 });
+
+// El tema automático se gestiona por el sistema principal de preferencias.
 </script>
 <!-- ======================================================= -->
 
@@ -3056,6 +3058,16 @@ window.addEventListener('DOMContentLoaded', () => {
     </div>
 
   </div>
+
+  <button
+    class="theme-toggle"
+    id="themeToggle"
+    type="button"
+    aria-label="Cambiar modo de color"
+    onclick="toggleTheme()"
+  >
+    🌙
+  </button>
 
 </header>
 
@@ -4589,6 +4601,20 @@ function applyTheme(theme){
 
   document.body.style.backgroundColor =
     pageBackground;
+
+  document
+    .getElementById("themeToggle")
+    .textContent=
+      dark
+        ? "☀️"
+        : "🌙";
+
+  const themeToggle=document.getElementById("themeToggle");
+  if(themeToggle){
+    const targetLabel=dark?"modo claro":"modo oscuro";
+    themeToggle.setAttribute("aria-label",`Cambiar manualmente a ${targetLabel}`);
+    themeToggle.title=`Cambiar manualmente a ${targetLabel}`;
+  }
 
   document
     .getElementById("themeColor")
@@ -6809,11 +6835,6 @@ function renderCleaningTaskOptions(){
   const query=(document.getElementById("cleaningTaskSearch")?.value||"").trim().toLocaleLowerCase("es-MX");
   const matches=DEEP_CLEANING_TASKS.map((task,index)=>({task,index})).filter(item=>item.task.toLocaleLowerCase("es-MX").includes(query));
   list.innerHTML=matches.length?matches.map(({task,index})=>'<label class="cleaning-task-option"><input type="checkbox" data-cleaning-task-index="'+index+'" '+(selectedCleaningTasks.has(index)?"checked":"")+'><span>'+cleaningEscape(task)+"</span></label>").join(''):'<div class="cleaning-no-search">No encontramos tareas con ese nombre.</div>';
-  list.querySelectorAll("[data-cleaning-task-index]").forEach(input=>input.addEventListener("change",()=>{
-    const index=Number(input.dataset.cleaningTaskIndex);
-    if(input.checked)selectedCleaningTasks.add(index);else selectedCleaningTasks.delete(index);
-    updateCleaningAssignButton();
-  }));
   updateCleaningAssignButton();
 }
 function updateCleaningAssignButton(){
@@ -6948,10 +6969,25 @@ function renderCleaningAssignmentCards(){
     }).join("");
     return `<details class="cleaning-person-group"><summary><span class="cleaning-person-avatar" aria-hidden="true">${cleaningEscape(group.name.slice(0,1).toLocaleUpperCase("es-MX"))}</span><span class="cleaning-person-summary"><span class="cleaning-person-name">${cleaningEscape(group.name)}</span><span class="cleaning-person-meta">${ordered.length} ${ordered.length===1?"tarea":"tareas"} · ${done} terminadas · ${cleaningEscape(status)}</span></span><span class="cleaning-person-arrow" aria-hidden="true">›</span></summary><div class="cleaning-person-tasks">${taskCards}<button type="button" class="cleaning-person-clear" data-cleaning-clear-person="${cleaningEscape(group.name)}">Quitar todas sus tareas</button></div></details>`;
   }).join(""):'<div class="cleaning-empty">Aún no hay tareas repartidas. Cuando asignen la primera, aquí verán a cada persona y sus pendientes. 🐻</div>';
-  list.querySelectorAll("[data-cleaning-complete]").forEach(input=>input.addEventListener("change",()=>setCleaningTaskComplete(input.dataset.cleaningComplete,input.checked)));
-  list.querySelectorAll("[data-cleaning-delete]").forEach(button=>button.addEventListener("click",()=>deleteCleaningAssignment(button.dataset.cleaningDelete)));
-  list.querySelectorAll("[data-cleaning-clear-person]").forEach(button=>button.addEventListener("click",()=>clearPersonCleaningTasks(button.dataset.cleaningClearPerson)));
+  /* Los controles se gestionan desde un único listener persistente.
+     Así renderizar la lista no crea decenas de listeners nuevos. */
 }
+
+const cleaningAssignmentList=document.getElementById("cleaningAssignmentList");
+cleaningAssignmentList?.addEventListener("change",event=>{
+  const input=event.target.closest("[data-cleaning-complete]");
+  if(input)setCleaningTaskComplete(input.dataset.cleaningComplete,input.checked);
+});
+cleaningAssignmentList?.addEventListener("click",event=>{
+  const deleteButton=event.target.closest("[data-cleaning-delete]");
+  if(deleteButton){
+    deleteCleaningAssignment(deleteButton.dataset.cleaningDelete);
+    return;
+  }
+  const clearButton=event.target.closest("[data-cleaning-clear-person]");
+  if(clearButton)clearPersonCleaningTasks(clearButton.dataset.cleaningClearPerson);
+});
+
 function setCleaningTaskComplete(id,completed){
   const assignments=getDeepCleaningAssignments();
   const target=assignments.find(item=>item.id===id);
@@ -6988,7 +7024,21 @@ function clearCompletedCleaningTasks(){
     renderDeepCleaning();
   }
 }
-document.getElementById("cleaningTaskSearch")?.addEventListener("input",renderCleaningTaskOptions);
+const cleaningTaskList=document.getElementById("cleaningTaskList");
+cleaningTaskList?.addEventListener("change",event=>{
+  const input=event.target.closest("[data-cleaning-task-index]");
+  if(!input)return;
+  const index=Number(input.dataset.cleaningTaskIndex);
+  if(input.checked)selectedCleaningTasks.add(index);
+  else selectedCleaningTasks.delete(index);
+  updateCleaningAssignButton();
+});
+
+let cleaningSearchTimer;
+document.getElementById("cleaningTaskSearch")?.addEventListener("input",()=>{
+  clearTimeout(cleaningSearchTimer);
+  cleaningSearchTimer=setTimeout(renderCleaningTaskOptions,100);
+});
 window.addEventListener("storage",event=>{
   if(event.key===DEEP_CLEANING_STORAGE_KEY&&document.getElementById("cleaningPage")?.classList.contains("active"))renderDeepCleaning();
 });
@@ -7060,19 +7110,12 @@ document.addEventListener(
       "tap-feedback"
     );
 
-    void button.offsetWidth;
-
-    button.classList.add(
-      "tap-feedback"
-    );
-
-    setTimeout(()=>{
-
-      button.classList.remove(
-        "tap-feedback"
-      );
-
-    },250);
+    requestAnimationFrame(()=>{
+      button.classList.add("tap-feedback");
+      setTimeout(()=>{
+        button.classList.remove("tap-feedback");
+      },250);
+    });
 
   }
 );
@@ -7259,7 +7302,11 @@ function renderRecipes(){
 }
 function setupRecipeBook(){
   const search=document.getElementById("recipeSearch");
-  search.addEventListener("input",renderRecipes);
+  let recipeSearchTimer;
+  search.addEventListener("input",()=>{
+    clearTimeout(recipeSearchTimer);
+    recipeSearchTimer=setTimeout(renderRecipes,90);
+  });
   document.querySelectorAll(".recipe-filter").forEach(button=>{
     button.addEventListener("click",()=>{
       activeRecipeCategory=button.dataset.category;
@@ -7311,6 +7358,7 @@ function initializeApp(){
   refreshScheduledActivityView();
   setInterval(refreshScheduledActivityView,30000);
   document.addEventListener("visibilitychange",()=>{
+    document.body.classList.toggle("app-paused",document.hidden);
     if(!document.hidden)refreshScheduledActivityView();
   });
 
