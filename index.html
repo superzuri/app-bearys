@@ -4752,7 +4752,9 @@ async function initializeSharedWorkspace(user){
 
   const entriesToImport=claim.importThisDevice?localEntries:[];
   const sharedCollection=firebaseDb.collection(SHARED_STATE_COLLECTION);
-  const writeChunkSize=399;
+  // Cada registro lleva serverTimestamp(), que también cuenta como escritura;
+  // 200 registros dejan el lote holgadamente por debajo del límite de 500.
+  const writeChunkSize=200;
   for(let offset=0;offset<entriesToImport.length;offset+=writeChunkSize){
     const chunk=entriesToImport.slice(offset,offset+writeChunkSize);
     const batch=firebaseDb.batch();
