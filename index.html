@@ -4499,6 +4499,8 @@ let applyingRemoteStorage=false;
 let sharedStateUnsubscribe=null;
 let historyUnsubscribe=null;
 let gateErrorMessage="";
+let firebaseSetupStage="";
+let sharedInitializationToken="";
 const pendingSharedWrites=new Map();
 const nativeStorageSet=Storage.prototype.setItem;
 const nativeStorageRemove=Storage.prototype.removeItem;
@@ -4712,31 +4714,94 @@ async function initializeSharedWorkspace(user){
   const markerRef=firebaseDb.collection(SHARED_STATE_COLLECTION).doc(SHARED_WORKSPACE_MARKER);
   const localEntries=getLocalSharedEntries();
   const markerBeforeSetup=await markerRef.get();
-  const importThisDevice=!markerBeforeSetup.exists&&localEntries.length>0&&window.confirm(
-    "Primera conexión con la base compartida. Este dispositivo tiene "+localEntries.length+
-    " datos guardados de Beary's. ¿Quieres importarlos para que sean los datos iniciales del equipo?\n\nAceptar: importarlos.\nCancelar: iniciar sin ellos; quedarán como respaldo local descargable desde Ajustes."
-  );
-  const historyRef=firebaseDb.collection(ACTIVITY_HISTORY_COLLECTION).doc();
-  await firebaseDb.runTransaction(async transaction=>{
+  if(markerBeforeSetup.exists&&markerBeforeSetup.data()?.initialized)return;
+
+  const markerState=readSharedInitializationState(markerBeforeSetup);
+  const ownIncompleteImport=markerBeforeSetup.exists&&markerBeforeSetup.data()?.updatedBy===user.uid;
+  let importThisDevice=ownIncompleteImport
+    ?Boolean(markerState.importRequested)
+    :!markerBeforeSetup.exists&&localEntries.length>0&&window.confirm(
+      "Primera conexión con la base compartida. Este dispositivo tiene "+localEntries.length+
+      " datos guardados de Beary's. ¿Quieres importarlos para que sean los datos iniciales del equipo?\n\nAceptar: importarlos.\nCancelar: iniciar sin ellos; quedarán como respaldo local descargable desde Ajustes."
+    );
+
+  const token=getSharedInitializationToken();
+  const claim=await firebaseDb.runTransaction(async transaction=>{
     const marker=await transaction.get(markerRef);
-    if(marker.exists)return;
-    const entriesToImport=importThisDevice?localEntries:[];
-    entriesToImport.forEach(entry=>{
-      transaction.set(firebaseDb.collection(SHARED_STATE_COLLECTION).doc(entry.key),{
+    if(marker.exists&&marker.data()?.initialized)return {alreadyInitialized:true};
+    const data=marker.exists?marker.data()||{}:{};
+    const state=readSharedInitializationState(marker);
+    const sameOwner=data.updatedBy===user.uid;
+    const lockTime=data.updatedAt?.toMillis?.()||0;
+    const lockIsFresh=state.status==="initializing"&&Date.now()-lockTime<5*60*1000;
+    if(lockIsFresh&&state.token!==token){
+      const error=new Error("workspace-initializing");
+      error.code="workspace-initializing";
+      throw error;
+    }
+    if(marker.exists&&sameOwner&&state.status==="initializing")importThisDevice=Boolean(state.importRequested);
+    else if(marker.exists&&!sameOwner)importThisDevice=false;
+    transaction.set(markerRef,{
+      initialized:false,importedEntries:Number(data.importedEntries)||0,
+      value:JSON.stringify({status:"initializing",token,importRequested:Boolean(importThisDevice)}),
+      deleted:false,updatedBy:user.uid,updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    return {alreadyInitialized:false,importThisDevice};
+  });
+  if(claim.alreadyInitialized)return;
+
+  const entriesToImport=claim.importThisDevice?localEntries:[];
+  const sharedCollection=firebaseDb.collection(SHARED_STATE_COLLECTION);
+  const writeChunkSize=399;
+  for(let offset=0;offset<entriesToImport.length;offset+=writeChunkSize){
+    const chunk=entriesToImport.slice(offset,offset+writeChunkSize);
+    const batch=firebaseDb.batch();
+    chunk.forEach(entry=>{
+      if(entry.key.includes("/")||entry.key.length>1500){
+        const error=new Error("invalid-import-key");
+        error.code="invalid-import-key";
+        throw error;
+      }
+      batch.set(sharedCollection.doc(entry.key),{
         value:entry.value,deleted:false,updatedBy:user.uid,updatedAt:firebase.firestore.FieldValue.serverTimestamp()
       });
     });
-    transaction.set(markerRef,{
-      initialized:true,importedEntries:entriesToImport.length,updatedBy:user.uid,
-      updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+    batch.set(markerRef,{
+      initialized:false,importedEntries:Math.min(offset+chunk.length,entriesToImport.length),
+      value:JSON.stringify({status:"initializing",token,importRequested:true}),
+      deleted:false,updatedBy:user.uid,updatedAt:firebase.firestore.FieldValue.serverTimestamp()
     });
-    transaction.set(historyRef,{
-      category:"system",icon:"☁️",title:"Base compartida inicializada",
-      detail:entriesToImport.length?"Se importaron "+entriesToImport.length+" datos de este dispositivo.":"Se inició la base compartida sin importar datos anteriores.",
-      actorUid:user.uid,actorName:activeTeamProfile.name,storageKey:SHARED_WORKSPACE_MARKER,
-      createdAt:firebase.firestore.FieldValue.serverTimestamp()
-    });
+    await batch.commit();
+    setFirebaseGateMessage("Preparando los datos compartidos… "+Math.min(offset+chunk.length,entriesToImport.length)+" de "+entriesToImport.length);
+  }
+
+  const finalBatch=firebaseDb.batch();
+  const historyRef=firebaseDb.collection(ACTIVITY_HISTORY_COLLECTION).doc();
+  finalBatch.set(markerRef,{
+    initialized:true,importedEntries:entriesToImport.length,updatedBy:user.uid,
+    updatedAt:firebase.firestore.FieldValue.serverTimestamp()
   });
+  finalBatch.set(historyRef,{
+    category:"system",icon:"☁️",title:"Base compartida inicializada",
+    detail:entriesToImport.length?"Se importaron "+entriesToImport.length+" datos de este dispositivo.":"Se inició la base compartida sin importar datos anteriores.",
+    actorUid:user.uid,actorName:activeTeamProfile.name,storageKey:SHARED_WORKSPACE_MARKER,
+    createdAt:firebase.firestore.FieldValue.serverTimestamp()
+  });
+  await finalBatch.commit();
+}
+function readSharedInitializationState(snapshot){
+  try{return JSON.parse(snapshot?.data()?.value||"{}");}catch(error){return {};}
+}
+function getSharedInitializationToken(){
+  if(sharedInitializationToken)return sharedInitializationToken;
+  try{
+    sharedInitializationToken=sessionStorage.getItem("bearySharedInitializationToken_v1")||"";
+    if(!sharedInitializationToken){
+      sharedInitializationToken=(window.crypto?.randomUUID?.()||Date.now().toString(36)+Math.random().toString(36).slice(2));
+      sessionStorage.setItem("bearySharedInitializationToken_v1",sharedInitializationToken);
+    }
+  }catch(error){sharedInitializationToken=Date.now().toString(36)+Math.random().toString(36).slice(2);}
+  return sharedInitializationToken;
 }
 async function hydrateSharedWorkspace(){
   const snapshot=await firebaseDb.collection(SHARED_STATE_COLLECTION).get();
@@ -4812,6 +4877,9 @@ function mapFirebaseAuthError(error){
   if(code.includes("operation-not-allowed"))return "Falta activar el acceso con correo y contraseña en Firebase.";
   if(code.includes("permission-denied"))return "La sesión se aceptó, pero Firestore denegó el acceso. Hay que revisar las reglas y el documento teamMembers de esta cuenta.";
   if(code.includes("failed-precondition"))return "Firebase no pudo preparar la base compartida (failed-precondition). Comparte este código con soporte.";
+  if(code.includes("workspace-initializing"))return "La primera importación de datos sigue en curso. Espera un minuto y vuelve a iniciar sesión.";
+  if(code.includes("invalid-import-key"))return "Hay un nombre de dato local que Firebase no acepta. Envíame solo el código invalid-import-key, nunca tu contraseña.";
+  if(code.includes("invalid-argument"))return "Firebase rechazó un dato al "+(firebaseSetupStage||"conectar la página")+". Comparte solo el código invalid-argument, nunca tu contraseña.";
   return code?"Firebase devolvió este error: "+code+". Envíame solo el código, nunca tu contraseña.":"No se pudo iniciar sesión. Revisa tus datos e inténtalo otra vez.";
 }
 function setupFirebaseLogin(){
@@ -4838,6 +4906,7 @@ function setupFirebaseLogin(){
 async function activateFirebaseUser(user){
   showFirebaseGate("Verificando el acceso del equipo…");
   try{
+    firebaseSetupStage="verificar el perfil del equipo";
     const memberSnapshot=await firebaseDb.collection(TEAM_MEMBER_COLLECTION).doc(user.uid).get();
     if(!memberSnapshot.exists){
       gateErrorMessage="Tu cuenta todavía no está habilitada para Beary's. Pide a la administración que active tu acceso.";
@@ -4852,7 +4921,9 @@ async function activateFirebaseUser(user){
     const accountEmail=document.getElementById("firebaseAccountEmail");
     if(accountName)accountName.textContent=activeTeamProfile.name;
     if(accountEmail)accountEmail.textContent=activeTeamProfile.email;
+    firebaseSetupStage="preparar la base compartida";
     await initializeSharedWorkspace(user);
+    firebaseSetupStage="cargar los datos compartidos";
     await hydrateSharedWorkspace();
     gateErrorMessage="";
     if(!appInitialized){initializeApp();appInitialized=true;}
@@ -4861,6 +4932,7 @@ async function activateFirebaseUser(user){
       renderDeepCleaning();renderCalendar();updateDailyChallengeButton();
     }
     startSharedStateListener();
+    firebaseSetupStage="";
     hideFirebaseGate();
     const loginButton=document.getElementById("firebaseLoginButton");
     if(loginButton)loginButton.disabled=false;
