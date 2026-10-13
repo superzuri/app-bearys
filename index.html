@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -309,8 +310,8 @@ html.dark{
 
   background:var(--chrome-bg);
 
-  backdrop-filter:none;
-  -webkit-backdrop-filter:none;
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
 
   border-bottom:
     1px solid rgba(244,203,220,.8);
@@ -3015,65 +3016,47 @@ input, textarea, select {
   .more-page-option:hover{border-color:var(--border);background:var(--surface)}
 }
 </style>
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
 </head>
 
 
 <body>
 
-<!-- =======================================================
-     BLOQUE MAESTRO COMPACTO: SPLASH + FLUIDEZ + PARCHE "SEGUIR TEMA"
-     Pega todo este bloque compacto justo debajo de <body>
-     ======================================================= -->
-<div id="bearys-splash-screen" class="bearys-splash-theme" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 99999; transition: opacity 0.2s ease, visibility 0.2s ease;">
-    <div style="font-size: 70px; animation: floatBearFast 1.8s ease-in-out infinite; margin-bottom: 20px;">🧸</div>
-    <h1 class="bearys-splash-title" style="font-family: Arial, sans-serif; font-size: 24px; margin: 0; font-weight: bold;">Beary´s</h1>
+<!-- Splash visible hasta que Firebase termine de validar y sincronizar el espacio. -->
+<div id="bearys-splash-screen" class="bearys-splash-theme" role="status" aria-live="polite" aria-label="Cargando Beary's">
+  <div class="bearys-splash-bear" aria-hidden="true">🧸</div>
+  <h1 class="bearys-splash-title">Beary´s Coffee Shop</h1>
+  <p id="bearysSplashMessage" class="bearys-splash-message">Conectando con Beary's…</p>
+  <div class="bearys-splash-track" role="progressbar" aria-label="Preparando la app" aria-valuemin="0" aria-valuemax="100" aria-valuenow="5"><span id="bearysSplashProgressBar" style="width:5%"></span></div>
+  <p id="bearysSplashHint" class="bearys-splash-hint" hidden>Revisa tu conexión; puedes reintentar cuando vuelva internet.</p>
+  <button id="bearysSplashRetry" class="bearys-splash-retry" type="button" onclick="location.reload()" hidden>Reintentar</button>
 </div>
-
 <style>
-/* El splash sigue el tema efectivo de la app, incluido el modo manual. */
-.bearys-splash-theme {
-    background-color: var(--bg, #fff0f2);
-    color: var(--text, #452c38);
-}
-.bearys-splash-title { color: inherit; }
-html.dark .bearys-splash-theme {
-    background-color: var(--bg, #171216);
-    color: var(--text, #fff0f6);
-}
-
-/* Animación ultra ligera del oso */
-@keyframes floatBearFast { 
-    0% { transform: translateY(0px); } 
-    50% { transform: translateY(-10px); } 
-    100% { transform: translateY(0px); } 
-}
-
-/* 🚀 OPTIMIZACIÓN DE BOTONES (Efecto Táctil) */
-button:active, .tab-item:active, [role="button"]:active, nav a:active {
-    transform: scale(0.96) !important;
-}
-button, .tab-item, [role="button"], nav a {
-    transition: transform 0.1s ease-out !important;
-}
-body { -webkit-overflow-scrolling: touch; }
+.bearys-splash-theme{position:fixed;inset:0;z-index:100002;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:24px;background:var(--bg,#fff0f2);color:var(--text,#452c38);transition:opacity .24s ease,visibility .24s ease}
+html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#fff0f6)}
+.bearys-splash-theme.is-hidden{opacity:0;visibility:hidden;pointer-events:none}
+.bearys-splash-bear{font-size:64px;animation:floatBearFast 1.8s ease-in-out infinite;margin-bottom:14px}
+.bearys-splash-title{margin:0;font-family:Arial,sans-serif;font-size:23px;font-weight:900;color:inherit}
+.bearys-splash-message{min-height:20px;margin:14px 0 0;color:var(--muted,#856b79);font-size:13px;font-weight:700;text-align:center}
+.bearys-splash-track{width:min(220px,68vw);height:6px;overflow:hidden;margin-top:13px;border-radius:999px;background:var(--border,#edc5cd)}
+.bearys-splash-track span{display:block;height:100%;min-width:5%;border-radius:inherit;background:linear-gradient(90deg,var(--pink,#d77b9b),#ffb16e);transition:width .35s ease;position:relative;overflow:hidden}
+.bearys-splash-track span::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 15%,rgba(255,255,255,.62) 50%,transparent 85%);transform:translateX(-100%);animation:bearysSplashShine 1.25s ease-in-out infinite}
+.bearys-splash-hint{margin:12px 0 0;color:var(--muted,#856b79);font-size:12px;text-align:center}
+.bearys-splash-retry{min-height:40px;margin-top:12px;padding:8px 16px;border:0;border-radius:12px;background:var(--pink,#d77b9b);color:#fff;font:inherit;font-weight:800}
+@keyframes floatBearFast{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes bearysSplashShine{to{transform:translateX(110%)}}
+@media(prefers-reduced-motion:reduce){.bearys-splash-bear,.bearys-splash-track span::after{animation:none}}
 </style>
-
 <script>
-// 1. Temporizador del Splash Screen
-window.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => {
-        const splash = document.getElementById('bearys-splash-screen');
-        if (splash) {
-            splash.style.opacity = '0';
-            splash.style.visibility = 'hidden';
-            setTimeout(() => { splash.remove(); }, 200);
-        }
-    }, 700); // 0.7 segundos
-});
-
-// El tema automático se gestiona por el sistema principal de preferencias.
+(()=>{
+  const splash=document.getElementById("bearys-splash-screen"),message=document.getElementById("bearysSplashMessage"),bar=document.getElementById("bearysSplashProgressBar"),track=splash?.querySelector(".bearys-splash-track");
+  window.updateBearysSplash=(text,progress)=>{if(!splash||splash.dataset.finished==="true")return;if(message&&text)message.textContent=text;if(typeof progress==="number"&&bar&&track){const previous=Number(bar.dataset.progress||5),next=Math.max(previous,Math.min(96,Math.round(progress)));bar.dataset.progress=String(next);bar.style.width=next+"%";track.setAttribute("aria-valuenow",String(next));}};
+  window.finishBearysSplash=()=>{if(!splash||splash.dataset.finished==="true")return;splash.dataset.finished="true";if(message)message.textContent="Listo ✨";if(bar)bar.style.width="100%";if(track)track.setAttribute("aria-valuenow","100");requestAnimationFrame(()=>splash.classList.add("is-hidden"));window.setTimeout(()=>splash.remove(),280);};
+  window.setTimeout(()=>{if(!splash||splash.dataset.finished==="true")return;if(message)message.textContent="La conexión está tardando más de lo normal…";const hint=document.getElementById("bearysSplashHint");if(hint)hint.hidden=false;const retry=document.getElementById("bearysSplashRetry");if(retry)retry.hidden=false;},12000);
+})();
 </script>
-<!-- ======================================================= -->
 
 <style>
 .firebase-auth-gate{position:fixed;inset:0;z-index:100001;display:flex;align-items:center;justify-content:center;padding:22px;background:var(--bg,#fff0f2);color:var(--text,#452c38)}
@@ -3106,7 +3089,7 @@ window.addEventListener('DOMContentLoaded', () => {
 .history-empty{padding:24px 16px;border:1px dashed var(--border);border-radius:15px;text-align:center;color:var(--muted);font-size:12px;line-height:1.5}
 </style>
 
-<div id="firebaseAuthGate" class="firebase-auth-gate" role="dialog" aria-modal="true" aria-labelledby="firebaseAuthTitle">
+<div id="firebaseAuthGate" class="firebase-auth-gate" style="display:none" role="dialog" aria-modal="true" aria-labelledby="firebaseAuthTitle">
   <div class="firebase-auth-card">
     <div class="firebase-auth-logo" aria-hidden="true">🧸</div>
     <h1 id="firebaseAuthTitle">Beary´s</h1>
@@ -4798,7 +4781,7 @@ async function initializeSharedWorkspace(user){
       deleted:false,updatedBy:user.uid,updatedAt:firebase.firestore.FieldValue.serverTimestamp()
     });
     await batch.commit();
-    setFirebaseGateMessage("Preparando los datos compartidos… "+Math.min(offset+chunk.length,entriesToImport.length)+" de "+entriesToImport.length);
+    updateBearysSplash("Importando datos compartidos… "+Math.min(offset+chunk.length,entriesToImport.length)+" de "+entriesToImport.length,45+Math.round(25*Math.min(offset+chunk.length,entriesToImport.length)/Math.max(1,entriesToImport.length)));
   }
 
   const finalBatch=firebaseDb.batch();
@@ -4976,9 +4959,10 @@ async function publishRegisteredAccountName(){
   }
 }
 async function activateFirebaseUser(user){
-  showFirebaseGate("Verificando el acceso del equipo…");
+  updateBearysSplash("Verificando el acceso del equipo…",20);
   try{
     firebaseSetupStage="verificar el perfil del equipo";
+    updateBearysSplash("Confirmando tu acceso…",28);
     const memberSnapshot=await firebaseDb.collection(TEAM_MEMBER_COLLECTION).doc(user.uid).get();
     if(!memberSnapshot.exists){
       gateErrorMessage="Tu cuenta todavía no está habilitada para Beary's. Pide a la administración que active tu acceso.";
@@ -4989,15 +4973,18 @@ async function activateFirebaseUser(user){
     const member=memberSnapshot.data()||{};
     activeTeamProfile={uid:user.uid,email:user.email||"",name:String(member.name||localStorage.getItem("bearyUserName")||user.email?.split("@")[0]||"Equipo Beary's")};
     nativeStorageSet.call(localStorage,"bearyUserName",activeTeamProfile.name);
-    await publishRegisteredAccountName();
+    publishRegisteredAccountName();
     const accountName=document.getElementById("firebaseAccountName");
     const accountEmail=document.getElementById("firebaseAccountEmail");
     if(accountName)accountName.textContent=activeTeamProfile.name;
     if(accountEmail)accountEmail.textContent=activeTeamProfile.email;
     firebaseSetupStage="preparar la base compartida";
+    updateBearysSplash("Preparando los datos del equipo…",42);
     await initializeSharedWorkspace(user);
     firebaseSetupStage="cargar los datos compartidos";
+    updateBearysSplash("Cargando tareas e inventario…",74);
     await hydrateSharedWorkspace();
+    updateBearysSplash("Organizando tu espacio…",90);
     gateErrorMessage="";
     if(!appInitialized){initializeApp();appInitialized=true;}
     else{
@@ -5007,12 +4994,14 @@ async function activateFirebaseUser(user){
     startSharedStateListener();
     firebaseSetupStage="";
     hideFirebaseGate();
+    finishBearysSplash();
     const loginButton=document.getElementById("firebaseLoginButton");
     if(loginButton)loginButton.disabled=false;
     if(document.getElementById("historyPage")?.classList.contains("active"))loadHistory();
   }catch(error){
     console.error("Firebase setup error",error);
     gateErrorMessage=mapFirebaseAuthError(error);
+    finishBearysSplash();
     await firebaseAuth.signOut().catch(()=>{});
     showFirebaseGate(gateErrorMessage,true);
     const loginButton=document.getElementById("firebaseLoginButton");
@@ -5021,13 +5010,15 @@ async function activateFirebaseUser(user){
 }
 function initializeFirebaseAccess(){
   setupFirebaseLogin();
-  showFirebaseGate("Conectando con la base compartida…");
+  updateBearysSplash("Conectando con la base compartida…",8);
+  hideFirebaseGate();
   firebaseAuth.onAuthStateChanged(user=>{
-    if(user){activateFirebaseUser(user);return;}
+    if(user){updateBearysSplash("Sesión encontrada…",16);activateFirebaseUser(user);return;}
     activeTeamProfile=null;
     sharedStateReady=false;
     if(sharedStateUnsubscribe){sharedStateUnsubscribe();sharedStateUnsubscribe=null;}
     if(historyUnsubscribe){historyUnsubscribe();historyUnsubscribe=null;}
+    finishBearysSplash();
     showFirebaseGate(gateErrorMessage||"Inicia sesión con la cuenta del equipo.",Boolean(gateErrorMessage));
     const loginButton=document.getElementById("firebaseLoginButton");
     if(loginButton)loginButton.disabled=false;
@@ -8219,3 +8210,4 @@ if("serviceWorker" in navigator){
 
 </body>
 </html>
+
