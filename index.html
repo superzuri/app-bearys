@@ -12,6 +12,23 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
+<script>
+/* Aplica la preferencia antes de pintar la pantalla de inicio y el splash. */
+(()=>{
+  try{
+    const savedTheme=localStorage.getItem("bearyThemeMode");
+    const dark=savedTheme==="dark"||(
+      savedTheme!=="light"&&
+      window.matchMedia&&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+    );
+    document.documentElement.classList.toggle("dark",dark);
+    const themeColor=document.getElementById("themeColor");
+    if(themeColor)themeColor.setAttribute("content",dark?"#171216":"#fff0f2");
+  }catch(error){}
+})();
+</script>
+
 <title>Beary's Coffee Shop</title>
 
 <style>
@@ -26,6 +43,16 @@
   box-sizing:border-box;
   -webkit-tap-highlight-color:transparent;
   touch-action:manipulation;
+  -webkit-user-select:none;
+  user-select:none;
+}
+
+/* Mantiene normal la selección y edición dentro de campos de texto. */
+input,
+textarea,
+[contenteditable="true"]{
+  -webkit-user-select:text;
+  user-select:text;
 }
 
 html{
@@ -1487,6 +1514,16 @@ html.dark .menu-card:hover{
 .inventory-order-empty{margin:10px 0;padding:13px;border-radius:13px;background:var(--pinksoft);color:var(--pink2);font-size:10px;font-weight:800;text-align:center}
 .inventory-order-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
 .inventory-order-new{width:100%;margin-top:8px;padding:10px;border:1px solid var(--border);border-radius:12px;background:var(--bg2);color:var(--muted);font-size:9px;font-weight:850;cursor:pointer}
+.inventory-confirm-overlay{position:fixed;inset:0;z-index:6500;display:grid;place-items:center;padding:calc(18px + var(--safe-top)) 18px calc(18px + var(--safe-bottom));background:rgba(40,18,29,.58);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px)}
+.inventory-confirm-overlay[hidden]{display:none!important}
+.inventory-confirm-dialog{width:min(100%,370px);padding:22px;border:1px solid var(--border);border-radius:25px;background:var(--surface);color:var(--text);box-shadow:0 30px 80px rgba(0,0,0,.25);text-align:center;animation:modalIn .26s ease}
+.inventory-confirm-icon{width:54px;height:54px;margin:0 auto 11px;display:grid;place-items:center;border-radius:18px;background:var(--pinksoft);font-size:27px}
+.inventory-confirm-dialog h2{margin:0;color:var(--text);font-size:17px;font-weight:950}
+.inventory-confirm-dialog p{margin:8px 0 17px;color:var(--muted);font-size:11px;line-height:1.55}
+.inventory-confirm-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.inventory-confirm-actions button{min-height:44px;padding:10px;border:1px solid var(--border);border-radius:13px;font-size:10px;font-weight:900;cursor:pointer}
+.inventory-confirm-cancel{background:var(--bg2);color:var(--text)}
+.inventory-confirm-delete{background:var(--danger);border-color:var(--danger)!important;color:#fff}
 .inventory-pending-panel{margin-top:14px;padding:13px;border:1px solid rgba(237,79,138,.24);border-radius:16px;background:var(--pinksoft)}
 .inventory-pending-heading{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .inventory-pending-heading h3{margin:0;color:var(--pink2);font-size:12px}
@@ -2704,12 +2741,15 @@ input, textarea, select {
 .cleaning-picker-close button{padding:7px 10px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--muted);font-size:9px;font-weight:850;cursor:pointer}
 .cleaning-search{width:100%;margin:11px 0 8px;padding:12px 13px;border:1px solid var(--border);border-radius:14px;outline:0;background:var(--bg);color:var(--text);font-size:16px!important}
 .cleaning-search:focus{border-color:var(--pink);box-shadow:0 0 0 3px rgba(255,121,173,.12)}
+.cleaning-task-availability{margin:2px 1px 8px;color:var(--muted);font-size:9px;font-weight:800}
 .cleaning-task-list{display:grid;gap:6px}
 .cleaning-task-option{display:flex;align-items:flex-start;gap:10px;padding:10px 11px;border:1px solid var(--border);border-radius:14px;background:var(--bg);color:var(--text);font-size:10px;line-height:1.45;cursor:pointer;transition:border-color .18s ease,background .18s ease,transform .18s ease}
 .cleaning-task-option:has(input:checked){border-color:var(--pink);background:var(--pinksoft)}
+.cleaning-task-option.is-assigned{align-items:center;cursor:not-allowed;background:var(--bg2);opacity:.78}
 .cleaning-selection-note{margin:8px 0;color:var(--muted);font-size:9px;line-height:1.45}
 .cleaning-task-option input,.cleaning-assignment-check{width:18px;height:18px;flex:0 0 18px;margin:0;accent-color:var(--pink);cursor:pointer}
 .cleaning-task-option span{flex:1}
+.cleaning-task-status{display:block;margin-top:3px;color:var(--pink2);font-size:9px;font-weight:850}
 .cleaning-no-search{padding:16px;text-align:center;color:var(--muted);font-size:10px}
 .cleaning-assign-button,.cleaning-save-button{width:100%;margin-top:10px;padding:13px;border-radius:14px;background:var(--pink);color:#fff;font-size:11px;font-weight:900;cursor:pointer;transition:transform .18s ease,opacity .18s ease}
 .cleaning-assign-button:disabled{opacity:.48;cursor:not-allowed}
@@ -2977,16 +3017,15 @@ input, textarea, select {
 </div>
 
 <style>
-/* ☀️ ESTILOS SPLASH: MODO CLARO (¡Cámbialo si quieres el rosa exacto de tu app!) */
-.bearys-splash-theme { background-color: #fdf2f8; }
-.bearys-splash-title { color: #1a1212; }
-.bearys-splash-subtitle { color: #1a1212; }
-
-/* 🌙 ESTILOS SPLASH: MODO OSCURO (¡Pon aquí tu color vinito favorito!) */
-@media (prefers-color-scheme: dark) {
-    .bearys-splash-theme { background-color: #1a1212; } 
-    .bearys-splash-title { color: #fdf2f8; }            
-    .bearys-splash-subtitle { color: #fdf2f8; }         
+/* El splash sigue el tema efectivo de la app, incluido el modo manual. */
+.bearys-splash-theme {
+    background-color: var(--bg, #fff0f2);
+    color: var(--text, #452c38);
+}
+.bearys-splash-title { color: inherit; }
+html.dark .bearys-splash-theme {
+    background-color: var(--bg, #171216);
+    color: var(--text, #fff0f6);
 }
 
 /* Animación ultra ligera del oso */
@@ -3058,16 +3097,6 @@ window.addEventListener('DOMContentLoaded', () => {
     </div>
 
   </div>
-
-  <button
-    class="theme-toggle"
-    id="themeToggle"
-    type="button"
-    aria-label="Cambiar modo de color"
-    onclick="toggleTheme()"
-  >
-    🌙
-  </button>
 
 </header>
 
@@ -3932,8 +3961,9 @@ window.addEventListener('DOMContentLoaded', () => {
       <h2 id="cleaningTasksTitle">Elige las tareas</h2>
       <button type="button" onclick="closeCleaningTaskPicker()">Cerrar</button>
     </div>
-    <p class="cleaning-selection-note">Elige todas las tareas de una tanda para la misma persona. Después, no podrás asignarle otra tanda hasta quitar las tareas que tiene.</p>
+    <p class="cleaning-selection-note">Elige tareas disponibles para una persona. Las que ya tienen responsable aparecen bloqueadas; podrás repartirle otra tanda cuando retires las tareas actuales.</p>
     <input class="cleaning-search" id="cleaningTaskSearch" type="search" placeholder="Buscar en la lista de limpieza…" aria-label="Buscar tareas de limpieza">
+    <div class="cleaning-task-availability" id="cleaningTaskAvailability" aria-live="polite"></div>
     <div class="cleaning-task-list" id="cleaningTaskList"></div>
     <button type="button" class="cleaning-assign-button" id="cleaningAssignButton" onclick="openCleaningAssignmentForm()" disabled>Selecciona tareas para continuar</button>
     <form class="cleaning-assignment-form" id="cleaningAssignmentForm" hidden onsubmit="assignDeepCleaningTasks(event)">
@@ -4155,6 +4185,11 @@ window.addEventListener('DOMContentLoaded', () => {
       <span class="more-page-option-copy"><b>Limpieza</b><small>Limpieza profunda y asignaciones del equipo</small></span>
       <span class="more-page-chevron" aria-hidden="true">›</span>
     </button>
+    <button type="button" class="more-page-option" onclick="openPage('recipes')">
+      <span class="more-page-option-icon" aria-hidden="true">☕</span>
+      <span class="more-page-option-copy"><b>Recetario</b><small>Bebidas y preparación</small></span>
+      <span class="more-page-chevron" aria-hidden="true">›</span>
+    </button>
     <button type="button" class="more-page-option" onclick="openPage('calendar')">
       <span class="more-page-option-icon" aria-hidden="true">🗓️</span>
       <span class="more-page-option-copy"><b>Calendario</b><small>Cumpleaños y temporadas de Beary's</small></span>
@@ -4235,15 +4270,15 @@ window.addEventListener('DOMContentLoaded', () => {
 
   <button
     class="nav-button"
-    onclick="openPage('recipes')"
+    onclick="openPage('cleaning')"
   >
 
     <span class="nav-icon">
-      ☕
+      🧼
     </span>
 
     <span class="nav-label">
-      Recetas
+      Limpieza
     </span>
 
   </button>
@@ -4265,6 +4300,18 @@ window.addEventListener('DOMContentLoaded', () => {
   </button>
 
 </nav>
+
+<div class="inventory-confirm-overlay" id="inventoryConfirmOverlay" hidden>
+  <div class="inventory-confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="inventoryConfirmTitle" aria-describedby="inventoryConfirmMessage" tabindex="-1">
+    <div class="inventory-confirm-icon" aria-hidden="true">🧹</div>
+    <h2 id="inventoryConfirmTitle">¿Seguro que quieres borrar la lista?</h2>
+    <p id="inventoryConfirmMessage">Esta acción quitará la lista actual.</p>
+    <div class="inventory-confirm-actions">
+      <button type="button" class="inventory-confirm-cancel" id="inventoryConfirmCancel" onclick="closeInventoryConfirmation()">Conservar</button>
+      <button type="button" class="inventory-confirm-delete" id="inventoryConfirmAction" onclick="confirmInventoryAction()">Sí, borrar lista</button>
+    </div>
+  </div>
+</div>
 
 <!-- =====================================================
      TOAST
@@ -4601,20 +4648,6 @@ function applyTheme(theme){
 
   document.body.style.backgroundColor =
     pageBackground;
-
-  document
-    .getElementById("themeToggle")
-    .textContent=
-      dark
-        ? "☀️"
-        : "🌙";
-
-  const themeToggle=document.getElementById("themeToggle");
-  if(themeToggle){
-    const targetLabel=dark?"modo claro":"modo oscuro";
-    themeToggle.setAttribute("aria-label",`Cambiar manualmente a ${targetLabel}`);
-    themeToggle.title=`Cambiar manualmente a ${targetLabel}`;
-  }
 
   document
     .getElementById("themeColor")
@@ -5166,7 +5199,7 @@ function updateNavigation(page){
   if(page==="home")buttons[0].classList.add("active");
   else if(page==="activities")buttons[1].classList.add("active");
   else if(page==="inventory")buttons[2].classList.add("active");
-  else if(page==="recipes")buttons[3].classList.add("active");
+  else if(page==="cleaning")buttons[3].classList.add("active");
   else buttons[4].classList.add("active");
 
   const activeButton=document.querySelector(".bottom-nav .nav-button.active");
@@ -5319,7 +5352,7 @@ function selectLiquidNavButton(button){
   if(index===0)goHome();
   else if(index===1)openPage("activities");
   else if(index===2)openPage("inventory");
-  else if(index===3)openPage("recipes");
+  else if(index===3)openPage("cleaning");
   else if(index===4)openPage("more");
 }
 
@@ -6364,17 +6397,59 @@ function copyPendingInventory(){
   copyInventoryText(inventoryOrderText(pending,"PENDIENTE BAJAR"),"¡Pendientes copiados! 📋✨");
 }
 
+let pendingInventoryConfirmAction=null;
+let inventoryConfirmReturnFocus=null;
+function openInventoryConfirmation(title,message,confirmLabel,onConfirm){
+  const overlay=document.getElementById("inventoryConfirmOverlay");
+  if(!overlay)return;
+  document.getElementById("inventoryConfirmTitle").textContent=title;
+  document.getElementById("inventoryConfirmMessage").textContent=message;
+  document.getElementById("inventoryConfirmAction").textContent=confirmLabel;
+  inventoryConfirmReturnFocus=document.activeElement;
+  pendingInventoryConfirmAction=onConfirm;
+  overlay.hidden=false;
+  requestAnimationFrame(()=>document.getElementById("inventoryConfirmCancel")?.focus());
+}
+function closeInventoryConfirmation(){
+  const overlay=document.getElementById("inventoryConfirmOverlay");
+  if(!overlay||overlay.hidden)return;
+  overlay.hidden=true;
+  pendingInventoryConfirmAction=null;
+  const returnFocus=inventoryConfirmReturnFocus;
+  inventoryConfirmReturnFocus=null;
+  if(returnFocus&&typeof returnFocus.focus==="function")returnFocus.focus();
+}
+function confirmInventoryAction(){
+  const action=pendingInventoryConfirmAction;
+  closeInventoryConfirmation();
+  if(typeof action==="function")action();
+}
+const inventoryConfirmOverlay=document.getElementById("inventoryConfirmOverlay");
+inventoryConfirmOverlay?.addEventListener("click",event=>{
+  if(event.target===inventoryConfirmOverlay)closeInventoryConfirmation();
+});
+document.addEventListener("keydown",event=>{
+  const overlay=document.getElementById("inventoryConfirmOverlay");
+  if(!overlay||overlay.hidden)return;
+  if(event.key==="Escape"){
+    event.preventDefault();
+    closeInventoryConfirmation();
+    return;
+  }
+  if(event.key==="Tab"){
+    const controls=[...overlay.querySelectorAll("button:not(:disabled)")];
+    const first=controls[0],last=controls[controls.length-1];
+    if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}
+    else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}
+  }
+});
+
 function clearInventoryOrder(successMessage){
   const order=readInventoryOrder();
   if(!order){
     showToast("No hay una lista de surtido activa");
-    return true;
+    return false;
   }
-  const pending=order.items.filter(item=>!item.received).length;
-  const message=pending
-    ? "Quedan "+pending+" productos pendientes. Cópialos antes de limpiar. ¿Quieres borrar esta lista?"
-    : "¿Quieres limpiar el checklist de surtido actual?";
-  if(!confirm(message))return false;
   localStorage.removeItem(INVENTORY_ORDER_KEY);
   renderInventoryOrder();
   showToast(successMessage);
@@ -6382,7 +6457,16 @@ function clearInventoryOrder(successMessage){
 }
 
 function startNewInventoryOrder(){
-  clearInventoryOrder("Lista anterior limpia. Ya puedes generar una nueva.");
+  const order=readInventoryOrder();
+  if(!order){
+    showToast("No hay una lista de surtido activa");
+    return;
+  }
+  const pending=order.items.filter(item=>!item.received).length;
+  const message=pending
+    ?"Quedan "+pending+" productos pendientes; también se borrarán al iniciar otra lista."
+    :"Se eliminará el checklist de surtido actual para que puedas empezar uno nuevo.";
+  openInventoryConfirmation("¿Seguro que quieres borrar la lista?",message,"Sí, borrar lista",()=>clearInventoryOrder("Lista anterior limpia. Ya puedes generar una nueva."));
 }
 function copyInventoryText(text,successText){
   const fallback=()=>{
@@ -6413,6 +6497,14 @@ function formatNumber(number){
 }
 
 function newInventoryList(){
+  const counted=products.filter(product=>getQuantity(product.nombre).trim()!=="").length;
+  const message=counted
+    ?"Se borrarán las cantidades registradas en "+counted+" productos del inventario para empezar de nuevo."
+    :"Se limpiarán las cantidades del inventario para que puedas empezar de nuevo.";
+  openInventoryConfirmation("¿Seguro que quieres borrar la lista?",message,"Sí, borrar lista",clearInventoryCounts);
+}
+
+function clearInventoryCounts(){
   products.forEach(product=>{
     localStorage.removeItem(inventoryKey(product.nombre));
   });
@@ -6829,12 +6921,32 @@ function cleaningDateLabel(value){
   const label=date.toLocaleDateString("es-MX",{weekday:"long",day:"numeric",month:"long"});
   return label.charAt(0).toLocaleUpperCase("es-MX")+label.slice(1);
 }
+function getAssignedCleaningTaskMap(assignments=getDeepCleaningAssignments()){
+  const assigned=new Map();
+  assignments.forEach(item=>{
+    const storedIndex=Number(item.taskId);
+    const hasStoredIndex=item.taskId!==undefined&&item.taskId!==null&&String(item.taskId).trim()!=="";
+    const index=hasStoredIndex&&Number.isInteger(storedIndex)
+      ?storedIndex
+      :DEEP_CLEANING_TASKS.indexOf(item.task);
+    if(index>=0&&index<DEEP_CLEANING_TASKS.length&&!assigned.has(index))assigned.set(index,item.assignee);
+  });
+  return assigned;
+}
 function renderCleaningTaskOptions(){
   const list=document.getElementById("cleaningTaskList");
   if(!list)return;
   const query=(document.getElementById("cleaningTaskSearch")?.value||"").trim().toLocaleLowerCase("es-MX");
+  const assignedTasks=getAssignedCleaningTaskMap();
+  [...selectedCleaningTasks].forEach(index=>{if(assignedTasks.has(index))selectedCleaningTasks.delete(index)});
+  const availability=document.getElementById("cleaningTaskAvailability");
+  if(availability)availability.textContent=(DEEP_CLEANING_TASKS.length-assignedTasks.size)+" disponibles · "+assignedTasks.size+" asignadas";
   const matches=DEEP_CLEANING_TASKS.map((task,index)=>({task,index})).filter(item=>item.task.toLocaleLowerCase("es-MX").includes(query));
-  list.innerHTML=matches.length?matches.map(({task,index})=>'<label class="cleaning-task-option"><input type="checkbox" data-cleaning-task-index="'+index+'" '+(selectedCleaningTasks.has(index)?"checked":"")+'><span>'+cleaningEscape(task)+"</span></label>").join(''):'<div class="cleaning-no-search">No encontramos tareas con ese nombre.</div>';
+  list.innerHTML=matches.length?matches.map(({task,index})=>{
+    const assignee=assignedTasks.get(index);
+    if(assignee)return '<div class="cleaning-task-option is-assigned" aria-disabled="true"><span>'+cleaningEscape(task)+'<small class="cleaning-task-status">🔒 Asignada a '+cleaningEscape(assignee)+'</small></span></div>';
+    return '<label class="cleaning-task-option"><input type="checkbox" data-cleaning-task-index="'+index+'" aria-label="Seleccionar '+cleaningEscape(task)+'" '+(selectedCleaningTasks.has(index)?"checked":"")+'><span>'+cleaningEscape(task)+"</span></label>";
+  }).join(''):'<div class="cleaning-no-search">No encontramos tareas con ese nombre.</div>';
   updateCleaningAssignButton();
 }
 function updateCleaningAssignButton(){
@@ -6908,6 +7020,17 @@ function assignDeepCleaningTasks(event){
   const dueDate=document.getElementById("cleaningDueDate").value;
   if(!CLEANING_TEAM.includes(assignee)||!dueDate||dueDate<cleaningToday()||!selectedCleaningTasks.size)return;
   const assignments=getDeepCleaningAssignments();
+  const assignedTaskMap=getAssignedCleaningTaskMap(assignments);
+  const takenTasks=[...selectedCleaningTasks].filter(index=>assignedTaskMap.has(index));
+  if(takenTasks.length){
+    takenTasks.forEach(index=>selectedCleaningTasks.delete(index));
+    renderDeepCleaning();
+    const title=document.getElementById("cleaningFormTitle");
+    if(selectedCleaningTasks.size&&title)title.textContent="Asignar "+selectedCleaningTasks.size+(selectedCleaningTasks.size===1?" tarea":" tareas")+" a una persona";
+    else closeCleaningAssignmentForm();
+    showToast("Algunas tareas ya tienen responsable. Elige otras disponibles.");
+    return;
+  }
   const currentPersonCount=assignments.filter(item=>item.assignee===assignee).length;
   if(currentPersonCount){
     renderDeepCleaning();
