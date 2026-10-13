@@ -4806,9 +4806,13 @@ function mapFirebaseAuthError(error){
   if(code.includes("invalid-credential")||code.includes("wrong-password")||code.includes("user-not-found"))return "El correo o la contraseña no coinciden.";
   if(code.includes("too-many-requests"))return "Hubo varios intentos. Espera un momento y vuelve a probar.";
   if(code.includes("network-request-failed"))return "No hay conexión. Revisa internet e inténtalo de nuevo.";
+  if(code.includes("unauthorized-domain"))return "Firebase aún no autoriza este sitio. En Authentication → Settings → Authorized domains, agrega superzuri.github.io sin https ni rutas.";
+  if(code.includes("invalid-api-key")||code.includes("api-key-not-valid")||code.includes("requests-from-referer"))return "Firebase rechazó la clave de conexión de esta página. Hay que revisar la API key de la app web y sus restricciones.";
+  if(code.includes("web-storage-unsupported")||code.includes("unsupported-persistence"))return "El navegador está bloqueando el almacenamiento de sesión. Permite almacenamiento para este sitio y vuelve a cargarlo.";
   if(code.includes("operation-not-allowed"))return "Falta activar el acceso con correo y contraseña en Firebase.";
-  if(code.includes("permission-denied"))return "Falta publicar las reglas seguras de Firestore o habilitar tu cuenta del equipo.";
-  return "No se pudo iniciar sesión. Revisa tus datos e inténtalo otra vez.";
+  if(code.includes("permission-denied"))return "La sesión se aceptó, pero Firestore denegó el acceso. Hay que revisar las reglas y el documento teamMembers de esta cuenta.";
+  if(code.includes("failed-precondition"))return "Firebase no pudo preparar la base compartida (failed-precondition). Comparte este código con soporte.";
+  return code?"Firebase devolvió este error: "+code+". Envíame solo el código, nunca tu contraseña.":"No se pudo iniciar sesión. Revisa tus datos e inténtalo otra vez.";
 }
 function setupFirebaseLogin(){
   const form=document.getElementById("firebaseLoginForm");
