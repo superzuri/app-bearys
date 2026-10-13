@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fff0f2">
+  <title>Sin conexión · Beary's</title>
+  <style>
+    :root{color-scheme:light dark;--bg:#fff0f2;--card:#fffafb;--text:#493438;--muted:#80686d;--accent:#ef6b9a}
+    @media(prefers-color-scheme:dark){:root{--bg:#171216;--card:#2b1d22;--text:#fff0e8;--muted:#c7aeb2;--accent:#ff78a9}}
+    *{box-sizing:border-box}
+    body{min-height:100vh;margin:0;padding:24px;display:grid;place-items:center;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+    main{width:min(100%,440px);padding:38px 28px;text-align:center;background:var(--card);border:1px solid color-mix(in srgb,var(--muted) 25%,transparent);border-radius:28px;box-shadow:0 16px 48px #0002}
+    .bear{font-size:64px;line-height:1}
+    h1{margin:20px 0 10px;font-size:1.7rem}
+    p{margin:0;color:var(--muted);font-size:1.05rem;line-height:1.55}
+    button{margin-top:24px;padding:14px 24px;border:0;border-radius:16px;background:var(--accent);color:#fff;font:inherit;font-weight:700;cursor:pointer}
+  </style>
+</head>
+<body>
+  <main>
+    <div class="bear" aria-hidden="true">🧸</div>
+    <h1>Sin conexión</h1>
+    <p>Beary's necesita internet para cargar y sincronizar los datos del equipo. Revisa tu conexión y vuelve a intentarlo.</p>
+    <button type="button" onclick="location.reload()">Intentar de nuevo</button>
+  </main>
+</body>
+</html>
