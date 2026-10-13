@@ -3062,6 +3062,50 @@ window.addEventListener('DOMContentLoaded', () => {
 </script>
 <!-- ======================================================= -->
 
+<style>
+.firebase-auth-gate{position:fixed;inset:0;z-index:100001;display:flex;align-items:center;justify-content:center;padding:22px;background:var(--bg,#fff0f2);color:var(--text,#452c38)}
+.firebase-auth-card{width:min(100%,390px);padding:28px 24px;border:1px solid var(--border,#eedce4);border-radius:24px;background:var(--surface,#fff);box-shadow:0 18px 55px rgba(70,35,54,.16);text-align:center}
+.firebase-auth-logo{font-size:48px;margin-bottom:8px}
+.firebase-auth-card h1{margin:0 0 7px;font-size:22px}
+.firebase-auth-card p{margin:0 0 19px;color:var(--muted,#856b79);font-size:13px;line-height:1.5}
+.firebase-auth-card form{display:grid;gap:12px;text-align:left}
+.firebase-auth-card label{display:grid;gap:6px;font-size:12px;font-weight:800}
+.firebase-auth-card input{width:100%;min-height:46px;padding:11px 13px;border:1px solid var(--border,#eedce4);border-radius:12px;background:var(--bg2,#fff7f9);color:var(--text,#452c38);font:inherit}
+.firebase-auth-submit{min-height:48px;margin-top:3px;border:0;border-radius:13px;background:var(--pink,#d77b9b);color:#fff;font:inherit;font-weight:900;cursor:pointer}
+.firebase-auth-submit:disabled{opacity:.6;cursor:wait}
+.firebase-auth-message{min-height:20px;margin:12px 0 0!important;color:var(--muted,#856b79);font-size:12px!important}
+.firebase-auth-message.is-error{color:#b4234b}
+.firebase-auth-help{margin-top:9px;border:0;background:transparent;color:var(--muted,#856b79);font:inherit;font-size:12px;text-decoration:underline;cursor:pointer}
+.firebase-sync-account{display:grid;gap:6px;min-width:0}
+.firebase-sync-account small{overflow-wrap:anywhere;color:var(--muted)}
+.firebase-signout-button{min-height:38px;padding:8px 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);font:inherit;font-weight:800;cursor:pointer}
+.history-feed{display:grid;gap:10px;margin-top:14px}
+.history-entry{display:grid;grid-template-columns:36px minmax(0,1fr);gap:10px;align-items:start;padding:13px;border:1px solid var(--border);border-radius:15px;background:var(--surface)}
+.history-entry-icon{display:grid;width:34px;height:34px;place-items:center;border-radius:11px;background:var(--pinksoft);font-size:17px}
+.history-entry-title{margin:0;font-size:13px;font-weight:900;color:var(--text)}
+.history-entry-detail{margin:4px 0 0;font-size:11px;line-height:1.45;color:var(--muted)}
+.history-entry-meta{margin-top:6px;font-size:10px;color:var(--muted)}
+.history-empty{padding:24px 16px;border:1px dashed var(--border);border-radius:15px;text-align:center;color:var(--muted);font-size:12px;line-height:1.5}
+</style>
+
+<div id="firebaseAuthGate" class="firebase-auth-gate" role="dialog" aria-modal="true" aria-labelledby="firebaseAuthTitle">
+  <div class="firebase-auth-card">
+    <div class="firebase-auth-logo" aria-hidden="true">🧸</div>
+    <h1 id="firebaseAuthTitle">Beary's Coffee Shop</h1>
+    <p>Acceso del equipo. Inicia sesión para consultar los datos compartidos.</p>
+    <form id="firebaseLoginForm">
+      <label>Correo electrónico
+        <input id="firebaseLoginEmail" type="email" autocomplete="username" required placeholder="tu@correo.com">
+      </label>
+      <label>Contraseña
+        <input id="firebaseLoginPassword" type="password" autocomplete="current-password" required placeholder="Tu contraseña">
+      </label>
+      <button id="firebaseLoginButton" class="firebase-auth-submit" type="submit">Iniciar sesión</button>
+    </form>
+    <p id="firebaseAuthMessage" class="firebase-auth-message" aria-live="polite">Las cuentas las habilita la administración de Beary's.</p>
+    <button id="firebaseResetPassword" class="firebase-auth-help" type="button">Olvidé mi contraseña</button>
+  </div>
+</div>
 
 <div class="app">
 
@@ -3444,6 +3488,17 @@ window.addEventListener('DOMContentLoaded', () => {
 
   </div>
 
+  <div class="settings-card">
+    <div class="settings-title">☁️ Cuenta del equipo</div>
+    <div class="setting-row static">
+      <span class="firebase-sync-account">
+        <b id="firebaseAccountName">Sesión activa</b>
+        <small id="firebaseAccountEmail">Los datos se comparten con el equipo</small>
+      </span>
+      <button class="firebase-signout-button" type="button" onclick="signOutOfBearys()">Cerrar sesión</button>
+    </div>
+  </div>
+
 
   <div class="settings-card">
 
@@ -3561,37 +3616,23 @@ window.addEventListener('DOMContentLoaded', () => {
       <span>
 
         <b>
-          Datos locales
+          Datos compartidos
         </b>
 
         <small>
-          Nombre e inventario guardados
-          en este dispositivo
+          Inventario, actividades, limpieza e historial
+          sincronizados con el equipo
         </small>
 
       </span>
 
       <span>
-        💾
+        ☁️
       </span>
 
     </div>
 
-  </div>
-
-
-  <div class="settings-card danger-card">
-
-    <div class="settings-title">
-      🧹 Zona de limpieza
-    </div>
-
-    <button
-      class="danger-button"
-      onclick="clearLocalData()"
-    >
-      Borrar datos de este dispositivo
-    </button>
+    <button id="downloadCloudBackupButton" class="calendar-add-button" type="button" hidden onclick="downloadCloudLocalBackup()">Descargar respaldo local anterior</button>
 
   </div>
 
@@ -4137,22 +4178,12 @@ window.addEventListener('DOMContentLoaded', () => {
   </div>
 
 
-  <div class="empty-module">
-
-    <div class="empty-icon">
-      📖
-    </div>
-
-    <h2>
-      Historial de Beary's
-    </h2>
-
-    <p>
-      Aquí quedará registrado
-      el movimiento de la aplicación
-      cuando conectemos la base de datos.
-    </p>
-
+  <div class="activity-card">
+    <div class="activity-title">📖 Movimientos del equipo</div>
+    <p class="activity-group-note">Cambios recientes de inventario, actividades, limpieza y calendario.</p>
+    <div id="historyStatus" class="history-empty" aria-live="polite">Cargando historial…</div>
+    <div id="historyFeed" class="history-feed" aria-live="polite"></div>
+    <button type="button" class="calendar-add-button" onclick="loadHistory()">Actualizar historial</button>
   </div>
 
 </section>
@@ -4434,8 +4465,466 @@ window.addEventListener('DOMContentLoaded', () => {
 
 </div>
 
-
+<script src="https://www.gstatic.com/firebasejs/13.0.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/13.0.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore-compat.js"></script>
 <script>
+
+/* =========================================================
+   FIREBASE · CUENTA, DATOS COMPARTIDOS E HISTORIAL
+========================================================= */
+const firebaseConfig={
+  apiKey:"AIzaSyCi5qbm0JWJpi6zEnIJPqQIPQZ88_DCE3Q",
+  authDomain:"bearys-coffee-shop.firebaseapp.com",
+  projectId:"bearys-coffee-shop",
+  storageBucket:"bearys-coffee-shop.firebasestorage.app",
+  messagingSenderId:"626308162012",
+  appId:"1:626308162012:web:a9c08b4d50240e4aed6f19"
+};
+firebase.initializeApp(firebaseConfig);
+const firebaseAuth=firebase.auth();
+const firebaseDb=firebase.firestore();
+const SHARED_STATE_COLLECTION="sharedState";
+const TEAM_MEMBER_COLLECTION="teamMembers";
+const ACTIVITY_HISTORY_COLLECTION="activityHistory";
+const SHARED_WORKSPACE_MARKER="__workspace__";
+const SHARED_EXACT_KEYS=new Set([
+  "bearyRestockOrder","bearyBirthdays","bearySeasons","bearySeasonsSchema",
+  "bearyDailyChallenge_v1","bearyDeepCleaningAssignments_v1"
+]);
+let activeTeamProfile=null;
+let sharedStateReady=false;
+let appInitialized=false;
+let applyingRemoteStorage=false;
+let sharedStateUnsubscribe=null;
+let historyUnsubscribe=null;
+let gateErrorMessage="";
+const pendingSharedWrites=new Map();
+const nativeStorageSet=Storage.prototype.setItem;
+const nativeStorageRemove=Storage.prototype.removeItem;
+
+function isSharedStorageKey(key){
+  return key.startsWith("bearyInv_")||key.startsWith("bearyActivity_")||SHARED_EXACT_KEYS.has(key);
+}
+function getLocalSharedEntries(){
+  const entries=[];
+  for(let index=0;index<localStorage.length;index++){
+    const key=localStorage.key(index);
+    if(key&&isSharedStorageKey(key)){
+      const value=localStorage.getItem(key);
+      if(value!==null)entries.push({key,value});
+    }
+  }
+  return entries;
+}
+function escapeHistoryText(value){
+  return String(value??"").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[char]));
+}
+function makeHistoryEvents(key,oldValue,newValue,isDelete){
+  if(key==="bearySeasonsSchema")return [];
+  if(key.startsWith("bearyInv_")){
+    const product=typeof products!=="undefined"?products.find(item=>inventoryKey(item.nombre)===key):null;
+    return [{category:"inventory",icon:"📦",title:"Inventario actualizado",detail:(product?product.nombre:"Un producto")+": "+(isDelete||newValue===""?"sin cantidad":newValue)}];
+  }
+  if(key.startsWith("bearyActivity_")){
+    const activityId=key.split("_").slice(2).join("_");
+    const node=document.querySelector('[data-activity="'+activityId+'"]');
+    const label=node?.querySelector("span")?.textContent?.trim()||activityId.replace(/-/g," ");
+    const checked=!isDelete&&newValue==="true";
+    return [{category:"activities",icon:checked?"✅":"☑️",title:checked?"Actividad completada":"Actividad desmarcada",detail:label}];
+  }
+  if(key==="bearyDeepCleaningAssignments_v1"){
+    let previous=[],next=[];
+    try{previous=JSON.parse(oldValue||"[]");}catch(error){}
+    try{next=isDelete?[]:JSON.parse(newValue||"[]");}catch(error){}
+    if(!Array.isArray(previous))previous=[];
+    if(!Array.isArray(next))next=[];
+    const before=new Map(previous.filter(item=>item&&item.id).map(item=>[item.id,item]));
+    const after=new Map(next.filter(item=>item&&item.id).map(item=>[item.id,item]));
+    const events=[];
+    after.forEach((item,id)=>{
+      const old=before.get(id);
+      if(!old)events.push({category:"cleaning",icon:"🧼",title:"Tarea asignada",detail:item.task+" · "+item.assignee});
+      else if(Boolean(old.completed)!==Boolean(item.completed))events.push({category:"cleaning",icon:item.completed?"✨":"🧼",title:item.completed?"Limpieza completada":"Tarea reabierta",detail:item.task+" · "+item.assignee});
+    });
+    before.forEach((item,id)=>{if(!after.has(id))events.push({category:"cleaning",icon:"🧹",title:"Tarea retirada",detail:item.task+" · "+item.assignee});});
+    return events.length?events:[{category:"cleaning",icon:"🧼",title:"Plan de limpieza actualizado",detail:"Se actualizaron las asignaciones del equipo."}];
+  }
+  if(key==="bearyRestockOrder")return [{category:"inventory",icon:"🛒",title:"Lista de surtido actualizada",detail:"Se guardó un cambio en la lista de productos."}];
+  if(key==="bearyBirthdays"||key==="bearySeasons")return [{category:"calendar",icon:"🗓️",title:"Calendario actualizado",detail:key==="bearyBirthdays"?"Se actualizaron los cumpleaños del equipo.":"Se actualizaron las temporadas de Beary's."}];
+  if(key==="bearyDailyChallenge_v1")return [{category:"activities",icon:"✨",title:"Reto diario actualizado",detail:"Se guardó el reto del día."}];
+  return [{category:"app",icon:"☕",title:"Información de Beary's actualizada",detail:"Se guardó un cambio compartido."}];
+}
+function cleaningTaskIdentity(item){
+  const rawId=item?.taskId;
+  if(rawId!==undefined&&rawId!==null&&String(rawId).trim()!==""){
+    const index=Number(rawId);
+    if(Number.isInteger(index)&&index>=0&&index<DEEP_CLEANING_TASKS.length)return "task:"+index;
+  }
+  const normalized=String(item?.task||"").trim().toLocaleLowerCase("es-MX");
+  const matchingIndex=DEEP_CLEANING_TASKS.findIndex(task=>task.trim().toLocaleLowerCase("es-MX")===normalized);
+  return matchingIndex>=0?"task:"+matchingIndex:"name:"+normalized;
+}
+async function persistCleaningAssignmentChange(key,value,oldValue,isDelete){
+  const stateRef=firebaseDb.collection(SHARED_STATE_COLLECTION).doc(key);
+  let previous=[],desired=[];
+  try{previous=JSON.parse(oldValue||"[]");}catch(error){}
+  try{desired=isDelete?[]:JSON.parse(value||"[]");}catch(error){}
+  if(!Array.isArray(previous))previous=[];
+  if(!Array.isArray(desired))desired=[];
+  const previousById=new Map(previous.filter(item=>item&&item.id).map(item=>[item.id,item]));
+  const desiredById=new Map(desired.filter(item=>item&&item.id).map(item=>[item.id,item]));
+  return firebaseDb.runTransaction(async transaction=>{
+    const snapshot=await transaction.get(stateRef);
+    let remote=[];
+    try{remote=JSON.parse(snapshot.exists?snapshot.data().value||"[]":"[]");}catch(error){}
+    if(!Array.isArray(remote))remote=[];
+    const merged=remote.filter(item=>!previousById.has(item.id)||desiredById.has(item.id)).map(item=>({...item}));
+    const mergedById=new Map(merged.map(item=>[item.id,item]));
+    desiredById.forEach((item,id)=>{
+      const old=previousById.get(id);
+      if(!old){
+        const taskKey=cleaningTaskIdentity(item);
+        const taskTaken=merged.some(existing=>cleaningTaskIdentity(existing)===taskKey);
+        const personTaken=remote.some(existing=>existing.assignee===item.assignee);
+        if(taskTaken||personTaken){const conflict=new Error("cleaning-conflict");conflict.code="cleaning-conflict";throw conflict;}
+        merged.push({...item});
+        mergedById.set(id,item);
+      }else{
+        const current=mergedById.get(id);
+        if(current){current.completed=Boolean(item.completed);current.completedAt=item.completedAt||null;}
+      }
+    });
+    const historyEvents=makeHistoryEvents(key,JSON.stringify(remote),JSON.stringify(merged),false);
+    transaction.set(stateRef,{
+      value:JSON.stringify(merged),deleted:false,updatedBy:activeTeamProfile.uid,
+      updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    historyEvents.forEach(event=>{
+      transaction.set(firebaseDb.collection(ACTIVITY_HISTORY_COLLECTION).doc(),{
+        ...event,actorUid:activeTeamProfile.uid,actorName:activeTeamProfile.name,storageKey:key,
+        createdAt:firebase.firestore.FieldValue.serverTimestamp()
+      });
+    });
+    return merged;
+  });
+}
+async function persistSharedMutation(key,value,oldValue,isDelete){
+  if(!activeTeamProfile||!sharedStateReady)return;
+  if(key==="bearyDeepCleaningAssignments_v1")return persistCleaningAssignmentChange(key,value,oldValue,isDelete);
+  const events=makeHistoryEvents(key,oldValue,value,isDelete);
+  const batch=firebaseDb.batch();
+  batch.set(firebaseDb.collection(SHARED_STATE_COLLECTION).doc(key),{
+    value:isDelete?null:value,deleted:Boolean(isDelete),updatedBy:activeTeamProfile.uid,
+    updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+  });
+  events.forEach(event=>{
+    batch.set(firebaseDb.collection(ACTIVITY_HISTORY_COLLECTION).doc(),{
+      ...event,actorUid:activeTeamProfile.uid,actorName:activeTeamProfile.name,storageKey:key,
+      createdAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+  });
+  await batch.commit();
+}
+function queueSharedMutation(key,value,oldValue,isDelete){
+  const previous=pendingSharedWrites.get(key)||Promise.resolve();
+  const next=previous.catch(()=>{}).then(()=>persistSharedMutation(key,value,oldValue,isDelete));
+  pendingSharedWrites.set(key,next);
+  next.then(()=>{
+    if(pendingSharedWrites.get(key)===next)pendingSharedWrites.delete(key);
+  },error=>{
+    if(pendingSharedWrites.get(key)===next)pendingSharedWrites.delete(key);
+    console.error("Firebase sync error",error);
+    if(error?.code==="cleaning-conflict"){
+      firebaseDb.collection(SHARED_STATE_COLLECTION).doc(key).get().then(snapshot=>{
+        if(snapshot.exists)applyRemoteSharedValue(key,snapshot.data());
+      }).catch(()=>{});
+      if(appInitialized)showToast("Alguien ya tiene esa tarea o esa asignación. Actualicé la lista del equipo.");
+    }else if(appInitialized)showToast("El cambio quedó en este dispositivo, pero no se sincronizó. Revisa tu conexión.");
+  });
+  return next;
+}
+function installSharedStorageSync(){
+  if(window.__bearySharedStorageSyncInstalled)return;
+  window.__bearySharedStorageSyncInstalled=true;
+  Storage.prototype.setItem=function(key,value){
+    const normalizedKey=String(key),normalizedValue=String(value);
+    const isLocal=this===window.localStorage;
+    const previous=isLocal?this.getItem(normalizedKey):null;
+    nativeStorageSet.call(this,normalizedKey,normalizedValue);
+    if(isLocal&&!applyingRemoteStorage&&sharedStateReady&&isSharedStorageKey(normalizedKey)&&previous!==normalizedValue){
+      queueSharedMutation(normalizedKey,normalizedValue,previous,false);
+    }
+  };
+  Storage.prototype.removeItem=function(key){
+    const normalizedKey=String(key);
+    const isLocal=this===window.localStorage;
+    const previous=isLocal?this.getItem(normalizedKey):null;
+    nativeStorageRemove.call(this,normalizedKey);
+    if(isLocal&&!applyingRemoteStorage&&sharedStateReady&&isSharedStorageKey(normalizedKey)&&previous!==null){
+      queueSharedMutation(normalizedKey,null,previous,true);
+    }
+  };
+}
+function emitSharedStorageEvent(key,oldValue,newValue){
+  const event=new Event("storage");
+  Object.defineProperties(event,{key:{value:key},oldValue:{value:oldValue},newValue:{value:newValue},storageArea:{value:localStorage}});
+  window.dispatchEvent(event);
+}
+function refreshSharedUIForKey(key){
+  if(key.startsWith("bearyInv_")&&typeof inventoryCache!=="undefined"){
+    const product=typeof products!=="undefined"?products.find(item=>inventoryKey(item.nombre)===key):null;
+    if(product)inventoryCache.set(product.nombre,localStorage.getItem(key)??"");
+    if(appInitialized&&document.getElementById("inventoryPage")?.classList.contains("active")){
+      buildInventory();updateInventoryStats();renderInventoryOrder();
+    }
+  }
+  if(key==="bearyRestockOrder"&&appInitialized)renderInventoryOrder();
+  if(key.startsWith("bearyActivity_")&&appInitialized)loadActivities();
+  if(key==="bearyDeepCleaningAssignments_v1"&&appInitialized&&document.getElementById("cleaningPage")?.classList.contains("active"))renderDeepCleaning();
+  if(key==="bearyBirthdays"&&typeof birthdays!=="undefined"){
+    birthdays=(readStoredArray(key)||[]).filter(item=>item&&typeof item.name==="string"&&item.name.trim()&&isValidCalendarDate(item.date));
+    if(appInitialized&&document.getElementById("calendarPage")?.classList.contains("active"))renderCalendar();
+  }
+  if((key==="bearySeasons"||key==="bearySeasonsSchema")&&typeof seasons!=="undefined"){
+    seasons=loadSeasons();
+    if(appInitialized&&document.getElementById("calendarPage")?.classList.contains("active"))renderCalendar();
+  }
+  if(key==="bearyDailyChallenge_v1"&&appInitialized)updateDailyChallengeButton();
+}
+window.addEventListener("storage",event=>{
+  if(event.key&&isSharedStorageKey(event.key))refreshSharedUIForKey(event.key);
+});
+function applyRemoteSharedValue(key,data){
+  if(!isSharedStorageKey(key))return;
+  const oldValue=localStorage.getItem(key);
+  const newValue=data.deleted?null:String(data.value??"");
+  if(oldValue===newValue)return;
+  applyingRemoteStorage=true;
+  try{
+    if(newValue===null)nativeStorageRemove.call(localStorage,key);
+    else nativeStorageSet.call(localStorage,key,newValue);
+  }finally{applyingRemoteStorage=false;}
+  emitSharedStorageEvent(key,oldValue,newValue);
+  refreshSharedUIForKey(key);
+}
+async function initializeSharedWorkspace(user){
+  const markerRef=firebaseDb.collection(SHARED_STATE_COLLECTION).doc(SHARED_WORKSPACE_MARKER);
+  const localEntries=getLocalSharedEntries();
+  const markerBeforeSetup=await markerRef.get();
+  const importThisDevice=!markerBeforeSetup.exists&&localEntries.length>0&&window.confirm(
+    "Primera conexión con la base compartida. Este dispositivo tiene "+localEntries.length+
+    " datos guardados de Beary's. ¿Quieres importarlos para que sean los datos iniciales del equipo?\n\nAceptar: importarlos.\nCancelar: iniciar sin ellos; quedarán como respaldo local descargable desde Ajustes."
+  );
+  const historyRef=firebaseDb.collection(ACTIVITY_HISTORY_COLLECTION).doc();
+  await firebaseDb.runTransaction(async transaction=>{
+    const marker=await transaction.get(markerRef);
+    if(marker.exists)return;
+    const entriesToImport=importThisDevice?localEntries:[];
+    entriesToImport.forEach(entry=>{
+      transaction.set(firebaseDb.collection(SHARED_STATE_COLLECTION).doc(entry.key),{
+        value:entry.value,deleted:false,updatedBy:user.uid,updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+      });
+    });
+    transaction.set(markerRef,{
+      initialized:true,importedEntries:entriesToImport.length,updatedBy:user.uid,
+      updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    transaction.set(historyRef,{
+      category:"system",icon:"☁️",title:"Base compartida inicializada",
+      detail:entriesToImport.length?"Se importaron "+entriesToImport.length+" datos de este dispositivo.":"Se inició la base compartida sin importar datos anteriores.",
+      actorUid:user.uid,actorName:activeTeamProfile.name,storageKey:SHARED_WORKSPACE_MARKER,
+      createdAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+  });
+}
+async function hydrateSharedWorkspace(){
+  const snapshot=await firebaseDb.collection(SHARED_STATE_COLLECTION).get();
+  const remoteKeys=new Set(snapshot.docs.filter(doc=>doc.id!==SHARED_WORKSPACE_MARKER&&isSharedStorageKey(doc.id)).map(doc=>doc.id));
+  const localKeys=getLocalSharedEntries().map(entry=>entry.key);
+  const backupEntries=[];
+  localKeys.forEach(key=>{
+    const remoteDoc=snapshot.docs.find(doc=>doc.id===key);
+    const localValue=localStorage.getItem(key);
+    if(remoteDoc){
+      const data=remoteDoc.data();
+      const remoteValue=data.deleted?null:String(data.value??"");
+      if(localValue!==remoteValue)backupEntries.push({key,value:localValue});
+    }else backupEntries.push({key,value:localValue});
+  });
+  if(backupEntries.length){
+    try{
+      const existing=JSON.parse(localStorage.getItem("bearyCloudLocalBackup_v1")||"null");
+      const combined=new Map((existing?.entries||[]).map(entry=>[entry.key,entry]));
+      backupEntries.forEach(entry=>combined.set(entry.key,entry));
+      nativeStorageSet.call(localStorage,"bearyCloudLocalBackup_v1",JSON.stringify({savedAt:new Date().toISOString(),entries:[...combined.values()]}));
+      const backupButton=document.getElementById("downloadCloudBackupButton");
+      if(backupButton)backupButton.hidden=false;
+    }catch(error){}
+  }
+  localKeys.forEach(key=>{
+    if(!remoteKeys.has(key)){
+      const oldValue=localStorage.getItem(key);
+      applyingRemoteStorage=true;
+      try{nativeStorageRemove.call(localStorage,key);}finally{applyingRemoteStorage=false;}
+      emitSharedStorageEvent(key,oldValue,null);
+      refreshSharedUIForKey(key);
+    }
+  });
+  snapshot.docs.forEach(doc=>{if(doc.id!==SHARED_WORKSPACE_MARKER)applyRemoteSharedValue(doc.id,doc.data());});
+  sharedStateReady=true;
+  installSharedStorageSync();
+}
+function startSharedStateListener(){
+  if(sharedStateUnsubscribe)sharedStateUnsubscribe();
+  sharedStateUnsubscribe=firebaseDb.collection(SHARED_STATE_COLLECTION).onSnapshot(snapshot=>{
+    snapshot.docChanges().forEach(change=>{
+      if(change.doc.id!==SHARED_WORKSPACE_MARKER)applyRemoteSharedValue(change.doc.id,change.doc.data());
+    });
+  },error=>{
+    console.error("Shared data listener error",error);
+    if(appInitialized)showToast("No se pudo actualizar la información compartida.");
+  });
+}
+function setFirebaseGateMessage(message,isError=false){
+  const node=document.getElementById("firebaseAuthMessage");
+  if(!node)return;
+  node.textContent=message;
+  node.classList.toggle("is-error",Boolean(isError));
+}
+function showFirebaseGate(message,isError=false){
+  const gate=document.getElementById("firebaseAuthGate");
+  if(gate)gate.style.display="flex";
+  if(message)setFirebaseGateMessage(message,isError);
+}
+function hideFirebaseGate(){
+  const gate=document.getElementById("firebaseAuthGate");
+  if(gate)gate.style.display="none";
+}
+function mapFirebaseAuthError(error){
+  const code=error?.code||"";
+  if(code.includes("invalid-credential")||code.includes("wrong-password")||code.includes("user-not-found"))return "El correo o la contraseña no coinciden.";
+  if(code.includes("too-many-requests"))return "Hubo varios intentos. Espera un momento y vuelve a probar.";
+  if(code.includes("network-request-failed"))return "No hay conexión. Revisa internet e inténtalo de nuevo.";
+  if(code.includes("operation-not-allowed"))return "Falta activar el acceso con correo y contraseña en Firebase.";
+  if(code.includes("permission-denied"))return "Falta publicar las reglas seguras de Firestore o habilitar tu cuenta del equipo.";
+  return "No se pudo iniciar sesión. Revisa tus datos e inténtalo otra vez.";
+}
+function setupFirebaseLogin(){
+  const form=document.getElementById("firebaseLoginForm");
+  const button=document.getElementById("firebaseLoginButton");
+  form?.addEventListener("submit",async event=>{
+    event.preventDefault();
+    const email=document.getElementById("firebaseLoginEmail").value.trim();
+    const password=document.getElementById("firebaseLoginPassword").value;
+    button.disabled=true;
+    setFirebaseGateMessage("Iniciando sesión…");
+    try{await firebaseAuth.signInWithEmailAndPassword(email,password);}
+    catch(error){setFirebaseGateMessage(mapFirebaseAuthError(error),true);button.disabled=false;}
+  });
+  document.getElementById("firebaseResetPassword")?.addEventListener("click",async()=>{
+    const email=document.getElementById("firebaseLoginEmail").value.trim();
+    if(!email){setFirebaseGateMessage("Escribe tu correo y vuelve a pulsar Olvidé mi contraseña.",true);document.getElementById("firebaseLoginEmail")?.focus();return;}
+    try{
+      await firebaseAuth.sendPasswordResetEmail(email);
+      setFirebaseGateMessage("Si el correo tiene una cuenta, Firebase enviará las instrucciones para recuperar la contraseña.");
+    }catch(error){setFirebaseGateMessage(mapFirebaseAuthError(error),true);}
+  });
+}
+async function activateFirebaseUser(user){
+  showFirebaseGate("Verificando el acceso del equipo…");
+  try{
+    const memberSnapshot=await firebaseDb.collection(TEAM_MEMBER_COLLECTION).doc(user.uid).get();
+    if(!memberSnapshot.exists){
+      gateErrorMessage="Tu cuenta todavía no está habilitada para Beary's. Pide a la administración que active tu acceso.";
+      await firebaseAuth.signOut();
+      showFirebaseGate(gateErrorMessage,true);
+      return;
+    }
+    const member=memberSnapshot.data()||{};
+    activeTeamProfile={uid:user.uid,email:user.email||"",name:String(member.name||localStorage.getItem("bearyUserName")||user.email?.split("@")[0]||"Equipo Beary's")};
+    nativeStorageSet.call(localStorage,"bearyUserName",activeTeamProfile.name);
+    const accountName=document.getElementById("firebaseAccountName");
+    const accountEmail=document.getElementById("firebaseAccountEmail");
+    if(accountName)accountName.textContent=activeTeamProfile.name;
+    if(accountEmail)accountEmail.textContent=activeTeamProfile.email;
+    await initializeSharedWorkspace(user);
+    await hydrateSharedWorkspace();
+    gateErrorMessage="";
+    if(!appInitialized){initializeApp();appInitialized=true;}
+    else{
+      loadName();loadActivities();buildInventory();updateInventoryStats();renderInventoryOrder();
+      renderDeepCleaning();renderCalendar();updateDailyChallengeButton();
+    }
+    startSharedStateListener();
+    hideFirebaseGate();
+    const loginButton=document.getElementById("firebaseLoginButton");
+    if(loginButton)loginButton.disabled=false;
+    if(document.getElementById("historyPage")?.classList.contains("active"))loadHistory();
+  }catch(error){
+    console.error("Firebase setup error",error);
+    gateErrorMessage=mapFirebaseAuthError(error);
+    await firebaseAuth.signOut().catch(()=>{});
+    showFirebaseGate(gateErrorMessage,true);
+    const loginButton=document.getElementById("firebaseLoginButton");
+    if(loginButton)loginButton.disabled=false;
+  }
+}
+function initializeFirebaseAccess(){
+  setupFirebaseLogin();
+  showFirebaseGate("Conectando con la base compartida…");
+  firebaseAuth.onAuthStateChanged(user=>{
+    if(user){activateFirebaseUser(user);return;}
+    activeTeamProfile=null;
+    sharedStateReady=false;
+    if(sharedStateUnsubscribe){sharedStateUnsubscribe();sharedStateUnsubscribe=null;}
+    if(historyUnsubscribe){historyUnsubscribe();historyUnsubscribe=null;}
+    showFirebaseGate(gateErrorMessage||"Inicia sesión con la cuenta del equipo.",Boolean(gateErrorMessage));
+    const loginButton=document.getElementById("firebaseLoginButton");
+    if(loginButton)loginButton.disabled=false;
+  });
+}
+function signOutOfBearys(){
+  if(!window.confirm("¿Cerrar sesión de Beary's en este dispositivo?"))return;
+  gateErrorMessage="";
+  firebaseAuth.signOut().catch(()=>showToast("No se pudo cerrar sesión."));
+}
+function downloadCloudLocalBackup(){
+  try{
+    const backup=JSON.parse(localStorage.getItem("bearyCloudLocalBackup_v1")||"null");
+    if(!backup?.entries?.length){showToast("No hay respaldo local anterior para descargar.");return;}
+    const blob=new Blob([JSON.stringify(backup,null,2)],{type:"application/json"});
+    const url=URL.createObjectURL(blob);
+    const link=document.createElement("a");
+    link.href=url;link.download="bearys-respaldo-local-anterior.json";
+    document.body.appendChild(link);link.click();link.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+  }catch(error){showToast("No se pudo descargar el respaldo local.");}
+}
+function renderHistory(records){
+  const feed=document.getElementById("historyFeed");
+  const status=document.getElementById("historyStatus");
+  if(!feed||!status)return;
+  if(!records.length){feed.innerHTML="";status.hidden=false;status.textContent="Todavía no hay movimientos. Los cambios del equipo aparecerán aquí.";return;}
+  status.hidden=true;
+  feed.innerHTML=records.map(record=>{
+    const date=record.createdAt?.toDate?record.createdAt.toDate():new Date(record.createdAt||Date.now());
+    const dateLabel=Number.isNaN(date.getTime())?"":date.toLocaleString("es-MX",{dateStyle:"medium",timeStyle:"short"});
+    return '<article class="history-entry"><span class="history-entry-icon" aria-hidden="true">'+escapeHistoryText(record.icon||"☕")+'</span><div><h3 class="history-entry-title">'+escapeHistoryText(record.title||"Movimiento")+'</h3><p class="history-entry-detail">'+escapeHistoryText(record.detail||"")+'</p><div class="history-entry-meta">'+escapeHistoryText(record.actorName||"Equipo")+(dateLabel?" · "+escapeHistoryText(dateLabel):"")+'</div></div></article>';
+  }).join("");
+}
+function loadHistory(){
+  const status=document.getElementById("historyStatus");
+  if(!activeTeamProfile||!sharedStateReady){if(status){status.hidden=false;status.textContent="Inicia sesión para consultar el historial compartido.";}return;}
+  if(historyUnsubscribe)historyUnsubscribe();
+  if(status){status.hidden=false;status.textContent="Cargando historial…";}
+  historyUnsubscribe=firebaseDb.collection(ACTIVITY_HISTORY_COLLECTION).orderBy("createdAt","desc").limit(100).onSnapshot(snapshot=>{
+    renderHistory(snapshot.docs.map(doc=>doc.data()));
+  },error=>{
+    console.error("History loading error",error);
+    if(status){status.hidden=false;status.textContent="No se pudo cargar el historial. Revisa las reglas de Firestore.";}
+  });
+}
 
 /* =========================================================
    NOMBRE
@@ -5145,6 +5634,8 @@ function openPage(page){
   if(page==="activities")refreshScheduledActivityView(true);
 
   if(page==="cleaning")renderDeepCleaning();
+
+  if(page==="history")loadHistory();
 
 
   if(page==="calendar" && typeof renderCalendar === "function"){
@@ -6910,10 +7401,17 @@ function getDeepCleaningAssignments(){
 function saveDeepCleaningAssignments(assignments){
   try{
     localStorage.setItem(DEEP_CLEANING_STORAGE_KEY,JSON.stringify(assignments));
-    return true;
+    const pending=pendingSharedWrites.get(DEEP_CLEANING_STORAGE_KEY);
+    return pending?pending.then(()=>true).catch(async error=>{
+      if(error?.code==="cleaning-conflict"){
+        const snapshot=await firebaseDb.collection(SHARED_STATE_COLLECTION).doc(DEEP_CLEANING_STORAGE_KEY).get().catch(()=>null);
+        if(snapshot?.exists)applyRemoteSharedValue(DEEP_CLEANING_STORAGE_KEY,snapshot.data());
+      }
+      return false;
+    }):Promise.resolve(true);
   }catch(error){
     showToast("No se pudo guardar. Revisa el espacio disponible del dispositivo.");
-    return false;
+    return Promise.resolve(false);
   }
 }
 function cleaningDateLabel(value){
@@ -7014,7 +7512,7 @@ function closeCleaningAssignmentForm(){
   const form=document.getElementById("cleaningAssignmentForm");
   if(form)form.hidden=true;
 }
-function assignDeepCleaningTasks(event){
+async function assignDeepCleaningTasks(event){
   event.preventDefault();
   const assignee=document.getElementById("cleaningAssignee").value;
   const dueDate=document.getElementById("cleaningDueDate").value;
@@ -7047,7 +7545,11 @@ function assignDeepCleaningTasks(event){
     completed:false,
     createdAt
   }));
-  if(!saveDeepCleaningAssignments(assignments))return;
+  if(!await saveDeepCleaningAssignments(assignments)){
+    renderDeepCleaning();
+    if(!selectedCleaningTasks.size)closeCleaningAssignmentForm();
+    return;
+  }
   selectedCleaningTasks.clear();
   event.target.reset();
   closeCleaningAssignmentForm();
@@ -7111,39 +7613,39 @@ cleaningAssignmentList?.addEventListener("click",event=>{
   if(clearButton)clearPersonCleaningTasks(clearButton.dataset.cleaningClearPerson);
 });
 
-function setCleaningTaskComplete(id,completed){
+async function setCleaningTaskComplete(id,completed){
   const assignments=getDeepCleaningAssignments();
   const target=assignments.find(item=>item.id===id);
   if(!target)return;
   target.completed=completed;
   target.completedAt=completed?new Date().toISOString():null;
-  if(saveDeepCleaningAssignments(assignments))renderCleaningAssignmentCards();
+  if(await saveDeepCleaningAssignments(assignments))renderCleaningAssignmentCards();
 }
-function deleteCleaningAssignment(id){
+async function deleteCleaningAssignment(id){
   const assignments=getDeepCleaningAssignments();
   const remaining=assignments.filter(item=>item.id!==id);
   if(remaining.length===assignments.length)return;
-  if(saveDeepCleaningAssignments(remaining)){
+  if(await saveDeepCleaningAssignments(remaining)){
     renderDeepCleaning();
   }
 }
-function clearPersonCleaningTasks(name){
+async function clearPersonCleaningTasks(name){
   const assignments=getDeepCleaningAssignments();
   const personTasks=assignments.filter(item=>item.assignee===name);
   if(!personTasks.length)return;
   if(!window.confirm("¿Quitar las "+personTasks.length+" tareas de "+name+"? Así podrá recibir una nueva asignación."))return;
   const remaining=assignments.filter(item=>item.assignee!==name);
-  if(saveDeepCleaningAssignments(remaining)){
+  if(await saveDeepCleaningAssignments(remaining)){
     renderDeepCleaning();
     showToast(name+" ya puede recibir una nueva asignación.");
   }
 }
-function clearCompletedCleaningTasks(){
+async function clearCompletedCleaningTasks(){
   const assignments=getDeepCleaningAssignments();
   const remaining=assignments.filter(item=>!item.completed);
   if(remaining.length===assignments.length)return;
   if(!window.confirm("¿Borrar las tareas de limpieza que ya aparecen como terminadas?"))return;
-  if(saveDeepCleaningAssignments(remaining)){
+  if(await saveDeepCleaningAssignments(remaining)){
     renderDeepCleaning();
   }
 }
@@ -7488,7 +7990,7 @@ function initializeApp(){
 }
 
 
-initializeApp();
+initializeFirebaseAccess();
 
 </script>
 
