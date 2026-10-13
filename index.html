@@ -1997,7 +1997,7 @@ html.dark .menu-card:hover{
 
 .bottom-nav{
 
-  --nav-bottom-space:42px;
+  --nav-bottom-space:16px;
 
   position:fixed !important;
 
@@ -2007,7 +2007,7 @@ html.dark .menu-card:hover{
   left:0;
   right:0;
   top:auto !important;
-  bottom:42px !important;
+  bottom:16px !important;
   margin-left:auto;
   margin-right:auto;
 
@@ -2016,7 +2016,7 @@ html.dark .menu-card:hover{
   width:calc(100% - max(16px,calc(var(--safe-left) + var(--safe-right))));
   max-width:590px;
 
-  height:68px;
+  height:56px;
 
   display:grid;
 
@@ -2025,7 +2025,7 @@ html.dark .menu-card:hover{
 
   gap:3px;
 
-  padding:6px;
+  padding:4px;
 
   border:1px solid var(--nav-edge);
 
@@ -2050,7 +2050,7 @@ html.dark .menu-card:hover{
 
 @media (display-mode:standalone), (display-mode:fullscreen){
   .bottom-nav{
-    --nav-bottom-space:calc(42px + var(--safe-bottom,0px));
+    --nav-bottom-space:calc(16px + var(--safe-bottom,0px));
     bottom:var(--nav-bottom-space) !important;
   }
 }
@@ -2063,13 +2063,13 @@ html.dark .menu-card:hover{
 .nav-liquid-indicator{
   position:absolute;
   z-index:0;
-  top:6px;
-  bottom:6px;
+  top:4px;
+  bottom:4px;
   left:0;
   width:var(--nav-liquid-width,calc((100% - 26px)/5));
   overflow:hidden;
   border:1px solid rgba(255,255,255,.64);
-  border-radius:28px;
+  border-radius:24px;
   background:linear-gradient(150deg,rgba(255,255,255,.32),rgba(255,239,246,.17) 58%,rgba(247,219,231,.13));
   box-shadow:0 2px 9px rgba(108,57,80,.09),inset 0 1px 0 rgba(255,255,255,.78),inset 0 -1px 0 rgba(112,68,88,.08);
   backdrop-filter:blur(16px) saturate(1.26) contrast(1.02);
@@ -2541,7 +2541,7 @@ body.animations-off *:after{
   }
 
   .bottom-nav{
-    height:66px;
+    height:56px;
   }
 
   .nav-icon{
@@ -2930,7 +2930,7 @@ input, textarea, select {
   .settings-profile button,.mini-toggle{min-height:44px;font-size:10px}
   .settings-title,.setting-row b{font-size:13px}
 
-  .nav-button{min-height:52px}
+  .nav-button{min-height:44px}
   .nav-icon{font-size:20px}
   .nav-label{font-size:9px;letter-spacing:-.15px}
 
