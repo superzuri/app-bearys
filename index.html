@@ -1884,6 +1884,15 @@ html.dark .menu-card:hover{
   font-weight:900;
 }
 
+.registered-accounts-status{margin:0 0 9px;color:var(--muted);font-size:10px;line-height:1.45}
+.registered-accounts-list{display:grid;gap:7px}
+.registered-account-row{display:flex;align-items:center;gap:10px;padding:9px 10px;border:1px solid var(--border);border-radius:15px;background:var(--bg2)}
+.registered-account-avatar{display:grid;width:36px;height:36px;flex:0 0 36px;place-items:center;border-radius:13px;background:var(--pinksoft);color:var(--pink2);font-size:12px;font-weight:950}
+.registered-account-copy{min-width:0;flex:1}
+.registered-account-copy strong{display:block;overflow:hidden;color:var(--text);font-size:11px;font-weight:900;text-overflow:ellipsis;white-space:nowrap}
+.registered-account-copy small{display:block;margin-top:2px;color:var(--muted);font-size:9px}
+.registered-account-check{color:var(--pink2);font-size:15px;font-weight:950}
+
 .setting-row{
 
   width:100%;
@@ -3083,7 +3092,12 @@ window.addEventListener('DOMContentLoaded', () => {
 .firebase-sync-account{display:grid;gap:6px;min-width:0}
 .firebase-sync-account small{overflow-wrap:anywhere;color:var(--muted)}
 .firebase-signout-button{min-height:38px;padding:8px 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);font:inherit;font-weight:800;cursor:pointer}
-.history-feed{display:grid;gap:10px;margin-top:14px}
+.history-feed{display:grid;gap:18px;margin-top:14px}
+.history-day{display:grid;gap:9px}
+.history-day-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 2px}
+.history-day-heading h2{margin:0;color:var(--text);font-size:12px;font-weight:950}
+.history-day-heading span{color:var(--muted);font-size:10px;font-weight:750}
+.history-day-list{display:grid;gap:8px}
 .history-entry{display:grid;grid-template-columns:36px minmax(0,1fr);gap:10px;align-items:start;padding:13px;border:1px solid var(--border);border-radius:15px;background:var(--surface)}
 .history-entry-icon{display:grid;width:34px;height:34px;place-items:center;border-radius:11px;background:var(--pinksoft);font-size:17px}
 .history-entry-title{margin:0;font-size:13px;font-weight:900;color:var(--text)}
@@ -3128,7 +3142,7 @@ window.addEventListener('DOMContentLoaded', () => {
     <div class="brand-info">
 
       <span class="brand-name">
-        Beary´s ☕
+        Beary´s Coffee Shop ☕
       </span>
 
       <span class="brand-subtitle">
@@ -3501,6 +3515,12 @@ window.addEventListener('DOMContentLoaded', () => {
       </span>
       <button class="firebase-signout-button" type="button" onclick="signOutOfBearys()">Cerrar sesión</button>
     </div>
+  </div>
+
+  <div class="settings-card">
+    <div class="settings-title">👥 Cuentas registradas</div>
+    <p class="registered-accounts-status" id="registeredAccountsStatus" aria-live="polite">Los nombres de las cuentas autorizadas aparecerán aquí.</p>
+    <div class="registered-accounts-list" id="registeredAccountsList" role="list"></div>
   </div>
 
 
@@ -4184,7 +4204,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   <div class="activity-card">
     <div class="activity-title">📖 Movimientos del equipo</div>
-    <p class="activity-group-note">Cambios recientes de inventario, actividades, limpieza y calendario.</p>
+    <p class="activity-group-note">Se agrupa por día para que encuentres rápido lo importante: productos agotados o repuestos, limpieza y calendario.</p>
     <div id="historyStatus" class="history-empty" aria-live="polite">Cargando historial…</div>
     <div id="historyFeed" class="history-feed" aria-live="polite"></div>
     <button type="button" class="calendar-add-button" onclick="loadHistory()">Actualizar historial</button>
@@ -4492,6 +4512,7 @@ const SHARED_STATE_COLLECTION="sharedState";
 const TEAM_MEMBER_COLLECTION="teamMembers";
 const ACTIVITY_HISTORY_COLLECTION="activityHistory";
 const SHARED_WORKSPACE_MARKER="bearyWorkspaceInit_v1";
+const TEAM_DIRECTORY_PREFIX="bearyTeamDirectory_";
 const SHARED_EXACT_KEYS=new Set([
   "bearyRestockOrder","bearyBirthdays","bearySeasons","bearySeasonsSchema",
   "bearyDailyChallenge_v1","bearyDeepCleaningAssignments_v1"
@@ -4527,17 +4548,17 @@ function escapeHistoryText(value){
   return String(value??"").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[char]));
 }
 function makeHistoryEvents(key,oldValue,newValue,isDelete){
-  if(key==="bearySeasonsSchema")return [];
+  if(key==="bearySeasonsSchema"||key.startsWith("bearyActivity_"))return [];
   if(key.startsWith("bearyInv_")){
+    if(oldValue===null||oldValue==="")return [];
+    const previous=Number(oldValue);
+    const next=isDelete||newValue===""?0:Number(newValue);
+    if(!Number.isFinite(previous)||!Number.isFinite(next))return [];
     const product=typeof products!=="undefined"?products.find(item=>inventoryKey(item.nombre)===key):null;
-    return [{category:"inventory",icon:"📦",title:"Inventario actualizado",detail:(product?product.nombre:"Un producto")+": "+(isDelete||newValue===""?"sin cantidad":newValue)}];
-  }
-  if(key.startsWith("bearyActivity_")){
-    const activityId=key.split("_").slice(2).join("_");
-    const node=document.querySelector('[data-activity="'+activityId+'"]');
-    const label=node?.querySelector("span")?.textContent?.trim()||activityId.replace(/-/g," ");
-    const checked=!isDelete&&newValue==="true";
-    return [{category:"activities",icon:checked?"✅":"☑️",title:checked?"Actividad completada":"Actividad desmarcada",detail:label}];
+    const productName=product?product.nombre:"Un producto";
+    if(previous>0&&next<=0)return [{category:"inventory",icon:"📦",title:"Producto agotado",detail:"Se agotaron las existencias de "+productName+"."}];
+    if(previous<=0&&next>0)return [{category:"inventory",icon:"🛒",title:"Producto repuesto",detail:"Se registraron existencias de nuevo para "+productName+"."}];
+    return [];
   }
   if(key==="bearyDeepCleaningAssignments_v1"){
     let previous=[],next=[];
@@ -4554,12 +4575,11 @@ function makeHistoryEvents(key,oldValue,newValue,isDelete){
       else if(Boolean(old.completed)!==Boolean(item.completed))events.push({category:"cleaning",icon:item.completed?"✨":"🧼",title:item.completed?"Limpieza completada":"Tarea reabierta",detail:item.task+" · "+item.assignee});
     });
     before.forEach((item,id)=>{if(!after.has(id))events.push({category:"cleaning",icon:"🧹",title:"Tarea retirada",detail:item.task+" · "+item.assignee});});
-    return events.length?events:[{category:"cleaning",icon:"🧼",title:"Plan de limpieza actualizado",detail:"Se actualizaron las asignaciones del equipo."}];
+    return events;
   }
-  if(key==="bearyRestockOrder")return [{category:"inventory",icon:"🛒",title:"Lista de surtido actualizada",detail:"Se guardó un cambio en la lista de productos."}];
+  if(key==="bearyRestockOrder"||key==="bearyDailyChallenge_v1")return [];
   if(key==="bearyBirthdays"||key==="bearySeasons")return [{category:"calendar",icon:"🗓️",title:"Calendario actualizado",detail:key==="bearyBirthdays"?"Se actualizaron los cumpleaños del equipo.":"Se actualizaron las temporadas de Beary's."}];
-  if(key==="bearyDailyChallenge_v1")return [{category:"activities",icon:"✨",title:"Reto diario actualizado",detail:"Se guardó el reto del día."}];
-  return [{category:"app",icon:"☕",title:"Información de Beary's actualizada",detail:"Se guardó un cambio compartido."}];
+  return [];
 }
 function cleaningTaskIdentity(item){
   const rawId=item?.taskId;
@@ -4909,6 +4929,52 @@ function setupFirebaseLogin(){
     }catch(error){setFirebaseGateMessage(mapFirebaseAuthError(error),true);}
   });
 }
+function accountInitials(name){
+  const parts=String(name||"").trim().split(/\s+/).filter(Boolean).slice(0,2);
+  return parts.map(part=>Array.from(part)[0]||"").join("").toLocaleUpperCase("es-MX")||"👤";
+}
+async function loadRegisteredAccounts(){
+  const status=document.getElementById("registeredAccountsStatus");
+  const list=document.getElementById("registeredAccountsList");
+  if(!status||!list)return;
+  if(!activeTeamProfile){status.textContent="Inicia sesión para consultar las cuentas del equipo.";list.innerHTML="";return;}
+  status.textContent="Cargando cuentas del equipo…";
+  list.innerHTML="";
+  try{
+    const snapshot=await firebaseDb.collection(SHARED_STATE_COLLECTION)
+      .orderBy(firebase.firestore.FieldPath.documentId())
+      .startAt(TEAM_DIRECTORY_PREFIX)
+      .endAt(TEAM_DIRECTORY_PREFIX+"\uf8ff")
+      .get();
+    const accounts=snapshot.docs.map(doc=>{
+      const profile=doc.data()||{};
+      let directoryEntry={};
+      try{directoryEntry=JSON.parse(profile.value||"{}");}catch(error){}
+      return {name:String(directoryEntry.name||"").trim()};
+    }).filter(account=>account.name);
+    accounts.sort((a,b)=>a.name.localeCompare(b.name,"es-MX"));
+    if(!accounts.length){status.textContent="Aún no hay nombres para mostrar. Cada integrante aparecerá cuando inicie sesión en esta versión.";return;}
+    status.textContent=accounts.length+" "+(accounts.length===1?"integrante":"integrantes")+" · solo lectura";
+    list.innerHTML=accounts.map(account=>'<div class="registered-account-row" role="listitem"><span class="registered-account-avatar" aria-hidden="true">'+escapeHistoryText(accountInitials(account.name))+'</span><span class="registered-account-copy"><strong>'+escapeHistoryText(account.name)+'</strong><small>Cuenta del equipo</small></span><span class="registered-account-check" aria-hidden="true">✓</span></div>').join("");
+  }catch(error){
+    console.error("Registered accounts loading error",error);
+    status.textContent="No se pudo cargar la lista. Revisa los permisos de lectura de nombres en Firebase.";
+  }
+}
+async function publishRegisteredAccountName(){
+  if(!activeTeamProfile?.uid||!activeTeamProfile.name)return;
+  const cacheKey="bearyDirectoryPublished_"+activeTeamProfile.uid;
+  if(localStorage.getItem(cacheKey)===activeTeamProfile.name)return;
+  try{
+    await firebaseDb.collection(SHARED_STATE_COLLECTION).doc(TEAM_DIRECTORY_PREFIX+activeTeamProfile.uid).set({
+      value:JSON.stringify({name:activeTeamProfile.name}),deleted:false,updatedBy:activeTeamProfile.uid,
+      updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    localStorage.setItem(cacheKey,activeTeamProfile.name);
+  }catch(error){
+    console.warn("Could not refresh the team name directory",error);
+  }
+}
 async function activateFirebaseUser(user){
   showFirebaseGate("Verificando el acceso del equipo…");
   try{
@@ -4923,6 +4989,7 @@ async function activateFirebaseUser(user){
     const member=memberSnapshot.data()||{};
     activeTeamProfile={uid:user.uid,email:user.email||"",name:String(member.name||localStorage.getItem("bearyUserName")||user.email?.split("@")[0]||"Equipo Beary's")};
     nativeStorageSet.call(localStorage,"bearyUserName",activeTeamProfile.name);
+    await publishRegisteredAccountName();
     const accountName=document.getElementById("firebaseAccountName");
     const accountEmail=document.getElementById("firebaseAccountEmail");
     if(accountName)accountName.textContent=activeTeamProfile.name;
@@ -4983,16 +5050,76 @@ function downloadCloudLocalBackup(){
     setTimeout(()=>URL.revokeObjectURL(url),1000);
   }catch(error){showToast("No se pudo descargar el respaldo local.");}
 }
+function historyRecordDate(record){
+  const date=record.createdAt?.toDate?record.createdAt.toDate():new Date(record.createdAt||Date.now());
+  return Number.isNaN(date.getTime())?new Date():date;
+}
+function historyDayKey(date){
+  return date.getFullYear()+"-"+String(date.getMonth()+1).padStart(2,"0")+"-"+String(date.getDate()).padStart(2,"0");
+}
+function historyDayLabel(date){
+  const today=new Date();
+  const yesterday=new Date(today.getFullYear(),today.getMonth(),today.getDate()-1);
+  const key=historyDayKey(date);
+  if(key===historyDayKey(today))return "Hoy";
+  if(key===historyDayKey(yesterday))return "Ayer";
+  return date.toLocaleDateString("es-MX",{weekday:"long",day:"numeric",month:"long",year:date.getFullYear()===today.getFullYear()?undefined:"numeric"});
+}
+function summarizeHistoryGroup(group){
+  const events=group.events;
+  const category=group.category;
+  const latest=events[0]||{};
+  const count=events.length;
+  const categoryNames={inventory:"Inventario",activities:"Actividades",cleaning:"Limpieza",calendar:"Calendario",system:"Equipo",app:"Beary's"};
+  const categoryIcons={inventory:"📦",activities:"✅",cleaning:"🧼",calendar:"🗓️",system:"☁️",app:"☕"};
+  let title=latest.title||"Movimiento";
+  if(count>1){
+    const label=categoryNames[category]||"Equipo";
+    const noun=category==="activities"?"tareas":category==="calendar"?"cambios":"movimientos";
+    title=label+" · "+count+" "+noun;
+  }
+  const details=[];
+  events.forEach(event=>{
+    const detail=String(event.detail||"").trim();
+    if(detail&&!details.includes(detail))details.push(detail);
+  });
+  const shownDetails=details.slice(0,3);
+  if(details.length>shownDetails.length)shownDetails.push("y "+(details.length-shownDetails.length)+" más");
+  const detail=shownDetails.join(" · ")||"Movimiento del equipo.";
+  const actors=[...new Set(events.map(event=>String(event.actorName||"Equipo").trim()).filter(Boolean))];
+  const actorLabel=actors.slice(0,2).join(", ")+(actors.length>2?" y "+(actors.length-2)+" más":"");
+  const date=historyRecordDate(latest);
+  const timeLabel=date.toLocaleTimeString("es-MX",{hour:"numeric",minute:"2-digit"});
+  return {icon:categoryIcons[category]||latest.icon||"☕",title,detail,meta:(actorLabel||"Equipo")+" · "+timeLabel};
+}
 function renderHistory(records){
   const feed=document.getElementById("historyFeed");
   const status=document.getElementById("historyStatus");
   if(!feed||!status)return;
-  if(!records.length){feed.innerHTML="";status.hidden=false;status.textContent="Todavía no hay movimientos. Los cambios del equipo aparecerán aquí.";return;}
+  if(!records.length){feed.innerHTML="";status.hidden=false;status.textContent="Todavía no hay movimientos importantes. Los productos agotados o repuestos, la limpieza y el calendario aparecerán aquí.";return;}
+  const legacyNoiseTitles=new Set(["Información de Beary's actualizada","Lista de surtido actualizada","Reto diario actualizado"]);
+  const days=new Map();
+  records.forEach(record=>{
+    if(!record||legacyNoiseTitles.has(record.title))return;
+    const date=historyRecordDate(record);
+    const dayKey=historyDayKey(date);
+    let day=days.get(dayKey);
+    if(!day){day={date,groups:new Map(),count:0};days.set(dayKey,day);}
+    const category=record.category||"other";
+    let group=day.groups.get(category);
+    if(!group){group={category,events:[]};day.groups.set(category,group);}
+    group.events.push(record);
+    day.count++;
+  });
+  if(!days.size){feed.innerHTML="";status.hidden=false;status.textContent="Todavía no hay movimientos importantes. Los productos agotados o repuestos, la limpieza y el calendario aparecerán aquí.";return;}
   status.hidden=true;
-  feed.innerHTML=records.map(record=>{
-    const date=record.createdAt?.toDate?record.createdAt.toDate():new Date(record.createdAt||Date.now());
-    const dateLabel=Number.isNaN(date.getTime())?"":date.toLocaleString("es-MX",{dateStyle:"medium",timeStyle:"short"});
-    return '<article class="history-entry"><span class="history-entry-icon" aria-hidden="true">'+escapeHistoryText(record.icon||"☕")+'</span><div><h3 class="history-entry-title">'+escapeHistoryText(record.title||"Movimiento")+'</h3><p class="history-entry-detail">'+escapeHistoryText(record.detail||"")+'</p><div class="history-entry-meta">'+escapeHistoryText(record.actorName||"Equipo")+(dateLabel?" · "+escapeHistoryText(dateLabel):"")+'</div></div></article>';
+  feed.innerHTML=[...days.entries()].map(([dayKey,day])=>{
+    const dayLabel=historyDayLabel(day.date);
+    const cards=[...day.groups.values()].map(group=>{
+      const summary=summarizeHistoryGroup(group);
+      return '<article class="history-entry"><span class="history-entry-icon" aria-hidden="true">'+escapeHistoryText(summary.icon)+'</span><div><h3 class="history-entry-title">'+escapeHistoryText(summary.title)+'</h3><p class="history-entry-detail">'+escapeHistoryText(summary.detail)+'</p><div class="history-entry-meta">'+escapeHistoryText(summary.meta)+'</div></div></article>';
+    }).join("");
+    return '<section class="history-day" aria-label="Movimientos del '+escapeHistoryText(dayLabel)+'"><div class="history-day-heading"><h2>'+escapeHistoryText(dayLabel)+'</h2><span>'+day.count+' '+(day.count===1?"movimiento":"movimientos")+'</span></div><div class="history-day-list">'+cards+'</div></section>';
   }).join("");
 }
 function loadHistory(){
@@ -5693,6 +5820,7 @@ function openPage(page){
   const currentPage=document.querySelector(".page.active");
   if(currentPage===target){
     updateNavigation(page);
+    if(page==="settings")loadRegisteredAccounts();
     return;
   }
 
@@ -5706,7 +5834,10 @@ function openPage(page){
 
   target.classList.add("active");
 
-  if(page==="settings")syncSettingsUI();
+  if(page==="settings"){
+    syncSettingsUI();
+    loadRegisteredAccounts();
+  }
 
   resetAppScroll();
 
