@@ -309,8 +309,8 @@ html.dark{
 
   background:var(--chrome-bg);
 
-  backdrop-filter:blur(24px);
-  -webkit-backdrop-filter:blur(24px);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
 
   border-bottom:
     1px solid rgba(244,203,220,.8);
@@ -481,7 +481,6 @@ html.dark .brand-logo{
 .page.active{
   display:block;
   animation:pageIn .38s cubic-bezier(.22,.78,.24,1) both;
-  will-change:opacity,transform;
 }
 
 @keyframes pageIn{
@@ -499,7 +498,9 @@ html.dark .brand-logo{
 
 /* Ahorro invisible: las animaciones siguen exactamente igual mientras usas la app,
    pero no gastan frames cuando la pestaña/app queda en segundo plano. */
-body.app-paused *{
+body.app-paused *,
+body.app-paused *::before,
+body.app-paused *::after{
   animation-play-state:paused !important;
 }
 
@@ -640,7 +641,6 @@ html.dark .hero{
 .hero-bear{
 
   position:absolute;
-  will-change:transform;
 
   right:7px;
   top:74px;
@@ -1776,8 +1776,8 @@ html.dark .menu-card:hover{
 .closing-progress-actions{display:flex;justify-content:flex-end;margin-top:9px}
 .closing-reset-button{padding:8px 10px;border:1px solid var(--border);border-radius:11px;background:var(--surface);color:var(--muted);font-size:8px;font-weight:850;cursor:pointer;transition:transform .18s ease,background .18s ease}
 .closing-reset-button:hover{transform:translateY(-1px);background:var(--pinksoft);color:var(--pink2)}
-.closing-progress-track .progress-fill::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 25%,rgba(255,255,255,.45) 50%,transparent 75%);background-size:200% 100%;animation:progressShine 2.8s linear infinite}
-@keyframes progressShine{to{background-position:-200% 0}}
+.closing-progress-track .progress-fill::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 25%,rgba(255,255,255,.45) 50%,transparent 75%);transform:translateX(-100%);animation:progressShine .9s ease-out 1 both}
+@keyframes progressShine{to{transform:translateX(100%)}}
 
 
 /* =========================================================
@@ -2099,8 +2099,8 @@ html.dark .menu-card:hover{
   -webkit-user-select:none;
   touch-action:pan-y pinch-zoom;
 
-  backdrop-filter:blur(24px) saturate(1.38) brightness(1.03);
-  -webkit-backdrop-filter:blur(24px) saturate(1.38) brightness(1.03);
+  backdrop-filter:blur(14px) saturate(1.22) brightness(1.03);
+  -webkit-backdrop-filter:blur(14px) saturate(1.22) brightness(1.03);
 
   box-shadow:
     0 12px 34px var(--nav-shadow),
@@ -2132,8 +2132,8 @@ html.dark .menu-card:hover{
   border-radius:24px;
   background:linear-gradient(150deg,rgba(255,255,255,.32),rgba(255,239,246,.17) 58%,rgba(247,219,231,.13));
   box-shadow:0 2px 9px rgba(108,57,80,.09),inset 0 1px 0 rgba(255,255,255,.78),inset 0 -1px 0 rgba(112,68,88,.08);
-  backdrop-filter:blur(16px) saturate(1.26) contrast(1.02);
-  -webkit-backdrop-filter:blur(16px) saturate(1.26) contrast(1.02);
+  backdrop-filter:blur(9px) saturate(1.18) contrast(1.02);
+  -webkit-backdrop-filter:blur(9px) saturate(1.18) contrast(1.02);
   pointer-events:none;
   transform:translate3d(var(--nav-liquid-left,6px),0,0);
   transform-origin:center;
@@ -2766,14 +2766,13 @@ input, textarea, select {
 @keyframes taskCheck{0%{transform:translateX(0)}35%{transform:translateX(4px)}100%{transform:translateX(0)}}
 @keyframes phraseBearBob{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-5px) rotate(4deg)}}
 @keyframes navPop{0%,100%{transform:translateY(0) scale(1)}45%{transform:translateY(-2px) scale(1.06)}}
-@keyframes todayPulse{0%,100%{box-shadow:0 0 0 2px rgba(255,121,173,.08)}50%{box-shadow:0 0 0 4px rgba(255,121,173,.19)}}
 .menu-icon{transform-origin:center;transition:transform .25s ease}
-.phrase-bear{transform-origin:center bottom;animation:phraseBearBob 3.8s ease-in-out infinite;will-change:transform}
+.phrase-bear{transform-origin:center bottom;animation:phraseBearBob 3.8s ease-in-out infinite}
 .activity-item input{transition:transform .2s ease}
 .activity-item input:checked{animation:checkPop .32s cubic-bezier(.2,.8,.3,1)}
 .activity-item span{transition:color .22s ease,opacity .22s ease}
 .activity-item input:checked+span{animation:taskCheck .32s ease}
-.calendar-day{transition:transform .18s ease}.calendar-day.today{animation:todayPulse 3s ease-in-out infinite}
+.calendar-day{transition:transform .18s ease}.calendar-day.today{z-index:0;box-shadow:0 0 0 2px rgba(255,121,173,.10)}
 @media(hover:hover){
  .menu-card:hover .menu-icon{animation:iconWiggle .48s ease}
  .nav-button:hover .nav-icon{animation:navPop .42s ease}
