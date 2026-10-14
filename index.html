@@ -6284,7 +6284,12 @@ function initializeLiquidNavigation(){
     liquidNavPointer=null;
     if(!gesture.dragging){
       resetLiquidNavLight();
-      if(!event.target.closest(".nav-button")){
+      const tappedButton=event.target.closest(".nav-button");
+      if(tappedButton){
+        liquidNavClickGuard=true;
+        setTimeout(()=>{liquidNavClickGuard=false},500);
+        selectLiquidNavButton(tappedButton);
+      }else{
         const activeButton=liquidNavElement.querySelector(".nav-button.active")||liquidNavElement.querySelector(".nav-button[aria-expanded='true']");
         if(activeButton)moveLiquidNavTo(activeButton,false);
       }
