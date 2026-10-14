@@ -309,14 +309,13 @@ html.dark{
 
   background:var(--chrome-bg);
 
-  backdrop-filter:blur(14px);
-  -webkit-backdrop-filter:blur(14px);
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
 
   border-bottom:
     1px solid rgba(244,203,220,.8);
 
-  box-shadow:
-    0 8px 30px rgba(205,103,143,.06);
+  box-shadow:none;
 
   transition:
     background .3s ease,
@@ -330,8 +329,7 @@ html.dark .topbar{
   border-bottom:
     1px solid rgba(72,50,61,.8);
 
-  box-shadow:
-    0 8px 30px rgba(0,0,0,.18);
+  box-shadow:none;
 }
 
 
@@ -358,16 +356,8 @@ html.dark .topbar{
   place-items:center;
 
   border-radius:16px;
-
-  background:
-    linear-gradient(
-      145deg,
-      #ffffff,
-      #ffe0eb
-    );
-
-  box-shadow:
-    0 12px 30px rgba(255,105,160,.18);
+  background:linear-gradient(145deg,#ffffff,#ffe0eb);
+  box-shadow:0 12px 30px rgba(255,105,160,.18);
 
   font-size:25px;
 }
@@ -380,18 +370,7 @@ html.dark .topbar{
   border-radius:inherit;
 }
 
-html.dark .brand-logo{
-
-  background:
-    linear-gradient(
-      145deg,
-      #35232c,
-      #422733
-    );
-
-  box-shadow:
-    0 0 25px rgba(255,91,157,.10);
-}
+html.dark .brand-logo{background:linear-gradient(145deg,#35232c,#422733);box-shadow:0 0 25px rgba(255,91,157,.10)}
 
 .brand-info{
   min-width:0;
@@ -480,19 +459,18 @@ html.dark .brand-logo{
 
 .page.active{
   display:block;
-  animation:pageIn .38s cubic-bezier(.22,.78,.24,1) both;
+  animation:pageIn .30s cubic-bezier(.2,.8,.2,1) both;
 }
 
 @keyframes pageIn{
 
   from{
     opacity:0;
-    transform:translate3d(0,6px,0) scale(.995);
+    transform:translateY(8px);
   }
 
   to{
     opacity:1;
-    transform:translate3d(0,0,0) scale(1);
   }
 }
 
@@ -665,7 +643,7 @@ html.dark .hero{
   width:100%;
   height:100%;
   object-fit:contain;
-  border-radius:24%;
+  border-radius:0;
 }
 
 .hero-star{
@@ -2120,7 +2098,7 @@ html.dark .menu-card:hover{
   bottom:auto !important;
 }
 
-.nav-liquid-indicator{
+.nav-liquid-indicator{ 
   position:absolute;
   z-index:0;
   top:4px;
@@ -2138,7 +2116,7 @@ html.dark .menu-card:hover{
   transform:translate3d(var(--nav-liquid-left,6px),0,0);
   transform-origin:center;
   will-change:transform;
-  transition:transform .36s cubic-bezier(.2,.78,.24,1),width .28s ease,box-shadow .24s ease,background .24s ease;
+  transition:transform .38s cubic-bezier(.2,.8,.2,1),width .3s cubic-bezier(.2,.8,.2,1),box-shadow .24s ease,background .24s ease;
 }
 
 .nav-liquid-indicator::before,.nav-liquid-indicator::after{
@@ -2732,7 +2710,7 @@ input, textarea, select {
 .calendar-week,.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.calendar-week{margin-bottom:6px}.calendar-week span{text-align:center;color:var(--muted);font-size:8px;font-weight:850}
 .calendar-day{position:relative;min-height:46px;border-radius:13px;background:var(--bg2);border:1px solid transparent;color:var(--text);padding:6px 5px;text-align:left;cursor:default}.calendar-day.empty{background:transparent;cursor:default}.calendar-day.today{border-color:var(--pink);box-shadow:0 0 0 2px rgba(255,121,173,.10)}.calendar-day-number{font-size:10px;font-weight:850}.calendar-event-dot{display:inline-block;width:5px;height:5px;border-radius:50%;margin:7px 2px 0 0}.calendar-event-dot.birthday{background:#ff79ad}.calendar-event-dot.season{background:#c58b4e}.calendar-event-emoji{display:inline-block;margin:6px 2px 0 0;font-size:10px;line-height:1;vertical-align:middle}.calendar-event-count{font-size:7px;color:var(--muted)}
 .calendar-legend{display:flex;gap:15px;margin:-3px 3px 14px;color:var(--muted);font-size:9px}.calendar-legend span{display:flex;align-items:center;gap:5px}.dot{width:8px;height:8px;border-radius:50%;display:inline-block}.dot.birthday{background:#ff79ad}.dot.season{background:#c58b4e}
-.calendar-section-title{font-size:13px;font-weight:900}.calendar-help{margin-top:5px;color:var(--muted);font-size:9px;line-height:1.5}.calendar-form-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:8px;margin-top:11px}.calendar-input{width:100%;padding:11px 10px;border-radius:13px;border:1px solid var(--border);background:var(--surface);color:var(--text);outline:0}.calendar-input:focus{border-color:var(--pink)}.calendar-add-button{width:100%;margin-top:8px;padding:12px;border-radius:14px;background:var(--pink);color:white;font-weight:850;cursor:pointer}.event-list{margin-top:10px;display:grid;gap:7px}.event-item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 11px;border-radius:14px;background:var(--bg2);border:1px solid var(--border)}.event-item-main{min-width:0}.event-item-title{font-size:11px;font-weight:850}.event-item-meta{margin-top:3px;color:var(--muted);font-size:8px}.event-item button{flex:0 0 auto;padding:7px 9px;border-radius:10px;background:var(--surface);color:var(--danger);font-size:9px;font-weight:800;cursor:pointer}
+.calendar-section-title{font-size:13px;font-weight:900}.calendar-help{margin-top:5px;color:var(--muted);font-size:9px;line-height:1.5}.calendar-form-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:8px;margin-top:11px}.calendar-input{width:100%;min-width:0;min-height:48px;padding:11px 10px;border-radius:13px;border:1px solid var(--border);background:var(--surface);color:var(--text);outline:0}.calendar-input:focus{border-color:var(--pink)}.calendar-date-wrap{position:relative;min-width:0}.calendar-date-input{appearance:none;-webkit-appearance:none;padding-right:38px!important}.calendar-date-hint{display:none;position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:12px;pointer-events:none;white-space:nowrap}.calendar-date-input:required:invalid:not(:focus)+.calendar-date-hint{display:block}.calendar-date-input:required:invalid:not(:focus)::-webkit-datetime-edit{color:transparent}.calendar-date-icon{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:15px;line-height:1;pointer-events:none;opacity:.78}.calendar-date-input::-webkit-calendar-picker-indicator{opacity:.72;cursor:pointer}.calendar-add-button{width:100%;margin-top:8px;padding:12px;border-radius:14px;background:var(--pink);color:white;font-weight:850;cursor:pointer}.event-list{margin-top:10px;display:grid;gap:7px}.event-item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 11px;border-radius:14px;background:var(--bg2);border:1px solid var(--border)}.event-item-main{min-width:0}.event-item-title{font-size:11px;font-weight:850}.event-item-meta{margin-top:3px;color:var(--muted);font-size:8px}.event-item button{flex:0 0 auto;padding:7px 9px;border-radius:10px;background:var(--surface);color:var(--danger);font-size:9px;font-weight:800;cursor:pointer}
 .season-edit{display:grid;grid-template-columns:52px minmax(80px,1fr) 88px 88px 104px auto;gap:7px;align-items:end}
 .season-field{display:grid;gap:4px;min-width:0;color:var(--muted);font-size:8px;font-weight:750}
 .season-field input{width:100%;min-width:0;padding:9px 7px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);font-size:16px!important}
@@ -2746,7 +2724,7 @@ input, textarea, select {
 @keyframes editorReveal{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
 
 /* Animaciones sutiles al cambiar de sección y al interactuar */
-@keyframes cardArrival{from{opacity:0;transform:translate3d(0,6px,0) scale(.997)}to{opacity:1;transform:translate3d(0,0,0) scale(1)}}
+@keyframes cardArrival{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
 @keyframes buttonTap{0%,100%{transform:scale(1)}50%{transform:scale(.96)}}
 .page.active .hero,.page.active .menu-card,.page.active .phrase-card,.page.active .status-card,.page.active .inventory-hero,.page.active .inventory-area,.page.active .activity-card,.page.active .calendar-card,.page.active .calendar-legend,.page.active .calendar-editor-toggle,.page.active .recipe-intro,.page.active .recipe-searchbox,.page.active .recipe-filters,.page.active .recipe-category{animation:cardArrival .34s cubic-bezier(.22,.78,.24,1) both}
 .page.active .menu-card:nth-child(2){animation-delay:.04s}
@@ -2757,7 +2735,8 @@ input, textarea, select {
 .page.active .more-page-option:nth-child(3){animation-delay:.08s}
 .page.active .more-page-option:nth-child(4){animation-delay:.12s}
 .tap-feedback{animation:buttonTap .24s ease}
-@media(hover:hover){.calendar-card,.activity-card,.recipe-card,.calendar-editor-toggle{transition:transform .2s ease,box-shadow .2s ease}.calendar-card:hover,.activity-card:hover,.recipe-card:hover,.calendar-editor-toggle:hover{transform:translateY(-2px)}}
+@media(hover:hover){.calendar-card,.activity-card,.recipe-card,.calendar-editor-toggle{transition:transform .2s cubic-bezier(.2,.8,.2,1),box-shadow .2s ease}.calendar-card:hover,.activity-card:hover,.recipe-card:hover,.calendar-editor-toggle:hover{transform:translateY(-2px)}}
+@media(hover:none){button,.menu-card,.recipe-card{transition:transform .16s cubic-bezier(.2,.8,.2,1)}button:active,.menu-card:active,.recipe-card:active{transform:scale(.985)}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
 
 /* Microanimaciones para iconos, tareas, calendario y navegación */
@@ -3250,7 +3229,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
     </div>
 
     <div class="hero-bear" aria-hidden="true">
-      <img src="./bearys-192.png" alt="" width="192" height="192" decoding="async">
+      <img src="./bearys-oso-bienvenida.png" alt="" width="512" height="512" decoding="async">
     </div>
 
   </div>
@@ -4105,7 +4084,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
       <label class="activity-item"><input type="checkbox" data-activity="closing-corte"><span>Hacer el corte.</span></label>
       <label class="activity-item"><input type="checkbox" data-activity="closing-temperatura"><span>Enviar la temperatura del refrigerador.</span></label>
       <label class="activity-item"><input type="checkbox" data-activity="closing-staff"><span>Cerrar staff.</span></label>
-      <label class="activity-item scheduled-activity" data-active-days="3" aria-disabled="true"><input type="checkbox" data-activity="closing-tamales-miercoles"><span>Miércoles por la noche: enviar el total de tamales.</span><small class="activity-day-badge"></small></label>
+      <label class="activity-item scheduled-activity" data-active-days="5" aria-disabled="true"><input type="checkbox" data-activity="closing-tamales-miercoles"><span>Viernes por la noche: enviar el total de tamales.</span><small class="activity-day-badge"></small></label>
       <label class="activity-item scheduled-activity" data-active-days="0,1,3,5" aria-disabled="true"><input type="checkbox" data-activity="closing-agua-caliente-dias"><span>Lunes, miércoles, viernes y domingo: echar un poco de agua caliente en las tarjas y la máquina de café.</span><small class="activity-day-badge"></small></label>
 
     </div>
@@ -4286,7 +4265,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
   <div class="calendar-grid" id="calendarGrid"></div>
  </div>
 
- <div class="calendar-legend"><span><i class="dot birthday"></i>Cumpleaños</span><span><span class="calendar-legend-emoji">✨</span>Temporada</span></div>
+ <div class="calendar-legend"><span><span class="calendar-legend-emoji">🎂</span>Cumpleaños</span><span><span class="calendar-legend-emoji">✨</span>Temporada</span></div>
 
  <button type="button" id="birthdayEditorToggle" class="calendar-editor-toggle" aria-expanded="false" aria-controls="birthdayEditorPanel" onclick="toggleBirthdayEditor()">🎂 Administrar cumpleaños</button>
  <div id="birthdayEditorPanel" class="birthday-editor-panel" hidden>
@@ -4294,8 +4273,12 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
    <div class="calendar-section-title">🎂 Agregar cumpleaños</div>
    <p class="calendar-help">Aquí puedes guardar el cumpleaños de cada persona. Se repite cada año.</p>
    <div class="calendar-form-grid">
-    <input id="birthdayName" class="calendar-input" maxlength="40" placeholder="Nombre de la persona">
-    <input id="birthdayDate" class="calendar-input" type="date">
+   <input id="birthdayName" class="calendar-input" maxlength="40" placeholder="Nombre de la persona">
+    <div class="calendar-date-wrap">
+     <input id="birthdayDate" class="calendar-input calendar-date-input" type="date" required aria-label="Fecha del cumpleaños">
+     <span class="calendar-date-hint" aria-hidden="true">Fecha</span>
+     <span class="calendar-date-icon" aria-hidden="true">🗓️</span>
+    </div>
    </div>
    <button class="calendar-add-button" onclick="addBirthday()">🎂 Guardar cumpleaños</button>
   </div>
@@ -5875,7 +5858,7 @@ function renderCalendar(updateLists=true){
   events.slice(0,3).forEach(event=>{
    const marker=document.createElement("span");
    if(event.type==="season"){marker.className="calendar-event-emoji";marker.textContent=event.emoji;marker.setAttribute("aria-hidden","true")}
-   else{marker.className="calendar-event-dot birthday";marker.setAttribute("aria-hidden","true")}
+   else{marker.className="calendar-event-emoji birthday";marker.textContent="🎂";marker.setAttribute("aria-hidden","true")}
    cell.appendChild(marker);
   });
   if(events.length>3){const count=document.createElement("span");count.className="calendar-event-count";count.textContent=`+${events.length-3}`;cell.appendChild(count)}
