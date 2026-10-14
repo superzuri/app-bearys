@@ -1010,6 +1010,40 @@ html.dark .menu-card:hover{
   cursor:pointer;
 }
 
+.menu-guide-card{
+  margin-top:14px;
+  padding:16px;
+  border:1px solid var(--border);
+  border-radius:22px;
+  background:var(--surface);
+  box-shadow:var(--shadow);
+}
+.menu-guide-heading{display:flex;align-items:flex-start;gap:11px;margin-bottom:9px}
+.menu-guide-icon{width:40px;height:40px;flex:0 0 40px;display:grid;place-items:center;border-radius:14px;background:var(--pinksoft);font-size:20px}
+.menu-guide-heading h2{margin:1px 0 4px;color:var(--text);font-size:14px;font-weight:900}
+.menu-guide-heading p{margin:0;color:var(--muted);font-size:10px;line-height:1.45}
+.menu-guide-group{border-top:1px solid var(--border)}
+.menu-guide-group summary{display:flex;align-items:center;justify-content:space-between;gap:9px;min-height:48px;padding:10px 2px;color:var(--text);font-size:11px;font-weight:850;list-style:none;cursor:pointer}
+.menu-guide-group summary::-webkit-details-marker{display:none}
+.menu-guide-group summary::after{content:"＋";width:23px;height:23px;flex:0 0 23px;display:grid;place-items:center;border-radius:8px;background:var(--pinksoft);color:var(--pink2);font-size:14px;line-height:1}
+.menu-guide-group[open] summary::after{content:"−"}
+.menu-guide-count{margin-left:auto;color:var(--muted);font-size:9px;font-weight:700;white-space:nowrap}
+.menu-guide-list{display:grid;gap:6px;margin:0;padding:0 0 12px;list-style:none}
+.menu-guide-list li{padding:9px 10px;border-radius:12px;background:var(--bg2);color:var(--text);font-size:10px;line-height:1.4}
+.menu-guide-product{display:grid;gap:2px}
+.menu-guide-product strong{font-size:10px;font-weight:850}
+.menu-guide-product span{color:var(--muted);font-size:9px}
+.menu-guide-tamale{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.menu-guide-color{padding:4px 8px;border:1px solid transparent;border-radius:99px;font-size:8px;font-weight:900;white-space:nowrap}
+.menu-guide-color.white{border-color:#d7d0d2;background:#fff;color:#53464b}
+.menu-guide-color.orange{background:#ffb15c;color:#4c2910}
+.menu-guide-color.wine{background:#7c2946;color:#fff}
+.menu-guide-color.green{background:#5e9a69;color:#fff}
+.menu-guide-color.yellow{background:#f2cf59;color:#493c10}
+.menu-guide-color.blue{background:#5597dc;color:#fff}
+.menu-guide-coffee-note{margin:0 0 10px;color:var(--muted);font-size:10px;line-height:1.5}
+.menu-guide-coffee-note strong{color:var(--text)}
+
 
 /* =========================================================
    STATUS
@@ -3441,6 +3475,81 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
     </div>
 
   </div>
+
+  <section class="menu-guide-card" aria-labelledby="menuGuideTitle">
+    <div class="menu-guide-heading">
+      <div class="menu-guide-icon" aria-hidden="true">📖</div>
+      <div>
+        <h2 id="menuGuideTitle">Guía rápida del menú</h2>
+        <p>Sabores y detalles para tener a la mano durante el turno.</p>
+      </div>
+    </div>
+
+    <details class="menu-guide-group">
+      <summary>🍰 Tartas y postres <span class="menu-guide-count">7 opciones</span></summary>
+      <ul class="menu-guide-list">
+        <li><div class="menu-guide-product"><strong>Tarta de frutos rojos</strong></div></li>
+        <li><div class="menu-guide-product"><strong>Tarta de limón</strong><span>Con betún de limón.</span></div></li>
+        <li><div class="menu-guide-product"><strong>Tarta de chocolate blanco con zarzamora y blueberry</strong></div></li>
+        <li><div class="menu-guide-product"><strong>Tarta de Turín</strong><span>Preparada con chocolate Turín.</span></div></li>
+        <li><div class="menu-guide-product"><strong>Flan napolitano</strong></div></li>
+        <li><div class="menu-guide-product"><strong>Helado de vainilla con caramelo</strong></div></li>
+        <li><div class="menu-guide-product"><strong>Helado de chocolate con Nutella</strong></div></li>
+      </ul>
+    </details>
+
+    <details class="menu-guide-group">
+      <summary>🫔 Tamales <span class="menu-guide-count">6 sabores</span></summary>
+      <ul class="menu-guide-list">
+        <li><div class="menu-guide-tamale"><strong>Verdolagas</strong><span class="menu-guide-color white">Blanco</span></div></li>
+        <li><div class="menu-guide-tamale"><strong>Frijol</strong><span class="menu-guide-color orange">Naranja</span></div></li>
+        <li><div class="menu-guide-tamale"><strong>Guajillo</strong><span class="menu-guide-color wine">Vino</span></div></li>
+        <li><div class="menu-guide-tamale"><strong>Champiñones</strong><span class="menu-guide-color green">Verde</span></div></li>
+        <li><div class="menu-guide-tamale"><strong>Rajas con queso</strong><span class="menu-guide-color yellow">Amarillo</span></div></li>
+        <li><div class="menu-guide-tamale"><strong>Flor de calabaza</strong><span class="menu-guide-color blue">Azul</span></div></li>
+      </ul>
+    </details>
+
+    <details class="menu-guide-group">
+      <summary>🥐 Panadería <span class="menu-guide-count">9 opciones</span></summary>
+      <ul class="menu-guide-list">
+        <li><div class="menu-guide-product"><strong>Croissant de almendra</strong><span>Con dulce de almendra.</span></div></li>
+        <li><div class="menu-guide-product"><strong>Croissant de Nutella</strong><span>Relleno de Nutella y cubierto de chocolate semiamargo.</span></div></li>
+        <li><div class="menu-guide-product"><strong>Croissant de dulce de leche con plátano</strong></div></li>
+        <li><div class="menu-guide-product"><strong>Roll de manzana</strong></div></li>
+        <li><div class="menu-guide-product"><strong>Roll de frutos rojos</strong></div></li>
+        <li><div class="menu-guide-product"><strong>Rollo Beary’s</strong><span>Mascarpone, frutos rojos, dulce de leche y chocolate.</span></div></li>
+        <li><div class="menu-guide-product"><strong>Orejitas</strong></div></li>
+        <li><div class="menu-guide-product"><strong>Galleta de pay de limón</strong></div></li>
+        <li><div class="menu-guide-product"><strong>Galletas de pistache con chocolate</strong></div></li>
+      </ul>
+    </details>
+
+    <details class="menu-guide-group">
+      <summary>☕ Café que usamos <span class="menu-guide-count">Mezcla mexicana</span></summary>
+      <ul class="menu-guide-list">
+        <li class="menu-guide-coffee-note"><strong>100% mexicano 🇲🇽</strong><br>Mezcla de cafés arábigos cultivados en las altas montañas de Chiapas y Veracruz.</li>
+        <li class="menu-guide-coffee-note">Tiene excelente aroma, acidez pronunciada y cuerpo entero.</li>
+        <li class="menu-guide-coffee-note"><strong>Tueste:</strong> 50% oscuro y 50% medio.</li>
+      </ul>
+    </details>
+
+    <details class="menu-guide-group">
+      <summary>🫖 Sabores de té <span class="menu-guide-count">10 opciones</span></summary>
+      <ul class="menu-guide-list">
+        <li>Frutos rojos</li>
+        <li>Limón con jengibre</li>
+        <li>Manzanilla con miel</li>
+        <li>Manzanilla</li>
+        <li>Earl Grey</li>
+        <li>English Breakfast</li>
+        <li>Granada con frambuesa</li>
+        <li>Fresa con vainilla</li>
+        <li>Mango con fresa</li>
+        <li>Limón</li>
+      </ul>
+    </details>
+  </section>
 
 </section>
 
