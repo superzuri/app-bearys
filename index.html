@@ -461,18 +461,19 @@ html.dark .brand-logo img{filter:url(#bearys-dark-logo-filter)}
 
 .page.active{
   display:block;
-  animation:pageIn .30s cubic-bezier(.2,.8,.2,1) both;
+  animation:pageIn .25s cubic-bezier(.22,1,.36,1) both;
 }
 
 @keyframes pageIn{
 
   from{
     opacity:0;
-    transform:translateY(8px);
+    transform:translate3d(0,6px,0) scale(.997);
   }
 
   to{
     opacity:1;
+    transform:translate3d(0,0,0) scale(1);
   }
 }
 
@@ -964,8 +965,11 @@ html.dark .menu-card:hover{
   line-height:1.55;
   font-weight:700;
 
-  transition:.15s;
+  opacity:1;
+  transform:translate3d(0,0,0);
+  transition:opacity .18s ease,transform .22s cubic-bezier(.22,1,.36,1);
 }
+.phrase-text.is-changing{opacity:0;transform:translate3d(0,4px,0)}
 
 .phrase-bottom{
   margin-top:17px;
@@ -2729,9 +2733,9 @@ input, textarea, select {
 @keyframes editorReveal{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
 
 /* Animaciones sutiles al cambiar de sección y al interactuar */
-@keyframes cardArrival{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
-@keyframes buttonTap{0%,100%{transform:scale(1)}50%{transform:scale(.96)}}
-.page.active .hero,.page.active .menu-card,.page.active .phrase-card,.page.active .status-card,.page.active .inventory-hero,.page.active .inventory-area,.page.active .activity-card,.page.active .calendar-card,.page.active .calendar-legend,.page.active .calendar-editor-toggle,.page.active .recipe-intro,.page.active .recipe-searchbox,.page.active .recipe-filters,.page.active .recipe-category{animation:cardArrival .34s cubic-bezier(.22,.78,.24,1) both}
+@keyframes cardArrival{from{opacity:0;transform:translate3d(0,7px,0) scale(.997)}to{opacity:1;transform:translate3d(0,0,0) scale(1)}}
+@keyframes buttonTap{0%,100%{transform:scale(1)}45%{transform:scale(.975)}}
+.page.active .hero,.page.active .menu-card,.page.active .phrase-card,.page.active .status-card,.page.active .inventory-hero,.page.active .inventory-area,.page.active .activity-card,.page.active .calendar-card,.page.active .calendar-legend,.page.active .calendar-editor-toggle,.page.active .recipe-intro,.page.active .recipe-searchbox,.page.active .recipe-filters,.page.active .recipe-category{animation:cardArrival .27s cubic-bezier(.22,1,.36,1) both}
 .page.active .menu-card:nth-child(2){animation-delay:.04s}
 .page.active .menu-card:nth-child(3){animation-delay:.08s}
 .page.active .menu-card:nth-child(4){animation-delay:.12s}
@@ -2743,13 +2747,13 @@ input, textarea, select {
   from{opacity:0;transform:translateY(5px) scale(.99)}
   to{opacity:1;transform:translateY(0) scale(1)}
 }
-.page.active .more-page-option{animation:moreOptionStagger .2s cubic-bezier(.22,.78,.24,1) both}
+.page.active .more-page-option{animation:moreOptionStagger .18s cubic-bezier(.22,1,.36,1) both}
 .page.active .more-page-option:nth-child(1){animation-delay:0s}
 .page.active .more-page-option:nth-child(2){animation-delay:.025s}
 .page.active .more-page-option:nth-child(3){animation-delay:.05s}
 .page.active .more-page-option:nth-child(4){animation-delay:.075s}
 .page.active .more-page-option:nth-child(5){animation-delay:.1s}
-.tap-feedback{animation:buttonTap .24s ease}
+.tap-feedback{animation:buttonTap .2s cubic-bezier(.2,.8,.2,1)}
 @media(hover:hover){.calendar-card,.activity-card,.recipe-card,.calendar-editor-toggle{transition:transform .2s cubic-bezier(.2,.8,.2,1),box-shadow .2s ease}.calendar-card:hover,.activity-card:hover,.recipe-card:hover,.calendar-editor-toggle:hover{transform:translateY(-2px)}}
 @media(hover:none){button,.menu-card,.recipe-card{transition:transform .16s cubic-bezier(.2,.8,.2,1)}button:active,.menu-card:active,.recipe-card:active{transform:scale(.985)}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
@@ -2758,10 +2762,10 @@ input, textarea, select {
 @keyframes iconWiggle{0%,100%{transform:rotate(0) scale(1)}30%{transform:rotate(-10deg) scale(1.08)}70%{transform:rotate(8deg) scale(1.08)}}
 @keyframes checkPop{0%{transform:scale(1)}45%{transform:scale(1.28)}100%{transform:scale(1)}}
 @keyframes taskCheck{0%{transform:translateX(0)}35%{transform:translateX(4px)}100%{transform:translateX(0)}}
-@keyframes phraseBearBob{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-5px) rotate(4deg)}}
+@keyframes phraseBearBob{0%,100%{transform:translate3d(0,0,0) rotate(0)}50%{transform:translate3d(0,-3px,0) rotate(2deg)}}
 @keyframes navPop{0%,100%{transform:translateY(0) scale(1)}45%{transform:translateY(-2px) scale(1.06)}}
 .menu-icon{transform-origin:center;transition:transform .25s ease}
-.phrase-bear{transform-origin:center bottom;animation:phraseBearBob 3.8s ease-in-out infinite}
+.phrase-bear{transform-origin:center bottom;animation:phraseBearBob 4.8s ease-in-out infinite}
 .activity-item input{transition:transform .2s ease}
 .activity-item input:checked{animation:checkPop .32s cubic-bezier(.2,.8,.3,1)}
 .activity-item span{transition:color .22s ease,opacity .22s ease}
@@ -2791,7 +2795,7 @@ input, textarea, select {
 .cleaning-progress-label{color:var(--muted);font-size:10px;font-weight:800}
 .cleaning-progress-number{color:var(--pink2);font-size:12px;font-weight:900}
 .cleaning-progress-track{height:9px;margin-top:9px;overflow:hidden;border-radius:999px;background:var(--bg2)}
-.cleaning-progress-fill{height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,var(--pink),#ffb16e);transition:width .35s ease}
+.cleaning-progress-fill{height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,var(--pink),#ffb16e);transition:width .42s cubic-bezier(.22,1,.36,1)}
 .cleaning-summary{margin-top:7px;color:var(--muted);font-size:9px}
 .cleaning-picker-toggle{width:100%;margin-top:12px;padding:12px;border:1px solid var(--border);border-radius:14px;background:var(--pinksoft);color:var(--pink2);font-size:10px;font-weight:900;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease}
 .cleaning-picker-toggle:active{transform:scale(.985)}
@@ -2843,6 +2847,7 @@ input, textarea, select {
 .cleaning-delete-button{flex:0 0 auto;width:30px;height:30px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--muted);font-size:17px;cursor:pointer}
 .cleaning-empty{padding:18px 12px;border:1px dashed var(--border);border-radius:15px;color:var(--muted);font-size:10px;line-height:1.5;text-align:center}
 .cleaning-clear-button{display:block;margin:10px 0 0 auto;padding:8px 10px;border:1px solid var(--border);border-radius:11px;background:var(--surface);color:var(--muted);font-size:9px;font-weight:850;cursor:pointer}
+.cleaning-filter-tools{display:grid;gap:9px;margin:12px 0 10px}.cleaning-filter-row{display:flex;gap:7px;overflow-x:auto;padding:1px 1px 4px;scrollbar-width:none}.cleaning-filter-row::-webkit-scrollbar{display:none}.cleaning-filter-chip{display:flex;align-items:center;gap:7px;flex:0 0 auto;padding:8px 10px;border:1px solid var(--border);border-radius:999px;background:var(--bg);color:var(--muted);font:inherit;font-size:9px;font-weight:850;cursor:pointer;transition:transform .16s ease,background .16s ease,color .16s ease}.cleaning-filter-chip b{min-width:16px;height:16px;display:grid;place-items:center;padding:0 4px;border-radius:999px;background:var(--bg2);color:var(--muted);font-size:8px}.cleaning-filter-chip.active{border-color:transparent;background:var(--pink);color:#fff}.cleaning-filter-chip.active b{background:rgba(255,255,255,.2);color:#fff}.cleaning-filter-chip:active{transform:scale(.96)}.cleaning-assignment-search{display:flex;align-items:center;gap:8px;min-height:42px;padding:0 11px;border:1px solid var(--border);border-radius:13px;background:var(--bg2);color:var(--muted)}.cleaning-assignment-search input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:var(--text);font:inherit;font-size:16px}.cleaning-assignment-search input::placeholder{color:var(--muted)}.cleaning-list-summary{color:var(--muted);font-size:9px;font-weight:750}.cleaning-assignment-card{transition:transform .16s cubic-bezier(.22,1,.36,1),border-color .16s ease,background .16s ease}.cleaning-assignment-card:active{transform:scale(.99)}.cleaning-assignment-status{display:inline-flex;align-items:center;padding:3px 7px;border-radius:999px;background:var(--pinksoft);color:var(--pink2);font-size:8px;font-weight:900}.cleaning-assignment-status.is-late{background:rgba(219,74,91,.12);color:var(--danger)}.cleaning-assignment-status.is-done{background:rgba(81,200,138,.14);color:var(--success)}.cleaning-assignment-due{margin-left:5px;color:var(--muted);font-size:9px}
 @media(max-width:430px){.cleaning-form-grid{grid-template-columns:1fr}.cleaning-intro,.cleaning-section{padding:13px}}
 
 
@@ -4194,7 +4199,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
       <h2 id="cleaningTasksTitle">Elige las tareas</h2>
       <button type="button" onclick="closeCleaningTaskPicker()">Cerrar</button>
     </div>
-    <p class="cleaning-selection-note">Elige tareas disponibles para una persona. Las que ya tienen responsable aparecen bloqueadas; podrás repartirle otra tanda cuando retires las tareas actuales.</p>
+    <p class="cleaning-selection-note">Elige tareas disponibles y asígnalas a quien corresponda. Una tarea solo puede tener una persona responsable, pero cada persona puede recibir varias.</p>
     <input class="cleaning-search" id="cleaningTaskSearch" type="search" placeholder="Buscar en la lista de limpieza…" aria-label="Buscar tareas de limpieza">
     <div class="cleaning-task-availability" id="cleaningTaskAvailability" aria-live="polite"></div>
     <div class="cleaning-task-list" id="cleaningTaskList"></div>
@@ -4224,6 +4229,16 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
     <div class="cleaning-progress-head">
       <h2 id="cleaningAssignmentsTitle">Asignadas por persona</h2>
       <span class="cleaning-progress-label" id="cleaningAssignmentCount">0 tareas</span>
+    </div>
+    <div class="cleaning-filter-tools">
+      <div class="cleaning-filter-row" id="cleaningAssignmentFilters" role="group" aria-label="Filtrar asignaciones de limpieza">
+        <button type="button" class="cleaning-filter-chip active" data-cleaning-filter="all" aria-pressed="true" onclick="setCleaningAssignmentFilter('all',this)">Todas <b id="cleaningFilterAllCount">0</b></button>
+        <button type="button" class="cleaning-filter-chip" data-cleaning-filter="pending" aria-pressed="false" onclick="setCleaningAssignmentFilter('pending',this)">Pendientes <b id="cleaningFilterPendingCount">0</b></button>
+        <button type="button" class="cleaning-filter-chip" data-cleaning-filter="overdue" aria-pressed="false" onclick="setCleaningAssignmentFilter('overdue',this)">Vencidas <b id="cleaningFilterOverdueCount">0</b></button>
+        <button type="button" class="cleaning-filter-chip" data-cleaning-filter="completed" aria-pressed="false" onclick="setCleaningAssignmentFilter('completed',this)">Terminadas <b id="cleaningFilterCompletedCount">0</b></button>
+      </div>
+      <label class="cleaning-assignment-search"><span aria-hidden="true">🔎</span><input id="cleaningAssignmentSearch" type="search" placeholder="Buscar por tarea o persona…" autocomplete="off" oninput="searchCleaningAssignments(this.value)"></label>
+      <div class="cleaning-list-summary" id="cleaningListSummary" aria-live="polite">Mostrando todas las tareas.</div>
     </div>
     <div class="cleaning-assignment-list" id="cleaningAssignmentList" aria-live="polite"></div>
     <button type="button" class="cleaning-clear-button" id="cleaningClearCompleted" onclick="clearCompletedCleaningTasks()" hidden>Quitar terminadas del plan</button>
@@ -6459,39 +6474,50 @@ const phrases=[
 ];
 
 let currentPhrase=0;
+let phraseTransitionTimer=0;
+let phraseRotationTimer=0;
 
+function renderCurrentPhrase(animate=true){
+  const text=document.getElementById("phraseText");
+  const number=document.getElementById("phraseNumber");
+  if(!text)return;
+  clearTimeout(phraseTransitionTimer);
+  const reducedMotion=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const canAnimate=animate&&!document.body.classList.contains("animations-off")&&!reducedMotion;
+  if(!canAnimate){
+    text.classList.remove("is-changing");
+    text.textContent=phrases[currentPhrase];
+    if(number)number.textContent=`${currentPhrase+1} / ${phrases.length}`;
+    return;
+  }
+  text.classList.add("is-changing");
+  phraseTransitionTimer=window.setTimeout(()=>{
+    text.textContent=phrases[currentPhrase];
+    if(number)number.textContent=`${currentPhrase+1} / ${phrases.length}`;
+    requestAnimationFrame(()=>text.classList.remove("is-changing"));
+  },110);
+}
+
+function advancePhrase(){
+  currentPhrase=(currentPhrase+1)%phrases.length;
+  renderCurrentPhrase(true);
+}
 
 function nextPhrase(){
+  advancePhrase();
+  if(phraseRotationTimer){
+    clearInterval(phraseRotationTimer);
+    phraseRotationTimer=window.setInterval(()=>{
+      if(document.visibilityState==="visible")advancePhrase();
+    },30000);
+  }
+}
 
-  currentPhrase=
-    (currentPhrase+1)
-    %
-    phrases.length;
-
-  const text =
-    document.getElementById(
-      "phraseText"
-    );
-
-  text.style.opacity="0";
-
-
-  setTimeout(()=>{
-
-    text.textContent=
-      phrases[currentPhrase];
-
-    document
-      .getElementById(
-        "phraseNumber"
-      )
-      .textContent=
-        `${currentPhrase+1} / ${phrases.length}`;
-
-    text.style.opacity="1";
-
-  },150);
-
+function startPhraseRotation(){
+  if(phraseRotationTimer)clearInterval(phraseRotationTimer);
+  phraseRotationTimer=window.setInterval(()=>{
+    if(document.visibilityState==="visible")advancePhrase();
+  },30000);
 }
 
 
@@ -7871,6 +7897,8 @@ const DEEP_CLEANING_TASKS=[
 const CLEANING_TEAM=["Zuri","Carmen","Chavita","Kris","Magy","Tania","Xime"];
 const DEEP_CLEANING_STORAGE_KEY="bearyDeepCleaningAssignments_v1";
 const selectedCleaningTasks=new Set();
+let cleaningAssignmentFilter="all";
+let cleaningAssignmentQuery="";
 
 function cleaningEscape(value){
   return String(value).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;").replace(/'/g,"&#39;");
@@ -7968,6 +7996,46 @@ function updateCleaningPickerToggle(){
   button.setAttribute("aria-expanded",String(isOpen));
   button.setAttribute("aria-controls","cleaningTaskPicker");
 }
+function setCleaningAssignmentFilter(filter,button){
+  cleaningAssignmentFilter=filter||"all";
+  document.querySelectorAll("#cleaningAssignmentFilters .cleaning-filter-chip").forEach(chip=>{
+    const active=chip===button;
+    chip.classList.toggle("active",active);
+    chip.setAttribute("aria-pressed",String(active));
+  });
+  renderCleaningAssignmentCards();
+}
+function searchCleaningAssignments(value){
+  cleaningAssignmentQuery=String(value||"").trim().toLocaleLowerCase("es-MX");
+  renderCleaningAssignmentCards();
+}
+function cleaningTaskMatchesFilter(item){
+  const isOverdue=!item.completed&&item.dueDate<cleaningToday();
+  if(cleaningAssignmentFilter==="pending"&&item.completed)return false;
+  if(cleaningAssignmentFilter==="overdue"&&!isOverdue)return false;
+  if(cleaningAssignmentFilter==="completed"&&!item.completed)return false;
+  return !cleaningAssignmentQuery||(String(item.task||"")+" "+String(item.assignee||"")).toLocaleLowerCase("es-MX").includes(cleaningAssignmentQuery);
+}
+function updateCleaningFilterCounts(assignments){
+  const counts={
+    all:assignments.length,
+    pending:assignments.filter(item=>!item.completed).length,
+    overdue:assignments.filter(item=>!item.completed&&item.dueDate<cleaningToday()).length,
+    completed:assignments.filter(item=>item.completed).length
+  };
+  Object.entries({all:"cleaningFilterAllCount",pending:"cleaningFilterPendingCount",overdue:"cleaningFilterOverdueCount",completed:"cleaningFilterCompletedCount"}).forEach(([key,id])=>{
+    const node=document.getElementById(id);if(node)node.textContent=String(counts[key]);
+  });
+}
+function cleaningDueStatus(item){
+  if(item.completed)return {label:"Terminada",className:"is-done"};
+  if(item.dueDate<cleaningToday())return {label:"Vencida",className:"is-late"};
+  const tomorrow=new Date();tomorrow.setDate(tomorrow.getDate()+1);
+  const tomorrowKey=[tomorrow.getFullYear(),String(tomorrow.getMonth()+1).padStart(2,"0"),String(tomorrow.getDate()).padStart(2,"0")].join("-");
+  if(item.dueDate===cleaningToday())return {label:"Vence hoy",className:""};
+  if(item.dueDate===tomorrowKey)return {label:"Vence mañana",className:""};
+  return {label:"Pendiente",className:""};
+}
 function toggleCleaningTaskPicker(){
   const picker=document.getElementById("cleaningTaskPicker");
   if(!picker)return;
@@ -7994,10 +8062,10 @@ function renderDeepCleaning(){
     const assignments=getDeepCleaningAssignments();
     select.innerHTML='<option value="">Elige a quién asignarlas</option>'+CLEANING_TEAM.map(name=>{
       const count=assignments.filter(item=>item.assignee===name).length;
-      const label=count?name+" · ya tiene "+count+" "+(count===1?"tarea":"tareas"):name;
-      return '<option value="'+cleaningEscape(name)+'" '+(count?"disabled":"")+'>'+cleaningEscape(label)+"</option>";
+      const label=count?name+" · "+count+" "+(count===1?"tarea":"tareas"):name;
+      return '<option value="'+cleaningEscape(name)+'">'+cleaningEscape(label)+"</option>";
     }).join("");
-    if(previous&&CLEANING_TEAM.includes(previous)&&!assignments.some(item=>item.assignee===previous))select.value=previous;
+    if(previous&&CLEANING_TEAM.includes(previous))select.value=previous;
   }
   populateCleaningDueDates();
   updateCleaningPickerToggle();
@@ -8034,12 +8102,6 @@ async function assignDeepCleaningTasks(event){
     showToast("Algunas tareas ya tienen responsable. Elige otras disponibles.");
     return;
   }
-  const currentPersonCount=assignments.filter(item=>item.assignee===assignee).length;
-  if(currentPersonCount){
-    renderDeepCleaning();
-    showToast(assignee+" ya tiene tareas asignadas. Quita esas tareas para asignarle más.");
-    return;
-  }
   const createdAt=new Date().toISOString();
   selectedCleaningTasks.forEach(index=>assignments.push({
     id:(window.crypto&&crypto.randomUUID)?crypto.randomUUID():"clean-"+Date.now()+"-"+Math.random().toString(36).slice(2,9),
@@ -8050,16 +8112,13 @@ async function assignDeepCleaningTasks(event){
     completed:false,
     createdAt
   }));
-  if(!await saveDeepCleaningAssignments(assignments)){
-    renderDeepCleaning();
-    if(!selectedCleaningTasks.size)closeCleaningAssignmentForm();
-    return;
-  }
+  const saved=saveDeepCleaningAssignments(assignments);
   selectedCleaningTasks.clear();
   event.target.reset();
   closeCleaningAssignmentForm();
   closeCleaningTaskPicker(false);
   renderDeepCleaning();
+  if(!await saved){renderDeepCleaning();return}
   showToast("🧼 Tareas asignadas a "+assignee);
 }
 function renderCleaningAssignmentCards(){
@@ -8082,8 +8141,21 @@ function renderCleaningAssignmentCards(){
   if(summary)summary.textContent=assignments.length?completed+" terminadas · "+pending+" pendientes"+(overdue?" · "+overdue+" vencidas":""):"Todavía no hay tareas asignadas.";
   if(count)count.textContent=assignments.length+" "+(assignments.length===1?"tarea":"tareas");
   if(clearButton)clearButton.hidden=completed===0;
-  const personGroups=CLEANING_TEAM.map(name=>({name,items:assignments.filter(item=>item.assignee===name)})).filter(group=>group.items.length);
-  list.innerHTML=personGroups.length?personGroups.map(group=>{
+  updateCleaningFilterCounts(assignments);
+  const summaryNode=document.getElementById("cleaningListSummary");
+  const visibleAssignments=assignments.filter(cleaningTaskMatchesFilter);
+  if(summaryNode){
+    const queryActive=Boolean(cleaningAssignmentQuery);
+    summaryNode.textContent=!assignments.length
+      ?"Aún no hay tareas que mostrar."
+      :visibleAssignments.length===assignments.length&&!queryActive&&cleaningAssignmentFilter==="all"
+      ?"Mostrando todas las tareas."
+      :"Mostrando "+visibleAssignments.length+" de "+assignments.length+" "+(assignments.length===1?"tarea.":"tareas.");
+  }
+  const previouslyOpen=new Set([...list.querySelectorAll(".cleaning-person-group[open]")].map(group=>group.dataset.cleaningPerson));
+  const hadPreviousGroups=list.querySelector(".cleaning-person-group")!==null;
+  const personGroups=CLEANING_TEAM.map(name=>({name,items:visibleAssignments.filter(item=>item.assignee===name)})).filter(group=>group.items.length);
+  list.innerHTML=personGroups.length?personGroups.map((group,groupIndex)=>{
     const ordered=[...group.items].sort((a,b)=>Number(Boolean(a.completed))-Number(Boolean(b.completed))||a.dueDate.localeCompare(b.dueDate)||a.task.localeCompare(b.task,"es"));
     const done=ordered.filter(item=>item.completed).length;
     const open=ordered.filter(item=>!item.completed);
@@ -8091,14 +8163,15 @@ function renderCleaningAssignmentCards(){
     const nextDue=open.map(item=>item.dueDate).sort()[0];
     const status=open.length?(overdueForPerson?"Vencida · ":"Vence ")+cleaningDateLabel(nextDue):"Todas terminadas 🎉";
     const taskCards=ordered.map(item=>{
-      const isOverdue=!item.completed&&item.dueDate<cleaningToday();
+      const dueStatus=cleaningDueStatus(item);
       return '<article class="cleaning-assignment-card '+(item.completed?"is-complete":"")+'">'+
         '<input class="cleaning-assignment-check" type="checkbox" data-cleaning-complete="'+cleaningEscape(item.id)+'" '+(item.completed?"checked":"")+' aria-label="Marcar como terminada: '+cleaningEscape(item.task)+'">'+
-        '<div class="cleaning-assignment-content"><div class="cleaning-assignment-task">'+cleaningEscape(item.task)+'</div><div class="cleaning-assignment-meta">Fecha límite: <strong class="'+(isOverdue?"cleaning-overdue":"")+'">'+cleaningEscape(cleaningDateLabel(item.dueDate))+(isOverdue?" · Vencida":"")+'</strong></div></div>'+
+        '<div class="cleaning-assignment-content"><div class="cleaning-assignment-task">'+cleaningEscape(item.task)+'</div><div class="cleaning-assignment-meta"><span class="cleaning-assignment-status '+dueStatus.className+'">'+dueStatus.label+'</span><span class="cleaning-assignment-due">Límite: '+cleaningEscape(cleaningDateLabel(item.dueDate))+'</span></div></div>'+
         '<button type="button" class="cleaning-delete-button" data-cleaning-delete="'+cleaningEscape(item.id)+'" aria-label="Eliminar asignación">×</button></article>';
     }).join("");
-    return `<details class="cleaning-person-group"><summary><span class="cleaning-person-avatar" aria-hidden="true">${cleaningEscape(group.name.slice(0,1).toLocaleUpperCase("es-MX"))}</span><span class="cleaning-person-summary"><span class="cleaning-person-name">${cleaningEscape(group.name)}</span><span class="cleaning-person-meta">${ordered.length} ${ordered.length===1?"tarea":"tareas"} · ${done} terminadas · ${cleaningEscape(status)}</span></span><span class="cleaning-person-arrow" aria-hidden="true">›</span></summary><div class="cleaning-person-tasks">${taskCards}<button type="button" class="cleaning-person-clear" data-cleaning-clear-person="${cleaningEscape(group.name)}">Quitar todas sus tareas</button></div></details>`;
-  }).join(""):'<div class="cleaning-empty">Aún no hay tareas repartidas. Cuando asignen la primera, aquí verán a cada persona y sus pendientes. 🐻</div>';
+    const isOpen=previouslyOpen.has(group.name)||(!hadPreviousGroups&&groupIndex===0);
+    return `<details class="cleaning-person-group" data-cleaning-person="${cleaningEscape(group.name)}" ${isOpen?"open":""}><summary><span class="cleaning-person-avatar" aria-hidden="true">${cleaningEscape(group.name.slice(0,1).toLocaleUpperCase("es-MX"))}</span><span class="cleaning-person-summary"><span class="cleaning-person-name">${cleaningEscape(group.name)}</span><span class="cleaning-person-meta">${ordered.length} ${ordered.length===1?"tarea":"tareas"} · ${done} terminadas · ${cleaningEscape(status)}</span></span><span class="cleaning-person-arrow" aria-hidden="true">›</span></summary><div class="cleaning-person-tasks">${taskCards}<button type="button" class="cleaning-person-clear" data-cleaning-clear-person="${cleaningEscape(group.name)}">Quitar todas sus tareas</button></div></details>`;
+  }).join(""):assignments.length?'<div class="cleaning-empty">No hay tareas que coincidan con este filtro o búsqueda. Prueba otra opción. 🔎</div>':'<div class="cleaning-empty">Aún no hay tareas repartidas. Cuando asignen la primera, aquí verán a cada persona y sus pendientes. 🐻</div>';
   /* Los controles se gestionan desde un único listener persistente.
      Así renderizar la lista no crea decenas de listeners nuevos. */
 }
@@ -8124,15 +8197,17 @@ async function setCleaningTaskComplete(id,completed){
   if(!target)return;
   target.completed=completed;
   target.completedAt=completed?new Date().toISOString():null;
-  if(await saveDeepCleaningAssignments(assignments))renderCleaningAssignmentCards();
+  const saved=saveDeepCleaningAssignments(assignments);
+  renderCleaningAssignmentCards();
+  if(!await saved)renderDeepCleaning();
 }
 async function deleteCleaningAssignment(id){
   const assignments=getDeepCleaningAssignments();
   const remaining=assignments.filter(item=>item.id!==id);
   if(remaining.length===assignments.length)return;
-  if(await saveDeepCleaningAssignments(remaining)){
-    renderDeepCleaning();
-  }
+  const saved=saveDeepCleaningAssignments(remaining);
+  renderDeepCleaning();
+  if(!await saved)renderDeepCleaning();
 }
 async function clearPersonCleaningTasks(name){
   const assignments=getDeepCleaningAssignments();
@@ -8140,19 +8215,19 @@ async function clearPersonCleaningTasks(name){
   if(!personTasks.length)return;
   if(!window.confirm("¿Quitar las "+personTasks.length+" tareas de "+name+"? Así podrá recibir una nueva asignación."))return;
   const remaining=assignments.filter(item=>item.assignee!==name);
-  if(await saveDeepCleaningAssignments(remaining)){
-    renderDeepCleaning();
-    showToast(name+" ya puede recibir una nueva asignación.");
-  }
+  const saved=saveDeepCleaningAssignments(remaining);
+  renderDeepCleaning();
+  if(await saved)showToast("Se quitaron las tareas de "+name+".");
+  else renderDeepCleaning();
 }
 async function clearCompletedCleaningTasks(){
   const assignments=getDeepCleaningAssignments();
   const remaining=assignments.filter(item=>!item.completed);
   if(remaining.length===assignments.length)return;
   if(!window.confirm("¿Borrar las tareas de limpieza que ya aparecen como terminadas?"))return;
-  if(await saveDeepCleaningAssignments(remaining)){
-    renderDeepCleaning();
-  }
+  const saved=saveDeepCleaningAssignments(remaining);
+  renderDeepCleaning();
+  if(!await saved)renderDeepCleaning();
 }
 const cleaningTaskList=document.getElementById("cleaningTaskList");
 cleaningTaskList?.addEventListener("change",event=>{
@@ -8457,6 +8532,7 @@ function initializeApp(){
   setupRecipeBook();
   initializeLiquidNavigation();
   updateDailyChallengeButton();
+  startPhraseRotation();
 
   const themeMode=getThemeMode();
   applyTheme(themeMode==="system"?getSystemTheme():themeMode);
