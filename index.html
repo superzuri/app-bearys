@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -3875,10 +3874,46 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
   <div
     id="openingActivities"
   >
-    <div class="activity-card activity-placeholder">
-      <div class="activity-placeholder-icon" aria-hidden="true">🧸</div>
-      <div class="activity-title">🌅 Actividades oficiales de apertura</div>
-      <p>Aquí agregaremos la lista de actividades de abre.</p>
+    <div class="activity-card">
+      <div class="activity-title">🌅 Checklist de apertura</div>
+      <p class="activity-group-note">Marca cada tarea al terminar. El avance se guarda por jornada y se comparte con el equipo.</p>
+      <div class="closing-progress-panel">
+        <div class="closing-progress-summary">
+          <span class="activity-progress" id="openingProgress">0 / 0 completadas</span>
+          <strong class="closing-progress-percent" id="openingProgressPercent">0%</strong>
+        </div>
+        <div class="progress-track closing-progress-track" id="openingProgressTrack" role="progressbar" aria-label="Avance de actividades de apertura" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0 actividades completadas">
+          <div class="progress-fill" id="openingProgressBar"></div>
+        </div>
+        <div class="closing-progress-actions">
+          <button type="button" class="closing-reset-button" onclick="clearOpeningActivities()" aria-label="Destachar todas las actividades de apertura">🧹 Limpiar actividades</button>
+        </div>
+      </div>
+      <div class="activity-title">🏠 ADENTRO · 30 min</div>
+      <p class="activity-group-note">Preparación del turno</p>
+      <label class="activity-item"><input type="checkbox" data-activity="opening-encender-equipo"><span>Encender el horno, la luz de la vitrina, la máquina de café, los molinos y la pantalla.</span></label>
+      <label class="activity-item"><input type="checkbox" data-activity="opening-conectar-equipo"><span>Quitar los cables de los cargadores y conectar la parrilla, las licuadoras, la vaporera y la jarrita de agua.</span></label>
+      <label class="activity-item"><input type="checkbox" data-activity="opening-traer-frigobar"><span>Traer las cosas del frigobar (están en el refrigerador grande).</span></label>
+      <label class="activity-item"><input type="checkbox" data-activity="opening-preparar-vaporera"><span>Llenar la vaporera con agua hasta la marca de máximo y colocar 2 tamales de cada sabor.</span></label>
+      <label class="activity-item"><input type="checkbox" data-activity="opening-calentar-agua"><span>Llenar la jarra de agua y ponerla a calentar.</span></label>
+      <label class="activity-item"><input type="checkbox" data-activity="opening-salsas"><span>Vaciar la salsa roja y la salsa verde en las ollas.</span></label>
+      <label class="activity-item"><input type="checkbox" data-activity="opening-derretir-chocolate"><span>Derretir el chocolate de decoración.</span></label>
+      <label class="activity-item"><input type="checkbox" data-activity="opening-trapos-galletas"><span>Colocar trapos en cada área y quitar el playo a las galletas de cortesía.</span></label>
+      <label class="activity-item"><input type="checkbox" data-activity="opening-acomodar-pan"><span>Acomodar el pan y limpiar las cajas.</span></label>
+      <label class="activity-item"><input type="checkbox" data-activity="opening-ramequines"><span>Preparar ramequines de rajas, pico de gallo y frutos rojos.</span></label>
+    </div>
+
+    <div class="activity-card">
+      <div class="activity-title">🌿 AFUERA · 30 min</div>
+      <p class="activity-group-note">Pre-servicio</p>
+      <label class="activity-item"><input type="checkbox" data-activity="opening-barrer-perimetro"><span>Barrer todo el perímetro del lugar.</span></label>
+      <label class="activity-item"><input type="checkbox" data-activity="opening-tapetes-luces-beary"><span>Colocar los tapetes, prender las luces y acomodar a Beary.</span></label>
+      <label class="activity-item"><input type="checkbox" data-activity="opening-pergola-interior"><span>Barrer y trapear la pérgola y el interior; sacar el tapete.</span></label>
+      <label class="activity-item"><input type="checkbox" data-activity="opening-acomodar-mesas"><span>Acomodar las 8 mesas.</span></label>
+      <label class="activity-item"><input type="checkbox" data-activity="opening-calzar-limpiar-mesas"><span>Calzar todas las mesas, limpiarlas con su trapo y colocar sus centros de mesa.</span></label>
+      <label class="activity-item"><input type="checkbox" data-activity="opening-prender-letrero"><span>Prender el letrero.</span></label>
+      <label class="activity-item"><input type="checkbox" data-activity="opening-agua-perritos"><span>Poner agua para los perritos.</span></label>
+      <label class="activity-item"><input type="checkbox" data-activity="opening-regar-ajax"><span>Regar Ajax y recoger las hojas.</span></label>
     </div>
   </div>
 
@@ -6352,7 +6387,6 @@ const products=[
   {nombre:"Granola",objetivo:1,group:"comida"},
   {nombre:"Miel",objetivo:1,group:"comida"},
   {nombre:"Maple",objetivo:1,group:"comida"},
-  {nombre:"Canela",objetivo:1,group:"comida"},
   {nombre:"Sal",objetivo:1,group:"comida"},
   {nombre:"Pam",objetivo:1,group:"comida"},
   {nombre:"Aceite Nutrioli",objetivo:1,group:"comida"},
@@ -7382,6 +7416,14 @@ function clearClosingActivities(){
   updateActivityProgress("closing");
   showToast("🧹 Checklist de cierre reiniciado");
 }
+function clearOpeningActivities(){
+  document.querySelectorAll("#openingActivities [data-activity]").forEach(check=>{
+    check.checked=false;
+    localStorage.removeItem(getActivityStorageKey(check.dataset.activity));
+  });
+  updateActivityProgress("opening");
+  showToast("🧹 Checklist de apertura reiniciado");
+}
 function updateActivityProgress(type){
   const checks=Array.from(document.querySelectorAll("[data-activity^=\""+type+"-\"]")).filter(check=>!check.disabled);
   const completed=checks.filter(check=>check.checked).length;
@@ -7391,10 +7433,11 @@ function updateActivityProgress(type){
     ? completed+" de "+total+" actividades completadas"
     : "Aún no hay actividades cargadas";
 
-  if(type==="closing"){
-    const progressBar=document.getElementById("closingProgressBar");
-    const progressPercent=document.getElementById("closingProgressPercent");
-    const progressTrack=document.getElementById("closingProgressTrack");
+  if(type==="closing"||type==="opening"){
+    const prefix=type==="opening"?"opening":"closing";
+    const progressBar=document.getElementById(prefix+"ProgressBar");
+    const progressPercent=document.getElementById(prefix+"ProgressPercent");
+    const progressTrack=document.getElementById(prefix+"ProgressTrack");
     if(progressBar)progressBar.style.width=percent+"%";
     if(progressPercent)progressPercent.textContent=percent+"%";
     if(progressTrack){
