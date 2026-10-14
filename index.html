@@ -371,6 +371,7 @@ html.dark .topbar{
 }
 
 html.dark .brand-logo{background:linear-gradient(145deg,#35232c,#422733);box-shadow:0 0 25px rgba(255,91,157,.10)}
+html.dark .brand-logo img{filter:url(#bearys-dark-logo-filter);outline:1px solid rgba(255,232,238,.16)}
 
 .brand-info{
   min-width:0;
@@ -3073,6 +3074,18 @@ input, textarea, select {
 
 
 <body>
+
+<!-- En modo oscuro convierte el fondo rosa del logo en ciruela y el trazo blanco en crema. -->
+<svg aria-hidden="true" width="0" height="0" style="position:absolute;overflow:hidden" focusable="false">
+  <filter id="bearys-dark-logo-filter" color-interpolation-filters="sRGB">
+    <feColorMatrix type="matrix" values="1 -1 0 0 0  1 -1 0 0 0  1 -1 0 0 0  0 0 0 1 0" />
+    <feComponentTransfer>
+      <feFuncR type="table" tableValues="0.97 0.19 0.18 0.18 0.18 0.18" />
+      <feFuncG type="table" tableValues="0.91 0.14 0.13 0.13 0.13 0.13" />
+      <feFuncB type="table" tableValues="0.92 0.17 0.16 0.16 0.16 0.16" />
+    </feComponentTransfer>
+  </filter>
+</svg>
 
 <!-- Splash visible hasta que Firebase termine de validar y sincronizar el espacio. -->
 <div id="bearys-splash-screen" class="bearys-splash-theme" role="status" aria-live="polite" aria-label="Cargando Beary's">
@@ -7603,14 +7616,21 @@ function updateActivityProgress(type){
    RETO BEARY DEL DÍA
 ========================================================= */
 const dailyChallengeGoals=[
-  {id:"bebidas",text:"Vender 65 bebidas Beary's"},
-  {id:"tartas",text:"Vender 15 tartas"},
+  {id:"bebidas",textForDate:date=>`Vender ${[0,6].includes(date.getDay())?65:45} bebidas Beary's`},
+  {id:"tartas",text:"Vender 5 tartas"},
   {id:"waffles",text:"Vender 5 órdenes de waffles"},
   {id:"instagram",text:"Conseguir 10 menciones en historias de Instagram"},
-  {id:"propinas",text:"Alcanzar $2,000 de propina"},
+  {id:"propinas",textForDate:date=>`Superar los $${[0,6].includes(date.getDay())?"2,000":"1,000"} de propinas`},
   {id:"google",text:"Recibir 15 reseñas en Google Maps"},
-  {id:"tamales",text:"Vender 10 tamales"}
+  {id:"tamales",text:"Vender 6 tamales en el día"}
 ];
+
+function getDailyChallengeText(challenge,date=new Date()){
+  if(!challenge)return "";
+  return typeof challenge.textForDate==="function"
+    ?challenge.textForDate(date)
+    :challenge.text;
+}
 
 function getDailyChallengeDateKey(date){
   return date.getFullYear()+"-"+String(date.getMonth()+1).padStart(2,"0")+"-"+String(date.getDate()).padStart(2,"0");
@@ -7647,7 +7667,7 @@ function renderDailyChallengeCard(challenge,date){
   const goal=document.getElementById("homeDailyChallengeGoal");
   const dateLabel=document.getElementById("homeDailyChallengeDate");
   if(!card||!goal||!dateLabel||!challenge)return;
-  goal.textContent=challenge.text;
+  goal.textContent=getDailyChallengeText(challenge,date||new Date());
   dateLabel.textContent=(date||new Date()).toLocaleDateString("es-MX",{weekday:"long",day:"numeric",month:"long"});
   card.hidden=false;
 }
@@ -7679,7 +7699,7 @@ function openDailyChallenge(){
 
   document.getElementById("heroStartButton").textContent="Ver reto del día →";
 
-  document.getElementById("dailyChallengeGoal").textContent=challenge.text;
+  document.getElementById("dailyChallengeGoal").textContent=getDailyChallengeText(challenge,now);
   document.getElementById("dailyChallengeDate").textContent=
     now.toLocaleDateString("es-MX",{weekday:"long",day:"numeric",month:"long"});
 
