@@ -372,6 +372,14 @@ html.dark .topbar{
   font-size:25px;
 }
 
+.brand-logo img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:inherit;
+}
+
 html.dark .brand-logo{
 
   background:
@@ -639,7 +647,8 @@ html.dark .hero{
 
   z-index:3;
 
-  font-size:83px;
+  width:110px;
+  height:110px;
 
   filter:
     drop-shadow(
@@ -649,6 +658,14 @@ html.dark .hero{
 
   animation:
     float 3.4s ease-in-out infinite;
+}
+
+.hero-bear img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  border-radius:24%;
 }
 
 .hero-star{
@@ -2524,7 +2541,8 @@ body.animations-off *:after{
   }
 
   .hero-bear{
-    font-size:72px;
+    width:96px;
+    height:96px;
     right:1px;
   }
 
@@ -2601,7 +2619,8 @@ body.animations-off *:after{
   }
 
   .hero-bear{
-    font-size:65px;
+    width:88px;
+    height:88px;
   }
 
   .hero-description{
@@ -2741,7 +2760,6 @@ input, textarea, select {
 .cleaning-intro-icon{width:44px;height:44px;flex:0 0 44px;display:grid;place-items:center;border-radius:15px;background:var(--pinksoft);font-size:24px}
 .cleaning-intro h2,.cleaning-section h2{margin:0;color:var(--text);font-size:14px;font-weight:900}
 .cleaning-intro p{margin:5px 0 0;color:var(--muted);font-size:10px;line-height:1.5}
-.cleaning-local-note{margin:11px 0 0;padding:9px 10px;border:1px solid var(--border);border-radius:13px;background:var(--bg2);color:var(--muted);font-size:9px;line-height:1.45}
 .cleaning-progress-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .cleaning-progress-label{color:var(--muted);font-size:10px;font-weight:800}
 .cleaning-progress-number{color:var(--pink2);font-size:12px;font-weight:900}
@@ -2967,7 +2985,7 @@ input, textarea, select {
   .recipe-card summary{font-size:14px}
   .recipe-details li{font-size:13px;line-height:1.5}
 
-  .cleaning-intro p,.cleaning-local-note,.cleaning-selection-note{font-size:11px}
+  .cleaning-intro p,.cleaning-selection-note{font-size:11px}
   .cleaning-section h2{font-size:15px}
   .cleaning-summary,.cleaning-assignment-meta{font-size:10px;line-height:1.5}
   .cleaning-picker-toggle,.cleaning-assign-button,.cleaning-save-button{min-height:48px;font-size:12px}
@@ -3025,7 +3043,7 @@ input, textarea, select {
 
 <!-- Splash visible hasta que Firebase termine de validar y sincronizar el espacio. -->
 <div id="bearys-splash-screen" class="bearys-splash-theme" role="status" aria-live="polite" aria-label="Cargando Beary's">
-  <div class="bearys-splash-bear" aria-hidden="true">🧸</div>
+  <img class="bearys-splash-bear" src="./bearys-192.png" alt="" aria-hidden="true" width="192" height="192" decoding="async">
   <h1 class="bearys-splash-title">Beary´s Coffee Shop</h1>
   <p id="bearysSplashMessage" class="bearys-splash-message">Conectando con Beary's…</p>
   <div class="bearys-splash-track" role="progressbar" aria-label="Preparando la app" aria-valuemin="0" aria-valuemax="100" aria-valuenow="5"><span id="bearysSplashProgressBar" style="width:5%"></span></div>
@@ -3036,7 +3054,7 @@ input, textarea, select {
 .bearys-splash-theme{position:fixed;inset:0;z-index:100002;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:24px;background:var(--bg,#fff0f2);color:var(--text,#452c38);transition:opacity .24s ease,visibility .24s ease}
 html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#fff0f6)}
 .bearys-splash-theme.is-hidden{opacity:0;visibility:hidden;pointer-events:none}
-.bearys-splash-bear{font-size:64px;animation:floatBearFast 1.8s ease-in-out infinite;margin-bottom:14px}
+.bearys-splash-bear{display:block;width:92px;height:92px;object-fit:cover;border-radius:24%;animation:floatBearFast 1.8s ease-in-out infinite;margin-bottom:14px;box-shadow:0 10px 28px rgba(60,20,40,.16)}
 .bearys-splash-title{margin:0;font-family:Arial,sans-serif;font-size:23px;font-weight:900;color:inherit}
 .bearys-splash-message{min-height:20px;margin:14px 0 0;color:var(--muted,#856b79);font-size:13px;font-weight:700;text-align:center}
 .bearys-splash-track{width:min(220px,68vw);height:6px;overflow:hidden;margin-top:13px;border-radius:999px;background:var(--border,#edc5cd)}
@@ -3118,7 +3136,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
   <div class="brand">
 
     <div class="brand-logo">
-      🐻
+      <img src="./bearys-192.png" alt="Logo de Beary's" width="192" height="192" decoding="async">
     </div>
 
     <div class="brand-info">
@@ -3198,8 +3216,8 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
 
     </div>
 
-    <div class="hero-bear">
-      🧸
+    <div class="hero-bear" aria-hidden="true">
+      <img src="./bearys-192.png" alt="" width="192" height="192" decoding="async">
     </div>
 
   </div>
@@ -3793,7 +3811,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
       </div>
       <span class="inventory-order-count" id="inventoryOrderCount">0 de 0 surtidos</span>
     </div>
-    <p class="inventory-order-note">Marca lo que sí se surtió. Al terminar, lo que quede sin marcar aparecerá como pendiente bajar. Esta lista se guarda en este dispositivo; al conectar la base de datos podrá compartirse entre los celulares.</p>
+    <p class="inventory-order-note">Marca lo que sí se surtió. Al terminar, lo que quede sin marcar aparecerá como pendiente bajar. La lista se comparte con el equipo para revisarla desde sus celulares.</p>
     <div class="inventory-order-items" id="inventoryOrderItems"></div>
     <div class="inventory-order-actions">
       <button type="button" class="inv-btn primary" id="finishInventoryOrderButton" onclick="finishInventoryOrder()">✅ Terminar surtido</button>
@@ -4025,7 +4043,6 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
     <div>
       <h2>Limpieza profunda semanal</h2>
       <p>Elijan las tareas de esta semana, asígnenselas a alguien del equipo y pongan una fecha límite.</p>
-      <div class="cleaning-local-note">📱 Por ahora, las asignaciones se guardan en este dispositivo. Al conectar la base de datos, el equipo podrá ver los mismos cambios.</div>
     </div>
   </div>
 
@@ -6382,15 +6399,15 @@ const products=[
   {nombre:"Salsa Maggi",objetivo:1,group:"comida"},
   {nombre:"Salsa inglesa",objetivo:1,group:"comida"},
   {nombre:"Salsa matcha",objetivo:1,group:"comida"},
-  {nombre:"Canela",objetivo:1,group:"comida"},
   {nombre:"Salsa Valentina",objetivo:1,group:"comida"},
   {nombre:"Catsup",objetivo:1,group:"comida"},
   {nombre:"Granola",objetivo:1,group:"comida"},
   {nombre:"Miel",objetivo:1,group:"comida"},
   {nombre:"Maple",objetivo:1,group:"comida"},
   {nombre:"Sal",objetivo:1,group:"comida"},
-  {nombre:"Pam",objetivo:1,group:"comida"},
   {nombre:"Aceite Nutrioli",objetivo:1,group:"comida"},
+  {nombre:"Canela",objetivo:1,group:"comida"},
+  {nombre:"Pam",objetivo:1,group:"comida"},
   {nombre:"Galletas de cortesia",objetivo:1,group:"comida"},
   {nombre:"Galletas de Limón",objetivo:5,group:"comida"},
   {nombre:"Galletas de Pistache",objetivo:5,group:"comida"},
