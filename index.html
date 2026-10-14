@@ -2117,7 +2117,7 @@ html.dark .menu-card:hover{
   transform:translate3d(var(--nav-liquid-left,6px),0,0);
   transform-origin:center;
   will-change:transform;
-  transition:transform .22s cubic-bezier(.16,1,.3,1),width .18s cubic-bezier(.16,1,.3,1),box-shadow .18s ease,background .18s ease;
+  transition:transform .38s cubic-bezier(.2,.8,.2,1),width .3s cubic-bezier(.2,.8,.2,1),box-shadow .24s ease,background .24s ease;
 }
 
 .nav-liquid-indicator::before,.nav-liquid-indicator::after{
@@ -2148,7 +2148,6 @@ html.dark .menu-card:hover{
 }
 
 .nav-liquid-indicator.gliding{transform:translate3d(var(--nav-liquid-left,6px),0,0) scaleX(1.035);box-shadow:0 3px 11px rgba(108,57,80,.12),inset 0 1px 0 rgba(255,255,255,.86)}
-.nav-liquid-indicator.is-pressed{transform:translate3d(var(--nav-liquid-left,6px),0,0) scaleX(.94) scaleY(.92)}
 .nav-liquid-indicator.is-dragging{transform:translate3d(var(--nav-liquid-left,6px),0,0) scaleX(1.035) scaleY(.98);transition:none;box-shadow:0 3px 11px rgba(108,57,80,.12),inset 0 1px 0 rgba(255,255,255,.86)}
 .nav-liquid-indicator.is-pressed::before,.nav-liquid-indicator.is-dragging::before{opacity:.82;filter:blur(6px)}
 
@@ -2201,11 +2200,9 @@ html.dark .bottom-nav{
 
   cursor:pointer;
 
-  transition:color .14s ease,transform .12s cubic-bezier(.2,.8,.3,1);
+  transition:color .22s ease,transform .22s ease;
   touch-action:pan-y;
 }
-
-.nav-button:active{transform:scale(.94);transition-duration:.08s}
 
 .nav-button.active,.nav-button[aria-expanded="true"]{
 
@@ -2215,7 +2212,7 @@ html.dark .bottom-nav{
 
 .nav-button:focus-visible{outline:2px solid var(--pink);outline-offset:-3px}
 .nav-button.active .nav-icon,.nav-button[aria-expanded="true"] .nav-icon{transform:translateY(-1px) scale(1.045)}
-.nav-button.just-selected .nav-icon{animation:navPop .22s cubic-bezier(.2,.9,.3,1)}
+.nav-button.just-selected .nav-icon{animation:navPop .34s cubic-bezier(.2,.8,.3,1)}
 
 .nav-icon{
   font-size:19px;
@@ -6077,7 +6074,6 @@ let liquidNavIndicator=null;
 let liquidNavButtons=[];
 let liquidNavPointer=null;
 let liquidNavClickGuard=false;
-let liquidNavGlideTimer=0;
 let lastTouchStartAt=0;
 let liquidNavKeyboardFrame=0;
 let liquidNavFullViewportHeight=Math.max(
@@ -6170,39 +6166,21 @@ function moveLiquidNavTo(button,glide=true){
   if(!liquidNavElement||!button)return;
   const navRect=liquidNavElement.getBoundingClientRect();
   const buttonRect=button.getBoundingClientRect();
-  const buttonWidth=button.offsetWidth||buttonRect.width;
-  const buttonCenter=buttonRect.left+buttonRect.width/2;
-  const left=buttonCenter-navRect.left-liquidNavElement.clientLeft-buttonWidth/2;
-  if(liquidNavGlideTimer){clearTimeout(liquidNavGlideTimer);liquidNavGlideTimer=0;}
-  if(liquidNavIndicator){
-    liquidNavIndicator.classList.remove("is-dragging");
-    liquidNavIndicator.classList.toggle("gliding",Boolean(glide));
-  }
-  setLiquidNavPosition(left,buttonWidth);
+  setLiquidNavPosition(buttonRect.left-navRect.left-liquidNavElement.clientLeft,buttonRect.width);
   if(glide&&liquidNavIndicator){
-    liquidNavGlideTimer=window.setTimeout(()=>{
-      liquidNavIndicator?.classList.remove("gliding");
-      liquidNavGlideTimer=0;
-    },280);
+    liquidNavIndicator.classList.remove("gliding");
+    void liquidNavIndicator.offsetWidth;
+    liquidNavIndicator.classList.add("gliding");
+    setTimeout(()=>liquidNavIndicator&&liquidNavIndicator.classList.remove("gliding"),620);
   }
 }
 
 function animateNavSelection(button){
   if(!button)return;
-  const icon=button.querySelector(".nav-icon");
-  if(icon&&typeof icon.animate==="function"){
-    if(document.body.classList.contains("animations-off")||window.matchMedia?.("(prefers-reduced-motion: reduce)").matches)return;
-    icon.getAnimations().forEach(animation=>animation.cancel());
-    icon.animate([
-      {transform:"translateY(-1px) scale(1.045)"},
-      {transform:"translateY(-3px) scale(1.12)",offset:.42},
-      {transform:"translateY(-1px) scale(1.045)"}
-    ],{duration:230,easing:"cubic-bezier(.18,.86,.3,1)"});
-    return;
-  }
   button.classList.remove("just-selected");
-  requestAnimationFrame(()=>button.classList.add("just-selected"));
-  setTimeout(()=>button.classList.remove("just-selected"),300);
+  void button.offsetWidth;
+  button.classList.add("just-selected");
+  setTimeout(()=>button.classList.remove("just-selected"),520);
 }
 
 function findLiquidNavButtonAt(clientX){
@@ -6220,9 +6198,9 @@ function slideLiquidNavTo(clientX){
   const navRect=liquidNavElement.getBoundingClientRect();
   const firstRect=liquidNavButtons[0].getBoundingClientRect();
   const lastRect=liquidNavButtons[liquidNavButtons.length-1].getBoundingClientRect();
-  const width=liquidNavButtons[0].offsetWidth||firstRect.width;
-  const minLeft=firstRect.left+firstRect.width/2-navRect.left-liquidNavElement.clientLeft-width/2;
-  const maxLeft=lastRect.left+lastRect.width/2-navRect.left-liquidNavElement.clientLeft-width/2;
+  const width=firstRect.width;
+  const minLeft=firstRect.left-navRect.left-liquidNavElement.clientLeft;
+  const maxLeft=lastRect.right-navRect.left-liquidNavElement.clientLeft-width;
   const left=Math.max(minLeft,Math.min(maxLeft,clientX-navRect.left-liquidNavElement.clientLeft-width/2));
   setLiquidNavPosition(left,width);
   if(liquidNavIndicator)liquidNavIndicator.classList.add("is-dragging");
@@ -6257,7 +6235,6 @@ function initializeLiquidNavigation(){
       liquidNavIndicator.classList.add("is-pressed");
       updateLiquidNavLight(event.clientX,event.clientY);
     }
-    moveLiquidNavTo(button,true);
   });
 
   liquidNavElement.addEventListener("pointermove",event=>{
@@ -6268,7 +6245,7 @@ function initializeLiquidNavigation(){
     const deltaY=event.clientY-gesture.startY;
     if(!gesture.dragging&&Math.abs(deltaX)>9&&Math.abs(deltaX)>Math.abs(deltaY)*1.15){
       gesture.dragging=true;
-      if(liquidNavIndicator){liquidNavIndicator.classList.remove("gliding");liquidNavIndicator.classList.add("is-dragging");}
+      if(liquidNavIndicator)liquidNavIndicator.classList.add("is-dragging");
       try{liquidNavElement.setPointerCapture(event.pointerId)}catch(error){}
     }
     if(gesture.dragging){
@@ -6284,15 +6261,8 @@ function initializeLiquidNavigation(){
     liquidNavPointer=null;
     if(!gesture.dragging){
       resetLiquidNavLight();
-      const tappedButton=event.target.closest(".nav-button");
-      if(tappedButton){
-        liquidNavClickGuard=true;
-        setTimeout(()=>{liquidNavClickGuard=false},500);
-        selectLiquidNavButton(tappedButton);
-      }else{
-        const activeButton=liquidNavElement.querySelector(".nav-button.active")||liquidNavElement.querySelector(".nav-button[aria-expanded='true']");
-        if(activeButton)moveLiquidNavTo(activeButton,false);
-      }
+      const activeButton=liquidNavElement.querySelector(".nav-button.active")||liquidNavElement.querySelector(".nav-button[aria-expanded='true']");
+      if(activeButton)moveLiquidNavTo(activeButton,false);
       return;
     }
     event.preventDefault();
