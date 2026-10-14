@@ -10,7 +10,7 @@
 
 <meta name="theme-color" content="#fff0f2" id="themeColor">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Beary´s">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="./bearys-192.png">
@@ -695,6 +695,16 @@ html.dark .hero{
    SECTIONS
 ========================================================= */
 
+/* iOS: barra superior opaca y nítida, sin el efecto translúcido del status bar. */
+@supports (-webkit-touch-callout:none){
+  .topbar{
+    background:var(--chrome-bg) !important;
+    background-image:none !important;
+    backdrop-filter:none !important;
+    -webkit-backdrop-filter:none !important;
+    filter:none !important;
+  }
+}
 .section-header{
 
   display:flex;
