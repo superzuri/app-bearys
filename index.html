@@ -356,8 +356,8 @@ html.dark .topbar{
   place-items:center;
 
   border-radius:16px;
-  background:linear-gradient(145deg,#ffffff,#ffe0eb);
-  box-shadow:0 12px 30px rgba(255,105,160,.18);
+  background:linear-gradient(145deg,#fff5f7,#f8d7e1);
+  box-shadow:0 10px 24px rgba(126,61,85,.14);
 
   font-size:25px;
 }
@@ -370,8 +370,9 @@ html.dark .topbar{
   border-radius:inherit;
 }
 
-html.dark .brand-logo{background:linear-gradient(145deg,#35232c,#422733);box-shadow:0 0 25px rgba(255,91,157,.10)}
-html.dark .brand-logo img{filter:url(#bearys-dark-logo-filter);outline:1px solid rgba(255,232,238,.16)}
+html.dark .brand-logo{background:linear-gradient(145deg,#33252f,#472d3b);box-shadow:0 0 22px rgba(255,160,194,.13)}
+.brand-logo img{filter:url(#bearys-light-logo-filter);transition:filter .2s ease}
+html.dark .brand-logo img{filter:url(#bearys-dark-logo-filter)}
 
 .brand-info{
   min-width:0;
@@ -2711,6 +2712,8 @@ input, textarea, select {
 .calendar-arrow{width:38px;height:38px;border-radius:13px;background:var(--bg2);color:var(--text);font-size:25px;cursor:pointer}
 .calendar-week,.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.calendar-week{margin-bottom:6px}.calendar-week span{text-align:center;color:var(--muted);font-size:8px;font-weight:850}
 .calendar-day{position:relative;min-height:46px;border-radius:13px;background:var(--bg2);border:1px solid transparent;color:var(--text);padding:6px 5px;text-align:left;cursor:default}.calendar-day.empty{background:transparent;cursor:default}.calendar-day.today{border-color:var(--pink);box-shadow:0 0 0 2px rgba(255,121,173,.10)}.calendar-day-number{font-size:10px;font-weight:850}.calendar-event-dot{display:inline-block;width:5px;height:5px;border-radius:50%;margin:7px 2px 0 0}.calendar-event-dot.birthday{background:#ff79ad}.calendar-event-dot.season{background:#c58b4e}.calendar-event-emoji{display:inline-block;margin:6px 2px 0 0;font-size:10px;line-height:1;vertical-align:middle}.calendar-event-count{font-size:7px;color:var(--muted)}
+.calendar-day.has-events{width:100%;font:inherit;cursor:pointer;transition:transform .16s ease,background .16s ease,border-color .16s ease}.calendar-day.has-events:active{transform:scale(.95)}.calendar-day.has-events:focus-visible{outline:2px solid var(--pink);outline-offset:2px}.calendar-day.selected{background:var(--pinksoft);border-color:var(--pink)}
+.calendar-day-details{margin:-3px 0 13px;padding:13px;border:1px solid var(--border);border-radius:18px;background:var(--surface);box-shadow:var(--shadow)}.calendar-day-details[hidden]{display:none}.calendar-day-details:not([hidden]){animation:editorReveal .2s ease both}.calendar-day-details-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px}.calendar-day-details-head strong{color:var(--text);font-size:12px}.calendar-day-details-close{width:30px;height:30px;border-radius:10px;background:var(--bg2);color:var(--muted);font-size:20px;line-height:1;cursor:pointer}.calendar-day-detail-list{display:grid;gap:7px}.calendar-day-detail{display:flex;align-items:center;gap:9px;padding:9px 10px;border:1px solid var(--border);border-radius:12px;background:var(--bg2)}.calendar-day-detail-icon{font-size:17px}.calendar-day-detail-copy{display:grid;gap:2px;min-width:0}.calendar-day-detail-copy strong{color:var(--text);font-size:11px}.calendar-day-detail-copy small{color:var(--muted);font-size:9px}.calendar-tap-hint{margin:8px 2px 0;color:var(--muted);font-size:9px;text-align:center}
 .calendar-legend{display:flex;gap:15px;margin:-3px 3px 14px;color:var(--muted);font-size:9px}.calendar-legend span{display:flex;align-items:center;gap:5px}.dot{width:8px;height:8px;border-radius:50%;display:inline-block}.dot.birthday{background:#ff79ad}.dot.season{background:#c58b4e}
 .calendar-section-title{font-size:13px;font-weight:900}.calendar-help{margin-top:5px;color:var(--muted);font-size:9px;line-height:1.5}.calendar-form-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:8px;margin-top:11px}.calendar-input{width:100%;min-width:0;min-height:48px;padding:11px 10px;border-radius:13px;border:1px solid var(--border);background:var(--surface);color:var(--text);outline:0}.calendar-input:focus{border-color:var(--pink)}.calendar-date-wrap{position:relative;min-width:0}.calendar-date-input{appearance:none;-webkit-appearance:none;padding-right:38px!important}.calendar-date-hint{display:none;position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:12px;pointer-events:none;white-space:nowrap}.calendar-date-input:required:invalid:not(:focus)+.calendar-date-hint{display:block}.calendar-date-input:required:invalid:not(:focus)::-webkit-datetime-edit{color:transparent}.calendar-date-icon{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:15px;line-height:1;pointer-events:none;opacity:.78}.calendar-date-input::-webkit-calendar-picker-indicator{opacity:.72;cursor:pointer}.calendar-add-button{width:100%;margin-top:8px;padding:12px;border-radius:14px;background:var(--pink);color:white;font-weight:850;cursor:pointer}.event-list{margin-top:10px;display:grid;gap:7px}.event-item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 11px;border-radius:14px;background:var(--bg2);border:1px solid var(--border)}.event-item-main{min-width:0}.event-item-title{font-size:11px;font-weight:850}.event-item-meta{margin-top:3px;color:var(--muted);font-size:8px}.event-item button{flex:0 0 auto;padding:7px 9px;border-radius:10px;background:var(--surface);color:var(--danger);font-size:9px;font-weight:800;cursor:pointer}
 .season-edit{display:grid;grid-template-columns:52px minmax(80px,1fr) 88px 88px 104px auto;gap:7px;align-items:end}
@@ -3075,14 +3078,22 @@ input, textarea, select {
 
 <body>
 
-<!-- En modo oscuro convierte el fondo rosa del logo en ciruela y el trazo blanco en crema. -->
+<!-- Colores del sello de Beary's: tinta sobre rosa claro y trazo rosa crema sobre ciruela. -->
 <svg aria-hidden="true" width="0" height="0" style="position:absolute;overflow:hidden" focusable="false">
+  <filter id="bearys-light-logo-filter" color-interpolation-filters="sRGB">
+    <feColorMatrix type="matrix" values="1 -1 0 0 0  1 -1 0 0 0  1 -1 0 0 0  0 0 0 1 0" />
+    <feComponentTransfer>
+      <feFuncR type="table" tableValues="0.34 0.99 0.99 0.99 0.99 0.99" />
+      <feFuncG type="table" tableValues="0.22 0.91 0.91 0.91 0.91 0.91" />
+      <feFuncB type="table" tableValues="0.27 0.93 0.93 0.93 0.93 0.93" />
+    </feComponentTransfer>
+  </filter>
   <filter id="bearys-dark-logo-filter" color-interpolation-filters="sRGB">
     <feColorMatrix type="matrix" values="1 -1 0 0 0  1 -1 0 0 0  1 -1 0 0 0  0 0 0 1 0" />
     <feComponentTransfer>
-      <feFuncR type="table" tableValues="0.97 0.19 0.18 0.18 0.18 0.18" />
-      <feFuncG type="table" tableValues="0.91 0.14 0.13 0.13 0.13 0.13" />
-      <feFuncB type="table" tableValues="0.92 0.17 0.16 0.16 0.16 0.16" />
+      <feFuncR type="table" tableValues="1 0.20 0.19 0.19 0.19 0.19" />
+      <feFuncG type="table" tableValues="0.84 0.14 0.13 0.13 0.13 0.13" />
+      <feFuncB type="table" tableValues="0.89 0.18 0.17 0.17 0.17 0.17" />
     </feComponentTransfer>
   </filter>
 </svg>
@@ -3140,9 +3151,9 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
 .firebase-signout-button{min-height:38px;padding:8px 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);font:inherit;font-weight:800;cursor:pointer}
 .history-feed{display:grid;gap:18px;margin-top:14px}
 .history-day{display:grid;gap:9px}
-.history-day-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 2px}
-.history-day-heading h2{margin:0;color:var(--text);font-size:12px;font-weight:950}
-.history-day-heading span{color:var(--muted);font-size:10px;font-weight:750}
+.history-day-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 2px;cursor:pointer;list-style:none}
+.history-day-heading::-webkit-details-marker{display:none}.history-day-heading::after{content:"⌄";margin-left:3px;color:var(--pink2);font-size:15px;transition:transform .16s ease}.history-day[open] .history-day-heading::after{transform:rotate(180deg)}
+.history-day-title{margin:0;color:var(--text);font-size:12px;font-weight:950}.history-day-count{margin-left:auto;color:var(--muted);font-size:10px;font-weight:750}
 .history-day-list{display:grid;gap:8px}
 .history-entry{display:grid;grid-template-columns:36px minmax(0,1fr);gap:10px;align-items:start;padding:13px;border:1px solid var(--border);border-radius:15px;background:var(--surface)}
 .history-entry-icon{display:grid;width:34px;height:34px;place-items:center;border-radius:11px;background:var(--pinksoft);font-size:17px}
@@ -3150,6 +3161,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
 .history-entry-detail{margin:4px 0 0;font-size:11px;line-height:1.45;color:var(--muted)}
 .history-entry-meta{margin-top:6px;font-size:10px;color:var(--muted)}
 .history-empty{padding:24px 16px;border:1px dashed var(--border);border-radius:15px;text-align:center;color:var(--muted);font-size:12px;line-height:1.5}
+.history-tools{display:grid;gap:10px;margin-top:12px}.history-search{display:flex;align-items:center;gap:9px;min-height:44px;padding:0 12px;border:1px solid var(--border);border-radius:14px;background:var(--bg2);color:var(--muted)}.history-search input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:var(--text);font:inherit;font-size:14px}.history-search input::placeholder{color:var(--muted)}.history-filters{display:flex;gap:7px;overflow-x:auto;padding:1px 1px 4px;scrollbar-width:none}.history-filters::-webkit-scrollbar{display:none}.history-filter{flex:0 0 auto;padding:8px 11px;border:1px solid var(--border);border-radius:999px;background:var(--surface);color:var(--muted);font:inherit;font-size:10px;font-weight:850;cursor:pointer;transition:background .16s ease,color .16s ease,transform .16s ease}.history-filter.active{border-color:transparent;background:var(--pink);color:#fff}.history-filter:active{transform:scale(.96)}.history-result-summary{color:var(--muted);font-size:10px;font-weight:750}.history-day{padding-top:2px}.history-entry{transition:transform .16s ease,border-color .16s ease}.history-entry:active{transform:scale(.99)}
 </style>
 
 <div id="firebaseAuthGate" class="firebase-auth-gate" style="display:none" role="dialog" aria-modal="true" aria-labelledby="firebaseAuthTitle">
@@ -4297,7 +4309,13 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
   <div class="calendar-head"><button type="button" class="calendar-arrow" aria-label="Mes anterior" onclick="changeCalendarMonth(-1)">‹</button><div><b id="calendarMonthTitle">Mes</b><small id="calendarYearTitle">Año</small></div><button type="button" class="calendar-arrow" aria-label="Mes siguiente" onclick="changeCalendarMonth(1)">›</button></div>
   <div class="calendar-week"><span>DOM</span><span>LUN</span><span>MAR</span><span>MIÉ</span><span>JUE</span><span>VIE</span><span>SÁB</span></div>
   <div class="calendar-grid" id="calendarGrid"></div>
+  <p class="calendar-tap-hint">Toca un día marcado para ver los cumpleaños y eventos.</p>
  </div>
+
+ <section id="calendarDayDetails" class="calendar-day-details" aria-live="polite" hidden>
+  <div class="calendar-day-details-head"><strong id="calendarDayDetailsTitle"></strong><button type="button" class="calendar-day-details-close" aria-label="Ocultar detalles" onclick="hideCalendarDayDetails()">×</button></div>
+  <div class="calendar-day-detail-list" id="calendarDayDetailsList"></div>
+ </section>
 
  <div class="calendar-legend"><span><span class="calendar-legend-emoji">🎂</span>Cumpleaños</span><span><span class="calendar-legend-emoji">✨</span>Temporada</span></div>
 
@@ -4364,7 +4382,17 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
 
   <div class="activity-card">
     <div class="activity-title">📖 Movimientos del equipo</div>
-    <p class="activity-group-note">Se agrupa por día para que encuentres rápido lo importante: productos agotados o repuestos, limpieza y calendario.</p>
+    <p class="activity-group-note">Cambios importantes agrupados por día. Busca un producto, tarea o persona, o filtra por área.</p>
+    <div class="history-tools">
+      <label class="history-search"><span aria-hidden="true">🔎</span><input id="historySearch" type="search" placeholder="Buscar en el historial…" autocomplete="off" oninput="searchHistory(this.value)"></label>
+      <div class="history-filters" id="historyFilters" role="group" aria-label="Filtrar movimientos">
+        <button type="button" class="history-filter active" data-history-filter="all" aria-pressed="true" onclick="setHistoryFilter('all',this)">Todo</button>
+        <button type="button" class="history-filter" data-history-filter="inventory" aria-pressed="false" onclick="setHistoryFilter('inventory',this)">📦 Inventario</button>
+        <button type="button" class="history-filter" data-history-filter="cleaning" aria-pressed="false" onclick="setHistoryFilter('cleaning',this)">🧼 Limpieza</button>
+        <button type="button" class="history-filter" data-history-filter="calendar" aria-pressed="false" onclick="setHistoryFilter('calendar',this)">🗓️ Calendario</button>
+      </div>
+      <div class="history-result-summary" id="historySummary" aria-live="polite">Cargando movimientos recientes…</div>
+    </div>
     <div id="historyStatus" class="history-empty" aria-live="polite">Cargando historial…</div>
     <div id="historyFeed" class="history-feed" aria-live="polite"></div>
     <button type="button" class="calendar-add-button" onclick="loadHistory()">Actualizar historial</button>
@@ -5222,6 +5250,9 @@ function historyRecordDate(record){
   const date=record.createdAt?.toDate?record.createdAt.toDate():new Date(record.createdAt||Date.now());
   return Number.isNaN(date.getTime())?new Date():date;
 }
+let historyRecordsCache=[];
+let historyCategoryFilter="all";
+let historySearchQuery="";
 function historyDayKey(date){
   return date.getFullYear()+"-"+String(date.getMonth()+1).padStart(2,"0")+"-"+String(date.getDate()).padStart(2,"0");
 }
@@ -5243,7 +5274,7 @@ function summarizeHistoryGroup(group){
   let title=latest.title||"Movimiento";
   if(count>1){
     const label=categoryNames[category]||"Equipo";
-    const noun=category==="activities"?"tareas":category==="calendar"?"cambios":"movimientos";
+    const noun={inventory:"cambios",activities:"tareas",cleaning:"tareas",calendar:"cambios",system:"acciones"}[category]||"movimientos";
     title=label+" · "+count+" "+noun;
   }
   const details=[];
@@ -5260,12 +5291,44 @@ function summarizeHistoryGroup(group){
   const timeLabel=date.toLocaleTimeString("es-MX",{hour:"numeric",minute:"2-digit"});
   return {icon:categoryIcons[category]||latest.icon||"☕",title,detail,meta:(actorLabel||"Equipo")+" · "+timeLabel};
 }
+function historyCategoryName(category){
+  return {inventory:"Inventario",activities:"Actividades",cleaning:"Limpieza",calendar:"Calendario",system:"Equipo",app:"Beary's",other:"Equipo"}[category]||"Equipo";
+}
+function setHistoryFilter(category,button){
+  historyCategoryFilter=category||"all";
+  document.querySelectorAll("#historyFilters .history-filter").forEach(filter=>{
+    const active=filter===button;
+    filter.classList.toggle("active",active);
+    filter.setAttribute("aria-pressed",String(active));
+  });
+  renderFilteredHistory();
+}
+function searchHistory(value){historySearchQuery=String(value||"").trim().toLocaleLowerCase("es-MX");renderFilteredHistory()}
 function renderHistory(records){
+  historyRecordsCache=Array.isArray(records)?records.filter(record=>record&&typeof record==="object"):[];
+  renderFilteredHistory();
+}
+function renderFilteredHistory(){
   const feed=document.getElementById("historyFeed");
   const status=document.getElementById("historyStatus");
+  const summaryNode=document.getElementById("historySummary");
   if(!feed||!status)return;
-  if(!records.length){feed.innerHTML="";status.hidden=false;status.textContent="Todavía no hay movimientos importantes. Los productos agotados o repuestos, la limpieza y el calendario aparecerán aquí.";return;}
   const legacyNoiseTitles=new Set(["Información de Beary's actualizada","Lista de surtido actualizada","Reto diario actualizado"]);
+  const records=historyRecordsCache.filter(record=>{
+    if(legacyNoiseTitles.has(record.title))return false;
+    const category=record.category||"other";
+    if(historyCategoryFilter!=="all"&&category!==historyCategoryFilter)return false;
+    if(!historySearchQuery)return true;
+    return [historyCategoryName(category),record.title,record.detail,record.actorName].join(" ").toLocaleLowerCase("es-MX").includes(historySearchQuery);
+  });
+  if(!records.length){
+    feed.innerHTML="";status.hidden=false;
+    status.textContent=historyRecordsCache.length
+      ?"No hay movimientos que coincidan. Prueba otro filtro o búsqueda."
+      :"Todavía no hay movimientos importantes. Los productos agotados o repuestos, la limpieza y el calendario aparecerán aquí.";
+    if(summaryNode)summaryNode.textContent=historyRecordsCache.length?"Sin coincidencias en estos movimientos recientes.":"Sin movimientos recientes.";
+    return;
+  }
   const days=new Map();
   records.forEach(record=>{
     if(!record||legacyNoiseTitles.has(record.title))return;
@@ -5279,15 +5342,19 @@ function renderHistory(records){
     group.events.push(record);
     day.count++;
   });
-  if(!days.size){feed.innerHTML="";status.hidden=false;status.textContent="Todavía no hay movimientos importantes. Los productos agotados o repuestos, la limpieza y el calendario aparecerán aquí.";return;}
+  if(!days.size){feed.innerHTML="";status.hidden=false;status.textContent="No hay movimientos que coincidan. Prueba otro filtro o búsqueda.";return;}
   status.hidden=true;
-  feed.innerHTML=[...days.entries()].map(([dayKey,day])=>{
+  if(summaryNode)summaryNode.textContent=`${records.length} ${records.length===1?"movimiento":"movimientos"} · ${days.size} ${days.size===1?"día":"días"} en pantalla`;
+  const openHistoryDays=new Set(Array.from(feed.querySelectorAll(".history-day[open]")).map(day=>day.dataset.historyDay));
+  const keepExistingOpenDays=[...days.keys()].some(key=>openHistoryDays.has(key));
+  feed.innerHTML=[...days.entries()].map(([dayKey,day],dayIndex)=>{
     const dayLabel=historyDayLabel(day.date);
     const cards=[...day.groups.values()].map(group=>{
       const summary=summarizeHistoryGroup(group);
       return '<article class="history-entry"><span class="history-entry-icon" aria-hidden="true">'+escapeHistoryText(summary.icon)+'</span><div><h3 class="history-entry-title">'+escapeHistoryText(summary.title)+'</h3><p class="history-entry-detail">'+escapeHistoryText(summary.detail)+'</p><div class="history-entry-meta">'+escapeHistoryText(summary.meta)+'</div></div></article>';
     }).join("");
-    return '<section class="history-day" aria-label="Movimientos del '+escapeHistoryText(dayLabel)+'"><div class="history-day-heading"><h2>'+escapeHistoryText(dayLabel)+'</h2><span>'+day.count+' '+(day.count===1?"movimiento":"movimientos")+'</span></div><div class="history-day-list">'+cards+'</div></section>';
+    const open=keepExistingOpenDays?openHistoryDays.has(dayKey):dayIndex===0;
+    return '<details class="history-day" data-history-day="'+escapeHistoryText(dayKey)+'"'+(open?" open":"")+'><summary class="history-day-heading"><span class="history-day-title">'+escapeHistoryText(dayLabel)+'</span><span class="history-day-count">'+day.count+' '+(day.count===1?"movimiento":"movimientos")+'</span></summary><div class="history-day-list">'+cards+'</div></details>';
   }).join("");
 }
 function loadHistory(){
@@ -5794,6 +5861,7 @@ function isValidCalendarDate(value){
  return date.getFullYear()===year&&date.getMonth()===month-1&&date.getDate()===day;
 }
 let calendarDate=new Date();
+let selectedCalendarDateKey=null;
 let birthdays=(readStoredArray("bearyBirthdays")||[]).filter(item=>item&&typeof item.name==="string"&&item.name.trim()&&isValidCalendarDate(item.date));
 function normalizeSeasonDate(value,fallback){
  const match=/^(?:\d{4}-)?(\d{2})-(\d{2})$/.exec(String(value||""));
@@ -5885,10 +5953,16 @@ function renderCalendar(updateLists=true){
  }
  const today=new Date();
  for(let day=1;day<=days;day++){
-  const cell=document.createElement("div");cell.className="calendar-day";cell.setAttribute("role","group");
+  const events=calendarEventsForDate(y,m,day);
+  const dayKey=dateKey(y,m,day);
+  const cell=document.createElement(events.length?"button":"div");
+  cell.className="calendar-day"+(events.length?" has-events":"");
+  if(events.length){cell.type="button";cell.addEventListener("click",()=>showCalendarDayDetails(y,m,day))}
+  else cell.setAttribute("role","group");
+  cell.dataset.dateKey=dayKey;
+  if(selectedCalendarDateKey===dayKey)cell.classList.add("selected");
   if(today.getFullYear()===y&&today.getMonth()===m&&today.getDate()===day)cell.classList.add("today");
   const number=document.createElement("div");number.className="calendar-day-number";number.textContent=String(day);cell.appendChild(number);
-  const events=calendarEventsForDate(y,m,day);
   events.slice(0,3).forEach(event=>{
    const marker=document.createElement("span");
    if(event.type==="season"){marker.className="calendar-event-emoji";marker.textContent=event.emoji;marker.setAttribute("aria-hidden","true")}
@@ -5897,13 +5971,46 @@ function renderCalendar(updateLists=true){
   });
   if(events.length>3){const count=document.createElement("span");count.className="calendar-event-count";count.textContent=`+${events.length-3}`;cell.appendChild(count)}
   const dateLabel=new Date(y,m,day,12).toLocaleDateString("es-MX",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
-  cell.title=events.map(event=>event.title).join(" · ");
-  cell.setAttribute("aria-label",events.length?`${dateLabel}: ${events.map(event=>event.title).join(", ")}`:`${dateLabel}: sin eventos`);
+  cell.title=events.length?`Ver eventos: ${events.map(event=>event.title).join(" · ")}`:`${dateLabel}: sin eventos`;
+  cell.setAttribute("aria-label",events.length?`${dateLabel}: ${events.map(event=>event.title).join(", ")}. Toca para ver detalles.`:`${dateLabel}: sin eventos`);
   grid.appendChild(cell);
+ }
+ if(selectedCalendarDateKey){
+  const [selectedYear,selectedMonth,selectedDay]=selectedCalendarDateKey.split("-").map(Number);
+  if(selectedYear===y&&selectedMonth===m+1)showCalendarDayDetails(selectedYear,selectedMonth-1,selectedDay,false);
+  else hideCalendarDayDetails();
  }
  if(updateLists){renderBirthdayList();renderSeasonList()}
 }
-function changeCalendarMonth(delta){calendarDate=new Date(calendarDate.getFullYear(),calendarDate.getMonth()+delta,1);renderCalendar()}
+function showCalendarDayDetails(year,month,day,shouldScroll=true){
+ const panel=document.getElementById("calendarDayDetails"),title=document.getElementById("calendarDayDetailsTitle"),list=document.getElementById("calendarDayDetailsList");
+ const grid=document.getElementById("calendarGrid");
+ if(!panel||!title||!list)return;
+ selectedCalendarDateKey=dateKey(year,month,day);
+ grid?.querySelectorAll(".calendar-day.selected").forEach(cell=>cell.classList.remove("selected"));
+ grid?.querySelector(`[data-date-key="${selectedCalendarDateKey}"]`)?.classList.add("selected");
+ const date=new Date(year,month,day,12);
+ title.textContent=date.toLocaleDateString("es-MX",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+ list.replaceChildren();
+ const events=calendarEventsForDate(year,month,day);
+ events.forEach(event=>{
+  const row=document.createElement("div");row.className="calendar-day-detail";
+  const icon=document.createElement("span");icon.className="calendar-day-detail-icon";icon.setAttribute("aria-hidden","true");icon.textContent=event.type==="birthday"?"🎂":event.emoji||"✨";
+  const copy=document.createElement("span");copy.className="calendar-day-detail-copy";
+  const name=document.createElement("strong");name.textContent=event.type==="season"?String(event.title).replace(String(event.emoji||""),"").trim():event.title;
+  const kind=document.createElement("small");kind.textContent=event.type==="birthday"?"Cumpleaños":"Temporada activa";
+  copy.append(name,kind);row.append(icon,copy);list.appendChild(row);
+ });
+ if(!events.length){const empty=document.createElement("div");empty.className="history-empty";empty.textContent="No hay cumpleaños ni temporadas para esta fecha.";list.appendChild(empty)}
+ panel.hidden=false;
+ if(shouldScroll)requestAnimationFrame(()=>panel.scrollIntoView({behavior:"smooth",block:"nearest"}));
+}
+function hideCalendarDayDetails(){
+ selectedCalendarDateKey=null;
+ const panel=document.getElementById("calendarDayDetails");if(panel)panel.hidden=true;
+ document.querySelector("#calendarGrid .calendar-day.selected")?.classList.remove("selected");
+}
+function changeCalendarMonth(delta){hideCalendarDayDetails();calendarDate=new Date(calendarDate.getFullYear(),calendarDate.getMonth()+delta,1);renderCalendar()}
 function addBirthday(){
  const name=document.getElementById("birthdayName").value.trim(),date=document.getElementById("birthdayDate").value;
  if(!name||!isValidCalendarDate(date)){showToast("🎂 Pon un nombre y una fecha válida");return}
