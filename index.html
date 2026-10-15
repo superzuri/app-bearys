@@ -1496,7 +1496,7 @@ html.dark .menu-card:hover{
   display:grid;
 
   grid-template-columns:
-    repeat(2,minmax(0,1fr));
+    repeat(3,minmax(0,1fr));
 
   gap:9px;
 
@@ -1599,7 +1599,7 @@ html.dark .menu-card:hover{
   display:grid;
 
   grid-template-columns:
-    repeat(2,minmax(0,1fr));
+    repeat(3,minmax(0,1fr));
 
   gap:8px;
 
@@ -1666,6 +1666,10 @@ html.dark .menu-card:hover{
 
   box-shadow:var(--shadow);
 }
+
+.team-rules-list{display:grid;gap:8px;margin:13px 0 0;padding:0;list-style:none}
+.team-rules-list li{display:flex;align-items:flex-start;gap:10px;padding:11px 12px;border:1px solid var(--border);border-radius:14px;background:var(--bg2);color:var(--text);font-size:11px;font-weight:700;line-height:1.5}
+.team-rule-number{width:23px;height:23px;flex:0 0 23px;display:grid;place-items:center;border-radius:8px;background:var(--pinksoft);color:var(--pink2);font-size:9px;font-weight:950}
 
 .activity-group-note{
   margin:-3px 0 9px;
@@ -2743,6 +2747,9 @@ input, textarea, select {
 .page.active .more-page-option:nth-child(2){animation-delay:.04s}
 .page.active .more-page-option:nth-child(3){animation-delay:.08s}
 .page.active .more-page-option:nth-child(4){animation-delay:.12s}
+.page.active .more-page-option:nth-child(5){animation-delay:.15s}
+.page.active .more-page-option:nth-child(6){animation-delay:.125s}
+.page.active .more-page-option:nth-child(7){animation-delay:.15s}
 @keyframes moreOptionStagger{
   from{opacity:0;transform:translateY(5px) scale(.99)}
   to{opacity:1;transform:translateY(0) scale(1)}
@@ -3564,12 +3571,13 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
     </details>
 
     <details class="menu-guide-group">
-      <summary>🫖 Sabores de té <span class="menu-guide-count">10 opciones</span></summary>
+      <summary>🫖 Sabores de té <span class="menu-guide-count">11 opciones</span></summary>
       <ul class="menu-guide-list">
         <li>Frutos rojos</li>
         <li>Limón con jengibre</li>
         <li>Manzanilla con miel</li>
         <li>Manzanilla</li>
+        <li>Té verde</li>
         <li>Earl Grey</li>
         <li>English Breakfast</li>
         <li>Granada con frambuesa</li>
@@ -3997,7 +4005,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
       </h1>
 
       <p>
-        Apertura y cierre
+        Apertura, Inter y cierre
       </p>
 
     </div>
@@ -4005,12 +4013,13 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
   </div>
 
 
-  <div class="activity-switch">
+  <div class="activity-switch" role="group" aria-label="Checklists del turno">
 
     <button
       class="activity-tab active"
       id="openingTab"
       onclick="selectActivityType('opening')"
+      aria-pressed="true"
     >
       🌅 Apertura
     </button>
@@ -4018,8 +4027,18 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
 
     <button
       class="activity-tab"
+      id="interTab"
+      onclick="selectActivityType('inter')"
+      aria-pressed="false"
+    >
+      ☕ Inter
+    </button>
+
+    <button
+      class="activity-tab"
       id="closingTab"
       onclick="selectActivityType('closing')"
+      aria-pressed="false"
     >
       🌙 Cierre
     </button>
@@ -4070,6 +4089,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
       <label class="activity-item"><input type="checkbox" data-activity="opening-prender-letrero"><span>Prender el letrero.</span></label>
       <label class="activity-item"><input type="checkbox" data-activity="opening-agua-perritos"><span>Poner agua para los perritos.</span></label>
       <label class="activity-item"><input type="checkbox" data-activity="opening-regar-ajax"><span>Regar Ajax y recoger las hojas.</span></label>
+      <label class="activity-item"><input type="checkbox" data-activity="opening-bajar-cortinas-pergola"><span>Bajar las cortinas de la pérgola.</span></label>
     </div>
   </div>
 
@@ -4138,6 +4158,33 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
       <label class="activity-item scheduled-activity" data-active-days="5" aria-disabled="true"><input type="checkbox" data-activity="closing-tamales-miercoles"><span>Viernes por la noche: enviar el total de tamales.</span><small class="activity-day-badge"></small></label>
       <label class="activity-item scheduled-activity" data-active-days="0,1,3,5" aria-disabled="true"><input type="checkbox" data-activity="closing-agua-caliente-dias"><span>Lunes, miércoles, viernes y domingo: echar un poco de agua caliente en las tarjas y la máquina de café.</span><small class="activity-day-badge"></small></label>
 
+    </div>
+  </div>
+
+  <div id="interActivities" style="display:none">
+    <div class="activity-card">
+      <div class="activity-title">☕ Funciones de Inter</div>
+      <p class="activity-group-note">Marca lo que ya quedó durante el turno. El avance se guarda por jornada y se comparte con el equipo.</p>
+      <div class="closing-progress-panel">
+        <div class="closing-progress-summary">
+          <span class="activity-progress" id="interProgress">0 / 0 completadas</span>
+          <strong class="closing-progress-percent" id="interProgressPercent">0%</strong>
+        </div>
+        <div class="progress-track closing-progress-track" id="interProgressTrack" role="progressbar" aria-label="Avance de funciones de Inter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0 actividades completadas">
+          <div class="progress-fill" id="interProgressBar"></div>
+        </div>
+        <div class="closing-progress-actions">
+          <button type="button" class="closing-reset-button" onclick="clearInterActivities()" aria-label="Destachar todas las funciones de Inter">🧹 Limpiar actividades</button>
+        </div>
+      </div>
+      <label class="activity-item"><input type="checkbox" data-activity="inter-rellenar-insumos"><span>Rellenar lo que se mueva: polvos, mamilas, desechables, molinos y cosas del frigobar.</span></label>
+      <label class="activity-item"><input type="checkbox" data-activity="inter-bolsas-basura"><span>Cambiar las bolsas de basura.</span></label>
+      <label class="activity-item"><input type="checkbox" data-activity="inter-barrer-trapear"><span>Barrer y trapear.</span></label>
+      <label class="activity-item"><input type="checkbox" data-activity="inter-cubrir-comidas"><span>Cubrir las comidas.</span></label>
+      <label class="activity-item"><input type="checkbox" data-activity="inter-cerrar-staff"><span>Cerrar el staff.</span></label>
+      <label class="activity-item"><input type="checkbox" data-activity="inter-pendientes"><span>Terminar algún pendiente, si lo hay.</span></label>
+      <label class="activity-item"><input type="checkbox" data-activity="inter-dejar-mesas-registradas"><span>Dejar registradas las mesas.</span></label>
+      <label class="activity-item"><input type="checkbox" data-activity="inter-area-trastes"><span>Ordenar el área de trastes: lavar o secar según el flujo de gente.</span></label>
     </div>
   </div>
 </section>
@@ -4417,6 +4464,39 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
 
 
 <!-- =====================================================
+     REGLAMENTO DEL EQUIPO
+===================================================== -->
+
+<section class="page" id="rulesPage">
+  <div class="inner-header">
+    <button class="back-button" type="button" onclick="goHome()" aria-label="Volver a inicio">←</button>
+    <div class="inner-title">
+      <h1>Reglamento 📋</h1>
+      <p>Acuerdos para cuidar el servicio y al equipo</p>
+    </div>
+  </div>
+
+  <div class="activity-card team-rules-card">
+    <div class="activity-title">🤝 Reglas de trabajo</div>
+    <p class="activity-group-note">Recordatorios para mantener un ambiente profesional, atento y amable con cada cliente.</p>
+    <ol class="team-rules-list">
+      <li><span class="team-rule-number">1</span><span>Usar el uniforme completo y limpio.</span></li>
+      <li><span class="team-rule-number">2</span><span>Llegar puntualmente a la entrada del turno.</span></li>
+      <li><span class="team-rule-number">3</span><span>No usar dispositivos electrónicos durante el turno, salvo cuando se requieran para el trabajo.</span></li>
+      <li><span class="team-rule-number">4</span><span>Reportar todo en el grupo del equipo.</span></li>
+      <li><span class="team-rule-number">5</span><span>No comer ni tomar agua frente al cliente.</span></li>
+      <li><span class="team-rule-number">6</span><span>Saludar y despedir siempre al cliente.</span></li>
+      <li><span class="team-rule-number">7</span><span>No exigir propina al comensal por ningún motivo.</span></li>
+      <li><span class="team-rule-number">8</span><span>Las chicas deben llevar el cabello recogido.</span></li>
+      <li><span class="team-rule-number">9</span><span>Usar aretes discretos.</span></li>
+      <li><span class="team-rule-number">10</span><span>Etiquetar toda producción con la fecha en que se realizó.</span></li>
+      <li><span class="team-rule-number">11</span><span>Mantener el lugar limpio y ordenado en todo momento.</span></li>
+    </ol>
+  </div>
+</section>
+
+
+<!-- =====================================================
      MÁS
 ===================================================== -->
 
@@ -4441,6 +4521,16 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
     <button type="button" class="more-page-option" onclick="openPage('cleaning')">
       <span class="more-page-option-icon" aria-hidden="true">🧼</span>
       <span class="more-page-option-copy"><b>Limpieza</b><small>Limpieza profunda y asignaciones del equipo</small></span>
+      <span class="more-page-chevron" aria-hidden="true">›</span>
+    </button>
+    <button type="button" class="more-page-option" onclick="openPage('activities');selectActivityType('inter')">
+      <span class="more-page-option-icon" aria-hidden="true">☕</span>
+      <span class="more-page-option-copy"><b>Funciones de Inter</b><small>Checklist de tareas durante el turno</small></span>
+      <span class="more-page-chevron" aria-hidden="true">›</span>
+    </button>
+    <button type="button" class="more-page-option" onclick="openPage('rules')">
+      <span class="more-page-option-icon" aria-hidden="true">📋</span>
+      <span class="more-page-option-copy"><b>Reglamento</b><small>Acuerdos de servicio y convivencia</small></span>
       <span class="more-page-chevron" aria-hidden="true">›</span>
     </button>
     <button type="button" class="more-page-option" onclick="openPage('recipes')">
@@ -7584,24 +7674,34 @@ function openHomeActivityChecklist(){
 function selectActivityType(type){
   const opening=document.getElementById("openingActivities");
   const closing=document.getElementById("closingActivities");
+  const inter=document.getElementById("interActivities");
   const openingTab=document.getElementById("openingTab");
   const closingTab=document.getElementById("closingTab");
+  const interTab=document.getElementById("interTab");
   const isOpening=type==="opening";
+  const isClosing=type==="closing";
+  const isInter=type==="inter";
 
   opening.style.display=isOpening?"block":"none";
-  closing.style.display=isOpening?"none":"block";
+  closing.style.display=isClosing?"block":"none";
+  inter.style.display=isInter?"block":"none";
   openingTab.classList.toggle("active",isOpening);
-  closingTab.classList.toggle("active",!isOpening);
+  closingTab.classList.toggle("active",isClosing);
+  interTab.classList.toggle("active",isInter);
+  openingTab.setAttribute("aria-pressed",String(isOpening));
+  closingTab.setAttribute("aria-pressed",String(isClosing));
+  interTab.setAttribute("aria-pressed",String(isInter));
   activeActivityType=type;
 
   const icon=document.getElementById("homeActivityProgressIcon");
   const eyebrow=document.getElementById("homeActivityProgressEyebrow");
   const title=document.getElementById("homeActivityProgressTitle");
   const track=document.getElementById("homeActivityProgressTrack");
-  if(icon)icon.textContent=isOpening?"🌅":"🌙";
-  if(eyebrow)eyebrow.textContent=isOpening?"AVANCE DE APERTURA":"AVANCE DE CIERRE";
-  if(title)title.textContent=isOpening?"Apertura de hoy":"Cierre de hoy";
-  if(track)track.setAttribute("aria-label","Avance del checklist de "+(isOpening?"apertura":"cierre")+" de hoy");
+  const activityLabel=isOpening?"apertura":isClosing?"cierre":"Inter";
+  if(icon)icon.textContent=isOpening?"🌅":isClosing?"🌙":"☕";
+  if(eyebrow)eyebrow.textContent="AVANCE DE "+activityLabel.toLocaleUpperCase("es-MX");
+  if(title)title.textContent=isOpening?"Apertura de hoy":isClosing?"Cierre de hoy":"Funciones de Inter";
+  if(track)track.setAttribute("aria-label","Avance del checklist de "+activityLabel+" de hoy");
   updateActivityProgress(type);
 }
 
@@ -7700,6 +7800,14 @@ function clearOpeningActivities(){
   updateActivityProgress("opening");
   showToast("🧹 Checklist de apertura reiniciado");
 }
+function clearInterActivities(){
+  document.querySelectorAll("#interActivities [data-activity]").forEach(check=>{
+    check.checked=false;
+    localStorage.removeItem(getActivityStorageKey(check.dataset.activity));
+  });
+  updateActivityProgress("inter");
+  showToast("🧹 Funciones de Inter reiniciadas");
+}
 function updateActivityProgress(type){
   const checks=Array.from(document.querySelectorAll("[data-activity^=\""+type+"-\"]")).filter(check=>!check.disabled);
   const completed=checks.filter(check=>check.checked).length;
@@ -7709,8 +7817,8 @@ function updateActivityProgress(type){
     ? completed+" de "+total+" actividades completadas"
     : "Aún no hay actividades cargadas";
 
-  if(type==="closing"||type==="opening"){
-    const prefix=type==="opening"?"opening":"closing";
+  if(type==="closing"||type==="opening"||type==="inter"){
+    const prefix=type;
     const progressBar=document.getElementById(prefix+"ProgressBar");
     const progressPercent=document.getElementById(prefix+"ProgressPercent");
     const progressTrack=document.getElementById(prefix+"ProgressTrack");
@@ -7736,7 +7844,7 @@ function updateActivityProgress(type){
     }
   }
 
-  const element=document.getElementById(type==="opening"?"openingProgress":"closingProgress");
+  const element=document.getElementById(type+"Progress");
   if(element)element.textContent=total?completed+" / "+total+" completadas":"Aún no hay actividades cargadas";
 }
 
