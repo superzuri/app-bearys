@@ -538,6 +538,8 @@ html.dark .hero{
 
   background:
     rgba(255,255,255,.10);
+
+  animation:heroOrbGlow 7.2s ease-in-out infinite;
 }
 
 .hero:after{
@@ -556,6 +558,8 @@ html.dark .hero{
 
   background:
     rgba(255,255,255,.07);
+
+  animation:heroOrbGlow 8.4s ease-in-out -3s infinite;
 }
 
 .hero-content{
@@ -652,11 +656,17 @@ html.dark .hero{
 .hero-star{
 
   position:absolute;
+  z-index:2;
+  pointer-events:none;
 
-  opacity:.8;
+  color:#fff;
+  font-size:15px;
+  line-height:1;
+  text-shadow:0 0 7px rgba(255,255,255,.95),0 0 15px rgba(255,255,255,.62),0 0 24px rgba(255,255,255,.32);
+  opacity:.58;
 
   animation:
-    twinkle 2.6s infinite;
+    twinkle 2.9s ease-in-out infinite;
 }
 
 .hero-star:nth-child(1){
@@ -676,6 +686,27 @@ html.dark .hero{
   animation-delay:1.2s;
 }
 
+.hero-star:nth-child(4){
+  top:25%;
+  right:5%;
+  font-size:11px;
+  animation-delay:.35s;
+}
+
+.hero-star:nth-child(5){
+  top:76%;
+  right:36%;
+  font-size:12px;
+  animation-delay:1.65s;
+}
+
+.hero-star:nth-child(6){
+  top:61%;
+  right:7%;
+  font-size:9px;
+  animation-delay:2.2s;
+}
+
 @keyframes float{
 
   50%{
@@ -687,10 +718,20 @@ html.dark .hero{
 
 @keyframes twinkle{
 
+  0%,100%{
+    transform:scale(.76) rotate(-10deg);
+    opacity:.42;
+  }
+
   50%{
-    transform:scale(1.5);
+    transform:scale(1.28) rotate(10deg);
     opacity:1;
   }
+}
+
+@keyframes heroOrbGlow{
+  0%,100%{opacity:.62;transform:scale(.96)}
+  50%{opacity:1;transform:scale(1.04)}
 }
 
 
@@ -886,6 +927,12 @@ html.dark .menu-card:hover{
   font-size:10px;
   line-height:1.35;
 }
+
+.menu-card.menu-card-wide{grid-column:1/-1;display:flex;align-items:center;gap:12px;min-height:78px;padding:13px 16px}
+.menu-card-wide .menu-icon{width:46px;height:46px;flex:0 0 46px;margin:0;border-radius:15px;font-size:22px}
+.menu-card-wide-copy{position:relative;z-index:2;display:grid;gap:3px;min-width:0}
+.menu-card-wide .menu-card-title,.menu-card-wide .menu-card-description{margin:0}
+.menu-card-wide-arrow{position:relative;z-index:2;margin-left:auto;color:var(--pink2);font-size:24px;line-height:1}
 
 
 /* =========================================================
@@ -3174,6 +3221,8 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
 .history-entry-meta{margin-top:6px;font-size:10px;color:var(--muted)}
 .history-empty{padding:24px 16px;border:1px dashed var(--border);border-radius:15px;text-align:center;color:var(--muted);font-size:12px;line-height:1.5}
 .history-tools{display:grid;gap:10px;margin-top:12px}.history-search{display:flex;align-items:center;gap:9px;min-height:44px;padding:0 12px;border:1px solid var(--border);border-radius:14px;background:var(--bg2);color:var(--muted)}.history-search input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:var(--text);font:inherit;font-size:14px}.history-search input::placeholder{color:var(--muted)}.history-filters{display:flex;gap:7px;overflow-x:auto;padding:1px 1px 4px;scrollbar-width:none}.history-filters::-webkit-scrollbar{display:none}.history-filter{flex:0 0 auto;padding:8px 11px;border:1px solid var(--border);border-radius:999px;background:var(--surface);color:var(--muted);font:inherit;font-size:10px;font-weight:850;cursor:pointer;transition:background .16s ease,color .16s ease,transform .16s ease}.history-filter.active{border-color:transparent;background:var(--pink);color:#fff}.history-filter:active{transform:scale(.96)}.history-result-summary{color:var(--muted);font-size:10px;font-weight:750}.history-day{padding-top:2px}.history-entry{transition:transform .16s ease,border-color .16s ease}.history-entry:active{transform:scale(.99)}
+.history-person-picker{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:10px;min-height:44px;padding:0 12px;border:1px solid var(--border);border-radius:14px;background:var(--bg2);color:var(--muted);font-size:10px;font-weight:850}
+.history-person-picker select{width:100%;min-width:0;min-height:42px;border:0;outline:0;background:transparent;color:var(--text);font:inherit;font-size:12px}
 </style>
 
 <div id="firebaseAuthGate" class="firebase-auth-gate" style="display:none" role="dialog" aria-modal="true" aria-labelledby="firebaseAuthTitle">
@@ -3244,9 +3293,12 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
 
   <div class="hero">
 
-    <span class="hero-star">✦</span>
-    <span class="hero-star">✧</span>
-    <span class="hero-star">✦</span>
+    <span class="hero-star" aria-hidden="true">✦</span>
+    <span class="hero-star" aria-hidden="true">✧</span>
+    <span class="hero-star" aria-hidden="true">✦</span>
+    <span class="hero-star" aria-hidden="true">✧</span>
+    <span class="hero-star" aria-hidden="true">✦</span>
+    <span class="hero-star" aria-hidden="true">✧</span>
 
     <div class="hero-content">
 
@@ -3350,7 +3402,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
       </span>
 
       <span class="menu-card-description">
-        Apertura y cierre
+        Apertura, Inter y cierre
       </span>
 
     </button>
@@ -3442,6 +3494,14 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
       <span class="menu-card-description">Cumpleaños y temporadas</span>
     </button>
 
+    <button class="menu-card menu-card-wide" type="button" onclick="openPage('rules')">
+      <span class="menu-icon" aria-hidden="true">📋</span>
+      <span class="menu-card-wide-copy">
+        <span class="menu-card-title">Reglamento</span>
+        <span class="menu-card-description">Acuerdos y reglas para todo el equipo</span>
+      </span>
+      <span class="menu-card-wide-arrow" aria-hidden="true">›</span>
+    </button>
 
     
 
@@ -4444,7 +4504,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
 
   <div class="activity-card">
     <div class="activity-title">📖 Movimientos del equipo</div>
-    <p class="activity-group-note">Cambios importantes agrupados por día. Busca un producto, tarea o persona, o filtra por área.</p>
+    <p class="activity-group-note">Cada movimiento conserva quién lo hizo. Busca un producto o tarea y filtra por área o persona.</p>
     <div class="history-tools">
       <label class="history-search"><span aria-hidden="true">🔎</span><input id="historySearch" type="search" placeholder="Buscar en el historial…" autocomplete="off" oninput="searchHistory(this.value)"></label>
       <div class="history-filters" id="historyFilters" role="group" aria-label="Filtrar movimientos">
@@ -4453,6 +4513,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
         <button type="button" class="history-filter" data-history-filter="cleaning" aria-pressed="false" onclick="setHistoryFilter('cleaning',this)">🧼 Limpieza</button>
         <button type="button" class="history-filter" data-history-filter="calendar" aria-pressed="false" onclick="setHistoryFilter('calendar',this)">🗓️ Calendario</button>
       </div>
+      <label class="history-person-picker"><span>👤 Persona</span><select id="historyPersonFilter" aria-label="Filtrar movimientos por persona" onchange="setHistoryPersonFilter(this.value)"><option value="all">Todo el equipo</option></select></label>
       <div class="history-result-summary" id="historySummary" aria-live="polite">Cargando movimientos recientes…</div>
     </div>
     <div id="historyStatus" class="history-empty" aria-live="polite">Cargando historial…</div>
@@ -5357,9 +5418,63 @@ function historyRecordDate(record){
 }
 let historyRecordsCache=[];
 let historyCategoryFilter="all";
+let historyPersonFilter="all";
 let historySearchQuery="";
+const historyKnownPeople=new Map();
+let historyPeopleDirectoryLoaded=false;
 function historyDayKey(date){
   return date.getFullYear()+"-"+String(date.getMonth()+1).padStart(2,"0")+"-"+String(date.getDate()).padStart(2,"0");
+}
+function historyPersonKey(record){
+  const uid=String(record?.actorUid||"").trim();
+  if(uid)return "uid:"+uid;
+  const name=String(record?.actorName||"").trim();
+  return name?"name:"+name.toLocaleLowerCase("es-MX"):"legacy:unknown";
+}
+function updateHistoryPersonPicker(records){
+  const picker=document.getElementById("historyPersonFilter");
+  if(!picker)return;
+  records.forEach(record=>{
+    const key=historyPersonKey(record);
+    const name=String(record.actorName||"").trim()||"Registro sin persona identificada";
+    if(!historyKnownPeople.has(key))historyKnownPeople.set(key,{key,name,uid:String(record.actorUid||"")});
+  });
+  if(activeTeamProfile?.uid){
+    const key="uid:"+activeTeamProfile.uid;
+    historyKnownPeople.set(key,{key,name:activeTeamProfile.name,uid:activeTeamProfile.uid});
+  }
+  const sorted=[...historyKnownPeople.values()].sort((a,b)=>a.name.localeCompare(b.name,"es-MX"));
+  picker.innerHTML='<option value="all">Todo el equipo</option>'+sorted.map(person=>{
+    const isCurrent=person.uid&&person.uid===activeTeamProfile?.uid;
+    const label=person.name+(isCurrent?" · tú":"");
+    return '<option value="'+escapeHistoryText(person.key)+'">'+escapeHistoryText(label)+"</option>";
+  }).join("");
+  if(![...picker.options].some(option=>option.value===historyPersonFilter))historyPersonFilter="all";
+  picker.value=historyPersonFilter;
+}
+async function loadHistoryPeopleDirectory(){
+  if(historyPeopleDirectoryLoaded)return;
+  try{
+    const snapshot=await firebaseDb.collection(SHARED_STATE_COLLECTION)
+      .orderBy(firebase.firestore.FieldPath.documentId())
+      .startAt(TEAM_DIRECTORY_PREFIX)
+      .endAt(TEAM_DIRECTORY_PREFIX+"\uf8ff")
+      .get();
+    snapshot.docs.forEach(doc=>{
+      const uid=doc.id.slice(TEAM_DIRECTORY_PREFIX.length);
+      let profile={};
+      try{profile=JSON.parse(doc.data()?.value||"{}");}catch(error){}
+      const name=String(profile.name||"").trim();
+      if(uid&&name){
+        const key="uid:"+uid;
+        historyKnownPeople.set(key,{key,name,uid});
+      }
+    });
+    historyPeopleDirectoryLoaded=true;
+    updateHistoryPersonPicker(historyRecordsCache);
+  }catch(error){
+    console.warn("History member list unavailable",error);
+  }
 }
 function historyDayLabel(date){
   const today=new Date();
@@ -5408,9 +5523,14 @@ function setHistoryFilter(category,button){
   });
   renderFilteredHistory();
 }
+function setHistoryPersonFilter(personKey){
+  historyPersonFilter=personKey||"all";
+  loadHistory();
+}
 function searchHistory(value){historySearchQuery=String(value||"").trim().toLocaleLowerCase("es-MX");renderFilteredHistory()}
 function renderHistory(records){
-  historyRecordsCache=Array.isArray(records)?records.filter(record=>record&&typeof record==="object"):[];
+  historyRecordsCache=Array.isArray(records)?records.filter(record=>record&&typeof record==="object").sort((a,b)=>historyRecordDate(b)-historyRecordDate(a)):[];
+  updateHistoryPersonPicker(historyRecordsCache);
   renderFilteredHistory();
 }
 function renderFilteredHistory(){
@@ -5423,15 +5543,19 @@ function renderFilteredHistory(){
     if(legacyNoiseTitles.has(record.title))return false;
     const category=record.category||"other";
     if(historyCategoryFilter!=="all"&&category!==historyCategoryFilter)return false;
+    if(historyPersonFilter!=="all"&&historyPersonKey(record)!==historyPersonFilter)return false;
     if(!historySearchQuery)return true;
     return [historyCategoryName(category),record.title,record.detail,record.actorName].join(" ").toLocaleLowerCase("es-MX").includes(historySearchQuery);
   });
   if(!records.length){
     feed.innerHTML="";status.hidden=false;
+    const selectedPerson=document.getElementById("historyPersonFilter")?.selectedOptions?.[0]?.textContent||"esta persona";
     status.textContent=historyRecordsCache.length
       ?"No hay movimientos que coincidan. Prueba otro filtro o búsqueda."
-      :"Todavía no hay movimientos importantes. Los productos agotados o repuestos, la limpieza y el calendario aparecerán aquí.";
-    if(summaryNode)summaryNode.textContent=historyRecordsCache.length?"Sin coincidencias en estos movimientos recientes.":"Sin movimientos recientes.";
+      :historyPersonFilter!=="all"
+        ?"Todavía no hay movimientos registrados para "+selectedPerson+"."
+        :"Todavía no hay movimientos importantes. Los productos agotados o repuestos, la limpieza y el calendario aparecerán aquí.";
+    if(summaryNode)summaryNode.textContent=historyRecordsCache.length?"Sin coincidencias en estos movimientos recientes.":historyPersonFilter!=="all"?"Sin movimientos de esta persona todavía.":"Sin movimientos recientes.";
     return;
   }
   const days=new Map();
@@ -5442,14 +5566,20 @@ function renderFilteredHistory(){
     let day=days.get(dayKey);
     if(!day){day={date,groups:new Map(),count:0};days.set(dayKey,day);}
     const category=record.category||"other";
-    let group=day.groups.get(category);
-    if(!group){group={category,events:[]};day.groups.set(category,group);}
+    const personKey=historyPersonKey(record);
+    const groupKey=category+"|"+personKey;
+    let group=day.groups.get(groupKey);
+    if(!group){group={category,personKey,events:[]};day.groups.set(groupKey,group);}
     group.events.push(record);
     day.count++;
   });
   if(!days.size){feed.innerHTML="";status.hidden=false;status.textContent="No hay movimientos que coincidan. Prueba otro filtro o búsqueda.";return;}
   status.hidden=true;
-  if(summaryNode)summaryNode.textContent=`${records.length} ${records.length===1?"movimiento":"movimientos"} · ${days.size} ${days.size===1?"día":"días"} en pantalla`;
+  if(summaryNode){
+    const selectedPerson=document.getElementById("historyPersonFilter")?.selectedOptions?.[0]?.textContent||"Persona";
+    const personLabel=historyPersonFilter==="all"?"Todo el equipo":selectedPerson;
+    summaryNode.textContent=`${records.length} ${records.length===1?"movimiento":"movimientos"} · ${personLabel} · ${days.size} ${days.size===1?"día":"días"} en pantalla`;
+  }
   const openHistoryDays=new Set(Array.from(feed.querySelectorAll(".history-day[open]")).map(day=>day.dataset.historyDay));
   const keepExistingOpenDays=[...days.keys()].some(key=>openHistoryDays.has(key));
   feed.innerHTML=[...days.entries()].map(([dayKey,day],dayIndex)=>{
@@ -5466,13 +5596,16 @@ function loadHistory(){
   const status=document.getElementById("historyStatus");
   if(!activeTeamProfile||!sharedStateReady){if(status){status.hidden=false;status.textContent="Inicia sesión para consultar el historial compartido.";}return;}
   if(historyUnsubscribe)historyUnsubscribe();
-  if(status){status.hidden=false;status.textContent="Cargando historial…";}
-  historyUnsubscribe=firebaseDb.collection(ACTIVITY_HISTORY_COLLECTION).orderBy("createdAt","desc").limit(100).onSnapshot(snapshot=>{
+  if(status){status.hidden=false;status.textContent=historyPersonFilter.startsWith("uid:")?"Cargando el historial individual…":"Cargando historial…";}
+  let historyQuery=firebaseDb.collection(ACTIVITY_HISTORY_COLLECTION).orderBy("createdAt","desc").limit(100);
+  if(historyPersonFilter.startsWith("uid:"))historyQuery=firebaseDb.collection(ACTIVITY_HISTORY_COLLECTION).where("actorUid","==",historyPersonFilter.slice(4));
+  historyUnsubscribe=historyQuery.onSnapshot(snapshot=>{
     renderHistory(snapshot.docs.map(doc=>doc.data()));
   },error=>{
     console.error("History loading error",error);
     if(status){status.hidden=false;status.textContent="No se pudo cargar el historial. Revisa las reglas de Firestore.";}
   });
+  loadHistoryPeopleDirectory();
 }
 
 /* =========================================================
