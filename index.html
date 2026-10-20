@@ -5,7 +5,7 @@
 
 <meta
   name="viewport"
-  content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
 >
 
 <meta name="theme-color" content="#fff0f2" id="themeColor">
@@ -596,6 +596,25 @@ html.dark .hero{
   line-height:1.6;
 
   opacity:.94;
+}
+
+.hero-place-description{
+  position:relative;
+  z-index:5;
+  max-width:68%;
+  margin-top:14px;
+  padding-top:0;
+  border-top:none;
+  color:rgba(255,255,255,.96);
+  font-size:10px;
+  line-height:1.5;
+}
+.hero-place-description strong{
+  display:block;
+  margin-bottom:3px;
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:.2px;
 }
 
 .hero-button{
@@ -3336,6 +3355,11 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
         Comenzar mi día →
       </button>
 
+      <div class="hero-place-description">
+        <strong>Beary’s 🧸</strong>
+        Es el osito que cambió la miel por el café, es el anfitrión del lugar al cual le encanta cambiar de outfit cada temporada y tomarse fotos con sus invitados, disfruta escuchar pop en inglés.
+      </div>
+
     </div>
 
     <div class="hero-bear" aria-hidden="true">
@@ -3829,13 +3853,13 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
         </b>
 
         <small>
-          Demo Beary´s
+          Beary´s
         </small>
 
       </span>
 
       <span>
-        3.0
+        1.0
       </span>
 
     </div>
@@ -4683,7 +4707,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
   >
 
     <span class="nav-icon">
-      🧼
+      🫧
     </span>
 
     <span class="nav-label">
@@ -5258,9 +5282,9 @@ function mapFirebaseAuthError(error){
   if(code.includes("permission-denied"))return "La sesión se aceptó, pero Firestore denegó el acceso. Hay que revisar las reglas y el documento teamMembers de esta cuenta.";
   if(code.includes("failed-precondition"))return "Firebase no pudo preparar la base compartida (failed-precondition). Comparte este código con soporte.";
   if(code.includes("workspace-initializing"))return "La primera importación de datos sigue en curso. Espera un minuto y vuelve a iniciar sesión.";
-  if(code.includes("invalid-import-key"))return "Hay un nombre de dato local que Firebase no acepta. Envíame solo el código invalid-import-key, nunca tu contraseña.";
-  if(code.includes("invalid-argument"))return "Firebase rechazó un dato al "+(firebaseSetupStage||"conectar la página")+". Comparte solo el código invalid-argument, nunca tu contraseña.";
-  return code?"Firebase devolvió este error: "+code+". Envíame solo el código, nunca tu contraseña.":"No se pudo iniciar sesión. Revisa tus datos e inténtalo otra vez.";
+  if(code.includes("invalid-import-key"))return "Hay un nombre de dato local que Firebase no acepta.";
+  if(code.includes("invalid-argument"))return "Firebase rechazó un dato al "+(firebaseSetupStage||"conectar la página")+". .";
+  return code?"Firebase devolvió este error: "+code+". ":"No se pudo iniciar sesión. Revisa tus datos e inténtalo otra vez.";
 }
 function setupFirebaseLogin(){
   const form=document.getElementById("firebaseLoginForm");
