@@ -3458,7 +3458,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
     >
 
       <div class="menu-icon">
-        🧼
+        🫧
       </div>
 
       <span class="menu-card-title">
@@ -4295,7 +4295,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
     <div class="inner-title">
 
       <h1>
-        Limpieza 🧼
+        Limpieza 🫧
       </h1>
 
       <p>
@@ -4308,7 +4308,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
 
 
   <div class="cleaning-intro">
-    <div class="cleaning-intro-icon" aria-hidden="true">🧼</div>
+    <div class="cleaning-intro-icon" aria-hidden="true">🫧</div>
     <div>
       <h2>Limpieza profunda semanal</h2>
       <p>Elijan las tareas de esta semana, asígnenselas a alguien del equipo y pongan una fecha límite.</p>
@@ -4534,7 +4534,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
       <div class="history-filters" id="historyFilters" role="group" aria-label="Filtrar movimientos">
         <button type="button" class="history-filter active" data-history-filter="all" aria-pressed="true" onclick="setHistoryFilter('all',this)">Todo</button>
         <button type="button" class="history-filter" data-history-filter="inventory" aria-pressed="false" onclick="setHistoryFilter('inventory',this)">📦 Inventario</button>
-        <button type="button" class="history-filter" data-history-filter="cleaning" aria-pressed="false" onclick="setHistoryFilter('cleaning',this)">🧼 Limpieza</button>
+        <button type="button" class="history-filter" data-history-filter="cleaning" aria-pressed="false" onclick="setHistoryFilter('cleaning',this)">🫧 Limpieza</button>
         <button type="button" class="history-filter" data-history-filter="calendar" aria-pressed="false" onclick="setHistoryFilter('calendar',this)">🗓️ Calendario</button>
       </div>
       <label class="history-person-picker"><span>👤 Persona</span><select id="historyPersonFilter" aria-label="Filtrar movimientos por persona" onchange="setHistoryPersonFilter(this.value)"><option value="all">Todo el equipo</option></select></label>
@@ -4604,7 +4604,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
 
   <div class="more-page-list" aria-label="Más secciones">
     <button type="button" class="more-page-option" onclick="openPage('cleaning')">
-      <span class="more-page-option-icon" aria-hidden="true">🧼</span>
+      <span class="more-page-option-icon" aria-hidden="true">🫧</span>
       <span class="more-page-option-copy"><b>Limpieza</b><small>Limpieza profunda y asignaciones del equipo</small></span>
       <span class="more-page-chevron" aria-hidden="true">›</span>
     </button>
@@ -4949,8 +4949,8 @@ function makeHistoryEvents(key,oldValue,newValue,isDelete){
     const events=[];
     after.forEach((item,id)=>{
       const old=before.get(id);
-      if(!old)events.push({category:"cleaning",icon:"🧼",title:"Tarea asignada",detail:item.task+" · "+item.assignee});
-      else if(Boolean(old.completed)!==Boolean(item.completed))events.push({category:"cleaning",icon:item.completed?"✨":"🧼",title:item.completed?"Limpieza completada":"Tarea reabierta",detail:item.task+" · "+item.assignee});
+      if(!old)events.push({category:"cleaning",icon:"🫧",title:"Tarea asignada",detail:item.task+" · "+item.assignee});
+      else if(Boolean(old.completed)!==Boolean(item.completed))events.push({category:"cleaning",icon:item.completed?"✨":"🫧",title:item.completed?"Limpieza completada":"Tarea reabierta",detail:item.task+" · "+item.assignee});
     });
     before.forEach((item,id)=>{if(!after.has(id))events.push({category:"cleaning",icon:"🧹",title:"Tarea retirada",detail:item.task+" · "+item.assignee});});
     return events;
@@ -5514,7 +5514,7 @@ function summarizeHistoryGroup(group){
   const latest=events[0]||{};
   const count=events.length;
   const categoryNames={inventory:"Inventario",activities:"Actividades",cleaning:"Limpieza",calendar:"Calendario",system:"Equipo",app:"Beary's"};
-  const categoryIcons={inventory:"📦",activities:"✅",cleaning:"🧼",calendar:"🗓️",system:"☁️",app:"☕"};
+  const categoryIcons={inventory:"📦",activities:"✅",cleaning:"🫧",calendar:"🗓️",system:"☁️",app:"☕"};
   let title=latest.title||"Movimiento";
   if(count>1){
     const label=categoryNames[category]||"Equipo";
@@ -8384,7 +8384,7 @@ async function assignDeepCleaningTasks(event){
   closeCleaningTaskPicker(false);
   renderDeepCleaning();
   if(!await saved){renderDeepCleaning();return}
-  showToast("🧼 Tareas asignadas a "+assignee);
+  showToast("🫧 Tareas asignadas a "+assignee);
 }
 function renderCleaningAssignmentCards(){
   const list=document.getElementById("cleaningAssignmentList");
