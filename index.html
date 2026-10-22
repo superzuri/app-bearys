@@ -9042,26 +9042,78 @@ if("serviceWorker" in navigator){
 </script>
 
 <style id="bearys-label-readability">
-:root{--label-accent:#842246;--label-accent-solid:#a92756;--label-success:#276b45;--label-danger:#a5314b}
-html.dark{--label-accent:#ffc6d9;--label-accent-solid:#a92756;--label-success:#8ee0ae;--label-danger:#ff9bb2}
+:root{--label-accent:#653f50;--label-accent-solid:var(--pink);--label-on-pink:#452c38;--label-success:#276b45;--label-danger:#a5314b}
+html.dark{--label-accent:#f1dce6;--label-accent-solid:var(--pink);--label-on-pink:#452c38;--label-success:#8ee0ae;--label-danger:#ff9bb2}
 .brand-subtitle,.brand-date,.hero-label,.section-header span,.phrase-number,.phrase-button,.menu-guide-count,.menu-guide-product span,.menu-guide-color,.home-progress-eyebrow,.home-progress-count,.home-progress-button,.inv-stat small,.inventory-area-title span,.product-meta,.inventory-order-header p,.inventory-order-count,.inventory-order-note,.inventory-order-item strong,.inventory-order-new,.inventory-pending-heading span,.team-rule-number,.activity-day-badge,.activity-progress,.closing-reset-button,.settings-profile span,.settings-profile button,.registered-account-copy small,.setting-row small,.mini-toggle,.nav-label,.calendar-head small,.calendar-week span,.calendar-event-count,.calendar-day-detail-copy small,.calendar-tap-hint,.calendar-legend,.calendar-help,.event-item-meta,.event-item button,.season-field,.season-edit button,.cleaning-summary,.cleaning-picker-close button,.cleaning-task-availability,.cleaning-selection-note,.cleaning-task-status,.cleaning-person-meta,.cleaning-assignment-meta,.cleaning-assignment-due,.cleaning-filter-chip,.cleaning-filter-chip b,.cleaning-assignment-status,.cleaning-list-summary,.recipe-category-count,.home-challenge-label,.home-challenge-date,.daily-challenge-label,.name-change{font-size:10px}
 .brand-subtitle{letter-spacing:.45px}
 .brand-subtitle,.home-progress-percent,.closing-progress-percent,.nav-button.active,.nav-button[aria-expanded="true"]{color:var(--label-accent)}
 .scheduled-activity.not-for-today{opacity:1}
 .menu-card-description{font-size:10px;line-height:1.4}
 .menu-guide-color{padding:5px 9px}
-.home-progress-button{background:var(--label-accent-solid);font-size:11px}
+.home-progress-button{background:var(--pink);color:#fff;font-size:11px}
 .inventory-order-count,.inventory-pending-heading span,.team-rule-number,.phrase-button,.settings-profile button,.cleaning-picker-toggle,.cleaning-task-status,.cleaning-assignment-status,.home-challenge-label,.daily-challenge-label{color:var(--label-accent)}
 .inventory-order-new,.closing-reset-button{color:var(--text)}
 .activity-day-badge{min-height:25px;padding:5px 8px;color:var(--text)}
-.scheduled-activity.is-for-today .activity-day-badge{background:var(--label-accent-solid);color:#fff}
-.activity-tab.active{background:linear-gradient(135deg,var(--label-accent-solid),#bd3b6d)}
-.cleaning-filter-chip.active,.recipe-filter.active{background:var(--label-accent-solid);color:#fff}
-.cleaning-filter-chip.active b{color:#fff}
+.scheduled-activity.is-for-today .activity-day-badge{background:var(--pink);color:#fff}
+.activity-tab.active{background:linear-gradient(135deg,var(--pink),var(--pink2));color:#fff}
+.cleaning-filter-chip.active,.recipe-filter.active,.history-filter.active{background:var(--pink);color:#fff}
+.cleaning-filter-chip.active b{background:rgba(255,255,255,.2);color:#fff}
 .cleaning-assignment-status.is-late{color:var(--label-danger)}
 .cleaning-assignment-status.is-done{color:var(--label-success)}
 .nav-label{letter-spacing:-.15px}
 @media(max-width:620px){.menu-card-description{font-size:11px}.nav-label{font-size:10px}.activity-day-badge{font-size:10px}.calendar-week span{font-size:10px}}
+</style>
+
+<style id="bearys-motion-polish">
+:root{--motion-ease:cubic-bezier(.22,1,.36,1)}
+.page.active{animation:pageIn .28s var(--motion-ease) both}
+@keyframes pageIn{from{opacity:0;transform:translate3d(0,8px,0) scale(.996)}to{opacity:1;transform:translate3d(0,0,0) scale(1)}}
+@keyframes cardArrival{0%{opacity:0;transform:translate3d(0,8px,0) scale(.986)}72%{opacity:1;transform:translate3d(0,-1px,0) scale(1.002)}100%{opacity:1;transform:translate3d(0,0,0) scale(1)}}
+@keyframes modalIn{from{opacity:0;transform:translate3d(0,12px,0) scale(.97)}to{opacity:1;transform:translate3d(0,0,0) scale(1)}}
+@keyframes editorReveal{from{opacity:0;transform:translate3d(0,-4px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+@keyframes buttonTap{0%,100%{transform:scale(1)}42%{transform:scale(.97)}76%{transform:scale(1.01)}}
+@keyframes float{50%{transform:translateY(-6px) rotate(1deg)}}
+@keyframes twinkle{0%,100%{transform:scale(.88) rotate(-5deg);opacity:.48}50%{transform:scale(1.12) rotate(5deg);opacity:.95}}
+@keyframes iconWiggle{0%,100%{transform:rotate(0) scale(1)}34%{transform:rotate(-6deg) scale(1.05)}70%{transform:rotate(5deg) scale(1.05)}}
+@keyframes checkPop{0%,100%{transform:scale(1)}45%{transform:scale(1.18)}}
+@keyframes taskCheck{0%,100%{transform:translateX(0)}40%{transform:translateX(2px)}}
+@keyframes phraseBearBob{0%,100%{transform:translate3d(0,0,0) rotate(0)}50%{transform:translate3d(0,-2px,0) rotate(1deg)}}
+@keyframes navPop{0%,100%{transform:translateY(0) scale(1)}45%{transform:translateY(-2px) scale(1.055)}}
+@keyframes copyBearBounce{from{transform:translateY(2px) rotate(-4deg)}to{transform:translateY(-8px) rotate(4deg)}}
+@keyframes floatBearFast{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes bearyCupBounce{0%{transform:scale(.82) rotate(-8deg)}58%{transform:scale(1.08) rotate(4deg)}100%{transform:scale(1) rotate(0)}}
+.page.active .hero,.page.active .menu-card,.page.active .phrase-card,.page.active .status-card,.page.active .inventory-hero,.page.active .inventory-area,.page.active .activity-card,.page.active .calendar-card,.page.active .calendar-legend,.page.active .calendar-editor-toggle,.page.active .recipe-intro,.page.active .recipe-searchbox,.page.active .recipe-filters,.page.active .recipe-category{animation:cardArrival .3s var(--motion-ease) both}
+.page.active .menu-card:nth-child(2){animation-delay:.035s}
+.page.active .menu-card:nth-child(3){animation-delay:.07s}
+.page.active .menu-card:nth-child(4){animation-delay:.105s}
+.page.active .more-page-intro{animation:cardArrival .3s var(--motion-ease) both}
+.page.active .more-page-option{animation:cardArrival .28s var(--motion-ease) both}
+.page.active .more-page-option:nth-child(2){animation-delay:.035s}
+.page.active .more-page-option:nth-child(3){animation-delay:.07s}
+.page.active .more-page-option:nth-child(4){animation-delay:.105s}
+.page.active .more-page-option:nth-child(5){animation-delay:.14s}
+.page.active .more-page-option:nth-child(6){animation-delay:.175s}
+.page.active .more-page-option:nth-child(7){animation-delay:.21s}
+.inventory-order-panel{animation:cardArrival .3s var(--motion-ease) both}
+.inventory-confirm-dialog,.name-modal,.daily-challenge-modal{animation:modalIn .3s var(--motion-ease) both}
+.calendar-day-details:not([hidden]),.season-editor-panel:not([hidden]),.birthday-editor-panel:not([hidden]){animation:editorReveal .24s var(--motion-ease) both}
+.home-challenge-card:not([hidden]){animation:cardArrival .32s var(--motion-ease) both}
+.checklist-complete-celebration{animation:cardArrival .32s var(--motion-ease) both}
+.copy-bear-animation{animation-duration:.9s}
+.phrase-bear{animation-duration:5.6s}
+.hero-star{animation-duration:3.4s}
+.home-progress-card::after{animation-duration:3.2s}
+.bearys-splash-bear{animation-duration:2.4s}
+.bearys-splash-track span::after{animation-duration:1.7s}
+.tap-feedback{animation:buttonTap .22s var(--motion-ease)}
+button,.menu-card,.more-page-option,.recipe-card,.activity-tab,.nav-button,.calendar-day.has-events,.history-filter,.cleaning-filter-chip,.calendar-editor-toggle,.closing-reset-button,.cleaning-assignment-card{transition-timing-function:var(--motion-ease)}
+@media(hover:hover) and (prefers-reduced-motion:no-preference){
+  body:not(.animations-off) .menu-card:hover,body:not(.animations-off) .more-page-option:hover,body:not(.animations-off) .recipe-card:hover,body:not(.animations-off) .calendar-editor-toggle:hover,body:not(.animations-off) .activity-card:hover,body:not(.animations-off) .cleaning-assignment-card:hover{transform:translateY(-1px)}
+  body:not(.animations-off) .home-progress-button:hover{transform:translateY(-1px)}
+}
+@media(hover:none) and (prefers-reduced-motion:no-preference){
+  body:not(.animations-off) button:not(:disabled):active,body:not(.animations-off) .menu-card:active,body:not(.animations-off) .recipe-card:active{transform:scale(.98)}
+}
 </style>
 </body>
 </html>
