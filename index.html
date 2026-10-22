@@ -9033,5 +9033,27 @@ if("serviceWorker" in navigator){
 })();
 </script>
 
+<style id="bearys-label-readability">
+:root{--label-accent:#842246;--label-accent-solid:#a92756;--label-success:#276b45;--label-danger:#a5314b}
+html.dark{--label-accent:#ffc6d9;--label-accent-solid:#a92756;--label-success:#8ee0ae;--label-danger:#ff9bb2}
+.brand-subtitle,.brand-date,.hero-label,.section-header span,.phrase-number,.phrase-button,.menu-guide-count,.menu-guide-product span,.menu-guide-color,.home-progress-eyebrow,.home-progress-count,.home-progress-button,.inv-stat small,.inventory-area-title span,.product-meta,.inventory-order-header p,.inventory-order-count,.inventory-order-note,.inventory-order-item strong,.inventory-order-new,.inventory-pending-heading span,.team-rule-number,.activity-day-badge,.activity-progress,.closing-reset-button,.settings-profile span,.settings-profile button,.registered-account-copy small,.setting-row small,.mini-toggle,.nav-label,.calendar-head small,.calendar-week span,.calendar-event-count,.calendar-day-detail-copy small,.calendar-tap-hint,.calendar-legend,.calendar-help,.event-item-meta,.event-item button,.season-field,.season-edit button,.cleaning-summary,.cleaning-picker-close button,.cleaning-task-availability,.cleaning-selection-note,.cleaning-task-status,.cleaning-person-meta,.cleaning-assignment-meta,.cleaning-assignment-due,.cleaning-filter-chip,.cleaning-filter-chip b,.cleaning-assignment-status,.cleaning-list-summary,.recipe-category-count,.home-challenge-label,.home-challenge-date,.daily-challenge-label,.name-change{font-size:10px}
+.brand-subtitle{letter-spacing:.45px}
+.brand-subtitle,.home-progress-percent,.closing-progress-percent,.nav-button.active,.nav-button[aria-expanded="true"]{color:var(--label-accent)}
+.scheduled-activity.not-for-today{opacity:1}
+.menu-card-description{font-size:10px;line-height:1.4}
+.menu-guide-color{padding:5px 9px}
+.home-progress-button{background:var(--label-accent-solid);font-size:11px}
+.inventory-order-count,.inventory-pending-heading span,.team-rule-number,.phrase-button,.settings-profile button,.cleaning-picker-toggle,.cleaning-task-status,.cleaning-assignment-status,.home-challenge-label,.daily-challenge-label{color:var(--label-accent)}
+.inventory-order-new,.closing-reset-button{color:var(--text)}
+.activity-day-badge{min-height:25px;padding:5px 8px;color:var(--text)}
+.scheduled-activity.is-for-today .activity-day-badge{background:var(--label-accent-solid);color:#fff}
+.activity-tab.active{background:linear-gradient(135deg,var(--label-accent-solid),#bd3b6d)}
+.cleaning-filter-chip.active,.recipe-filter.active{background:var(--label-accent-solid);color:#fff}
+.cleaning-filter-chip.active b{color:#fff}
+.cleaning-assignment-status.is-late{color:var(--label-danger)}
+.cleaning-assignment-status.is-done{color:var(--label-success)}
+.nav-label{letter-spacing:-.15px}
+@media(max-width:620px){.menu-card-description{font-size:11px}.nav-label{font-size:10px}.activity-day-badge{font-size:10px}.calendar-week span{font-size:10px}}
+</style>
 </body>
 </html>
