@@ -8950,5 +8950,81 @@ if("serviceWorker" in navigator){
 }
 </style>
 
+
+<!-- Checklist completion micro-celebrations -->
+<style id="bearys-checklist-celebration-styles">
+.activity-item.is-just-completed{position:relative;animation:bearyTaskGlow .62s ease-out}
+.activity-item.is-just-completed::after{content:"✓";position:absolute;left:4px;top:50%;display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--pink);color:#fff;font-size:12px;font-weight:950;pointer-events:none;animation:bearyCheckFlash .62s ease-out forwards}
+.checklist-complete-celebration{position:relative;isolation:isolate;overflow:hidden;display:flex;align-items:center;gap:11px;margin:12px 0;padding:14px 15px;border:1px solid rgba(255,121,173,.4);border-radius:16px;background:linear-gradient(120deg,var(--pinksoft),var(--surface));animation:bearyCelebrateIn .45s cubic-bezier(.2,.8,.2,1) both}
+.checklist-complete-celebration[hidden]{display:none}
+.checklist-celebration-icon{flex:0 0 auto;font-size:25px;animation:bearyCupBounce .7s cubic-bezier(.2,.8,.2,1) both}
+.checklist-celebration-copy{min-width:0;display:grid;gap:3px}
+.checklist-celebration-copy strong{font-size:13px;font-weight:950;color:var(--text)}
+.checklist-celebration-copy span{font-size:11px;line-height:1.4;color:var(--muted)}
+.checklist-confetti{position:absolute;z-index:-1;top:-10px;width:7px;height:11px;border-radius:3px;opacity:0;pointer-events:none;animation:bearyConfettiFall 1.15s ease-out var(--confetti-delay,0s) both;left:var(--confetti-left,50%);background:var(--confetti-color,var(--pink));transform:rotate(var(--confetti-rotate,20deg))}
+@keyframes bearyTaskGlow{0%{background:rgba(255,121,173,.18)}100%{background:transparent}}
+@keyframes bearyCheckFlash{0%{opacity:0;transform:scale(.3)}45%{opacity:1;transform:scale(1.2)}100%{opacity:0;transform:scale(.85)}}
+@keyframes bearyCelebrateIn{0%{opacity:0;transform:translateY(7px) scale(.985)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes bearyCupBounce{0%{transform:scale(.5) rotate(-14deg)}55%{transform:scale(1.2) rotate(8deg)}100%{transform:scale(1) rotate(0)}}
+@keyframes bearyConfettiFall{0%{opacity:0;transform:translateY(0) rotate(0)}12%{opacity:.95}100%{opacity:0;transform:translateY(85px) translateX(var(--confetti-drift,12px)) rotate(220deg)}}
+@media(prefers-reduced-motion:reduce){.activity-item.is-just-completed,.activity-item.is-just-completed::after,.checklist-complete-celebration,.checklist-celebration-icon,.checklist-confetti{animation:none!important}.checklist-confetti{display:none!important}}
+</style>
+<script id="bearys-checklist-celebration-script">
+(()=>{
+  const checklistConfig={
+    opening:{container:'openingActivities',title:'¡Apertura lista!',message:'Todo preparado para recibir el día. ¡Buen trabajo!',icon:'🌅'},
+    inter:{container:'interActivities',title:'¡Inter completado!',message:'Todo al día. Gracias por mantener el ritmo.',icon:'☕'},
+    closing:{container:'closingActivities',title:'¡Cierre completado!',message:'Todo listo y en orden. ¡Excelente trabajo!',icon:'🌙'}
+  };
+  const celebrationColors=['#ff79ad','#f4c95d','#8dcbb2','#a8b8ff','#f49a68'];
+  function getChecklistChecks(type){
+    return Array.from(document.querySelectorAll('[data-activity]')).filter(input=>input.dataset.activity.startsWith(type+'-')&&!input.disabled);
+  }
+  function celebrateChecklist(type){
+    const config=checklistConfig[type];
+    if(!config)return;
+    const container=document.getElementById(config.container);
+    const card=container&&container.querySelector('.activity-card');
+    if(!card)return;
+    const previous=card.querySelector('.checklist-complete-celebration');
+    if(previous)previous.remove();
+    const banner=document.createElement('div');
+    banner.className='checklist-complete-celebration';
+    banner.setAttribute('role','status');
+    banner.innerHTML='<span class="checklist-celebration-icon" aria-hidden="true">'+config.icon+'</span><span class="checklist-celebration-copy"><strong>'+config.title+'</strong><span>'+config.message+'</span></span>';
+    for(let i=0;i<18;i++){
+      const bit=document.createElement('i');
+      bit.className='checklist-confetti';
+      bit.setAttribute('aria-hidden','true');
+      bit.style.setProperty('--confetti-left',(4+Math.random()*92)+'%');
+      bit.style.setProperty('--confetti-delay',(Math.random()*.32)+'s');
+      bit.style.setProperty('--confetti-color',celebrationColors[i%celebrationColors.length]);
+      bit.style.setProperty('--confetti-rotate',(Math.random()*160-80)+'deg');
+      bit.style.setProperty('--confetti-drift',(Math.random()*54-27)+'px');
+      banner.appendChild(bit);
+    }
+    const progress=card.querySelector('.closing-progress-panel');
+    if(progress)progress.insertAdjacentElement('afterend',banner);
+    else card.prepend(banner);
+    window.setTimeout(()=>{if(banner.isConnected)banner.remove();},5200);
+  }
+  document.addEventListener('change',event=>{
+    const input=event.target;
+    if(!(input instanceof HTMLInputElement)||!input.matches('input[type="checkbox"][data-activity]'))return;
+    const item=input.closest('.activity-item');
+    if(input.checked&&item){
+      item.classList.remove('is-just-completed');
+      void item.offsetWidth;
+      item.classList.add('is-just-completed');
+      window.setTimeout(()=>item.classList.remove('is-just-completed'),700);
+    }
+    if(!input.checked)return;
+    const type=input.dataset.activity.split('-')[0];
+    const checks=getChecklistChecks(type);
+    if(checks.length&&checks.every(check=>check.checked))celebrateChecklist(type);
+  });
+})();
+</script>
+
 </body>
 </html>
