@@ -3149,6 +3149,9 @@ input, textarea, select {
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin>
 <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
+<link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/13.0.0/firebase-app-compat.js">
+<link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/13.0.0/firebase-auth-compat.js">
+<link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore-compat.js">
 </head>
 
 
@@ -5115,16 +5118,21 @@ function applyRemoteSharedValue(key,data){
   refreshSharedUIForKey(key);
 }
 async function initializeSharedWorkspace(user){
-  const markerRef=firebaseDb.collection(SHARED_STATE_COLLECTION).doc(SHARED_WORKSPACE_MARKER);
+  const sharedCollection=firebaseDb.collection(SHARED_STATE_COLLECTION);
   const localEntries=getLocalSharedEntries();
-  const markerBeforeSetup=await markerRef.get();
-  if(markerBeforeSetup.exists&&markerBeforeSetup.data()?.initialized)return;
+  // Read the shared collection once; on an existing workspace this snapshot is
+  // also enough to hydrate local storage, avoiding a second network round trip.
+  const existingSnapshot=await sharedCollection.get();
+  const markerBeforeSetup=existingSnapshot.docs.find(doc=>doc.id===SHARED_WORKSPACE_MARKER)||null;
+  const markerExists=Boolean(markerBeforeSetup);
+  const markerRef=sharedCollection.doc(SHARED_WORKSPACE_MARKER);
+  if(markerExists&&markerBeforeSetup.data()?.initialized)return existingSnapshot;
 
   const markerState=readSharedInitializationState(markerBeforeSetup);
-  const ownIncompleteImport=markerBeforeSetup.exists&&markerBeforeSetup.data()?.updatedBy===user.uid;
+  const ownIncompleteImport=markerExists&&markerBeforeSetup.data()?.updatedBy===user.uid;
   let importThisDevice=ownIncompleteImport
     ?Boolean(markerState.importRequested)
-    :!markerBeforeSetup.exists&&localEntries.length>0&&window.confirm(
+    :!markerExists&&localEntries.length>0&&window.confirm(
       "Primera conexión con la base compartida. Este dispositivo tiene "+localEntries.length+
       " datos guardados de Beary's. ¿Quieres importarlos para que sean los datos iniciales del equipo?\n\nAceptar: importarlos.\nCancelar: iniciar sin ellos; quedarán como respaldo local descargable desde Ajustes."
     );
@@ -5155,7 +5163,6 @@ async function initializeSharedWorkspace(user){
   if(claim.alreadyInitialized)return;
 
   const entriesToImport=claim.importThisDevice?localEntries:[];
-  const sharedCollection=firebaseDb.collection(SHARED_STATE_COLLECTION);
   // Cada registro lleva serverTimestamp(), que también cuenta como escritura;
   // 200 registros dejan el lote holgadamente por debajo del límite de 500.
   const writeChunkSize=200;
@@ -5209,13 +5216,14 @@ function getSharedInitializationToken(){
   }catch(error){sharedInitializationToken=Date.now().toString(36)+Math.random().toString(36).slice(2);}
   return sharedInitializationToken;
 }
-async function hydrateSharedWorkspace(){
-  const snapshot=await firebaseDb.collection(SHARED_STATE_COLLECTION).get();
+async function hydrateSharedWorkspace(existingSnapshot){
+  const snapshot=existingSnapshot||await firebaseDb.collection(SHARED_STATE_COLLECTION).get();
+  const sharedDocsById=new Map(snapshot.docs.map(doc=>[doc.id,doc]));
   const remoteKeys=new Set(snapshot.docs.filter(doc=>doc.id!==SHARED_WORKSPACE_MARKER&&isSharedStorageKey(doc.id)).map(doc=>doc.id));
   const localKeys=getLocalSharedEntries().map(entry=>entry.key);
   const backupEntries=[];
   localKeys.forEach(key=>{
-    const remoteDoc=snapshot.docs.find(doc=>doc.id===key);
+    const remoteDoc=sharedDocsById.get(key);
     const localValue=localStorage.getItem(key);
     if(remoteDoc){
       const data=remoteDoc.data();
@@ -5377,10 +5385,10 @@ async function activateFirebaseUser(user){
     if(accountEmail)accountEmail.textContent=activeTeamProfile.email;
     firebaseSetupStage="preparar la base compartida";
     updateBearysSplash("Preparando los datos del equipo…",42);
-    await initializeSharedWorkspace(user);
+    const existingWorkspaceSnapshot=await initializeSharedWorkspace(user);
     firebaseSetupStage="cargar los datos compartidos";
     updateBearysSplash("Cargando tareas e inventario…",74);
-    await hydrateSharedWorkspace();
+    await hydrateSharedWorkspace(existingWorkspaceSnapshot);
     updateBearysSplash("Organizando tu espacio…",90);
     gateErrorMessage="";
     if(!appInitialized){initializeApp();appInitialized=true;}
