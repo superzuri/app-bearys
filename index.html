@@ -5,7 +5,7 @@
 
 <meta
   name="viewport"
-  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+  content="width=device-width, initial-scale=1.0, viewport-fit=cover"
 >
 
 <meta name="theme-color" content="#fff0f2" id="themeColor">
@@ -47,8 +47,6 @@
   box-sizing:border-box;
   -webkit-tap-highlight-color:transparent;
   touch-action:manipulation;
-  -webkit-user-select:none;
-  user-select:none;
 }
 
 /* Mantiene normal la selección y edición dentro de campos de texto. */
@@ -3300,6 +3298,8 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
 
 </header>
 
+<main id="mainContent">
+
 
 <!-- =====================================================
      HOME
@@ -4640,6 +4640,8 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
     </button>
   </div>
 </section>
+
+</main>
 
 </div>
 
@@ -8953,8 +8955,7 @@ if("serviceWorker" in navigator){
 
 <!-- Checklist completion micro-celebrations -->
 <style id="bearys-checklist-celebration-styles">
-.activity-item.is-just-completed{position:relative;animation:bearyTaskGlow .62s ease-out}
-.activity-item.is-just-completed::after{content:"✓";position:absolute;left:4px;top:50%;display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--pink);color:#fff;font-size:12px;font-weight:950;pointer-events:none;animation:bearyCheckFlash .62s ease-out forwards}
+.activity-item.is-just-completed{animation:bearyTaskGlow .62s ease-out}
 .checklist-complete-celebration{position:relative;isolation:isolate;overflow:hidden;display:flex;align-items:center;gap:11px;margin:12px 0;padding:14px 15px;border:1px solid rgba(255,121,173,.4);border-radius:16px;background:linear-gradient(120deg,var(--pinksoft),var(--surface));animation:bearyCelebrateIn .45s cubic-bezier(.2,.8,.2,1) both}
 .checklist-complete-celebration[hidden]{display:none}
 .checklist-celebration-icon{flex:0 0 auto;font-size:25px;animation:bearyCupBounce .7s cubic-bezier(.2,.8,.2,1) both}
@@ -8963,11 +8964,10 @@ if("serviceWorker" in navigator){
 .checklist-celebration-copy span{font-size:11px;line-height:1.4;color:var(--muted)}
 .checklist-confetti{position:absolute;z-index:-1;top:-10px;width:7px;height:11px;border-radius:3px;opacity:0;pointer-events:none;animation:bearyConfettiFall 1.15s ease-out var(--confetti-delay,0s) both;left:var(--confetti-left,50%);background:var(--confetti-color,var(--pink));transform:rotate(var(--confetti-rotate,20deg))}
 @keyframes bearyTaskGlow{0%{background:rgba(255,121,173,.18)}100%{background:transparent}}
-@keyframes bearyCheckFlash{0%{opacity:0;transform:scale(.3)}45%{opacity:1;transform:scale(1.2)}100%{opacity:0;transform:scale(.85)}}
 @keyframes bearyCelebrateIn{0%{opacity:0;transform:translateY(7px) scale(.985)}100%{opacity:1;transform:translateY(0) scale(1)}}
 @keyframes bearyCupBounce{0%{transform:scale(.5) rotate(-14deg)}55%{transform:scale(1.2) rotate(8deg)}100%{transform:scale(1) rotate(0)}}
 @keyframes bearyConfettiFall{0%{opacity:0;transform:translateY(0) rotate(0)}12%{opacity:.95}100%{opacity:0;transform:translateY(85px) translateX(var(--confetti-drift,12px)) rotate(220deg)}}
-@media(prefers-reduced-motion:reduce){.activity-item.is-just-completed,.activity-item.is-just-completed::after,.checklist-complete-celebration,.checklist-celebration-icon,.checklist-confetti{animation:none!important}.checklist-confetti{display:none!important}}
+@media(prefers-reduced-motion:reduce){.activity-item.is-just-completed,.checklist-complete-celebration,.checklist-celebration-icon,.checklist-confetti{animation:none!important}.checklist-confetti{display:none!important}}
 </style>
 <script id="bearys-checklist-celebration-script">
 (()=>{
@@ -9018,8 +9018,15 @@ if("serviceWorker" in navigator){
       item.classList.add('is-just-completed');
       window.setTimeout(()=>item.classList.remove('is-just-completed'),700);
     }
-    if(!input.checked)return;
     const type=input.dataset.activity.split('-')[0];
+    if(!input.checked){
+      const config=checklistConfig[type];
+      const container=config&&document.getElementById(config.container);
+      const card=container&&container.querySelector('.activity-card');
+      const banner=card&&card.querySelector('.checklist-complete-celebration');
+      if(banner)banner.remove();
+      return;
+    }
     const checks=getChecklistChecks(type);
     if(checks.length&&checks.every(check=>check.checked))celebrateChecklist(type);
   });
