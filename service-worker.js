@@ -64,11 +64,18 @@ html{
   min-height:100%;
   background:var(--bg);
   color-scheme:light;
+  scrollbar-color:var(--scrollbar-thumb) transparent;
+  scrollbar-width:thin;
   overflow-x:hidden;
   overflow-x:clip;
   -webkit-text-size-adjust:100%;
   touch-action:manipulation;
 }
+
+html::-webkit-scrollbar{width:8px;height:8px}
+html::-webkit-scrollbar-track{background:transparent}
+html::-webkit-scrollbar-thumb{border-radius:999px;background-color:var(--scrollbar-thumb)}
+html::-webkit-scrollbar-thumb:hover{background-color:var(--scrollbar-thumb-hover)}
 
 html.dark{
   background:#171216;
@@ -180,6 +187,8 @@ button:active{
 
   --pinksoft:#f9dce2;
   --border:#edc5cd;
+  --scrollbar-thumb:#e79ab5;
+  --scrollbar-thumb-hover:#d9779b;
 
   --shadow:
     0 14px 35px rgba(187,83,125,.13);
@@ -220,6 +229,8 @@ html.dark{
 
   --pinksoft:#422733;
   --border:#48323d;
+  --scrollbar-thumb:#a8637f;
+  --scrollbar-thumb-hover:#ff82b2;
 
   --shadow:
     0 16px 38px rgba(0,0,0,.30);
@@ -327,10 +338,14 @@ html.dark .topbar{
   background:var(--chrome-bg);
 
   border-bottom:
-    1px solid rgba(72,50,61,.8);
+    1px solid rgba(255,126,176,.22);
 
   box-shadow:none;
 }
+
+html.dark .brand-name{color:#fff5f8}
+html.dark .brand-subtitle{color:#ff579b}
+html.dark .brand-date{color:#f2e3ea}
 
 
 /* =========================================================
