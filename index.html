@@ -2962,6 +2962,35 @@ input, textarea, select {
 .recipe-no-results strong{color:var(--text);font-size:12px}
 .recipe-no-results p{margin:5px 0 0;color:var(--muted);font-size:10px}
 
+/* MENÚ DEL LOCAL */
+.shop-menu-search{position:relative;display:block;margin:10px 0 10px}
+.shop-menu-search>span{position:absolute;left:15px;top:50%;transform:translateY(-53%);color:var(--pink2);font-size:25px;line-height:1}
+.shop-menu-search input{width:100%;padding:14px 14px 14px 43px;border:1px solid var(--border);border-radius:17px;outline:0;background:var(--surface);color:var(--text);font-size:16px!important;box-shadow:var(--shadow)}
+.shop-menu-search input::placeholder{color:var(--muted)}
+.shop-menu-search input:focus{border-color:var(--pink);box-shadow:0 0 0 3px rgba(255,121,173,.13)}
+.shop-menu-filters{display:flex;gap:7px;overflow-x:auto;padding:2px 1px 8px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.shop-menu-filters::-webkit-scrollbar{display:none}
+.shop-menu-filter{flex:0 0 auto;min-height:38px;padding:8px 12px;border:1px solid var(--border);border-radius:999px;background:var(--surface);color:var(--muted);font-size:10px;font-weight:850;cursor:pointer;white-space:nowrap}
+.shop-menu-filter.active{border-color:var(--pink);background:var(--pink);color:#fff;box-shadow:0 5px 13px rgba(237,79,138,.2)}
+.shop-menu-results{column-count:1;column-gap:11px;column-fill:balance;margin-top:7px}
+.shop-menu-category{display:inline-block;width:100%;min-width:0;overflow:hidden;margin:0 0 11px;border:1px solid var(--border);border-radius:19px;background:var(--surface);box-shadow:var(--shadow);vertical-align:top;break-inside:avoid;-webkit-column-break-inside:avoid}
+.shop-menu-category[data-shop-menu-group="especial"]{border-color:rgba(255,121,173,.62);background:linear-gradient(135deg,var(--pinksoft),var(--surface))}
+.shop-menu-category-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 14px 11px}
+.shop-menu-category-heading h2{margin:0;color:var(--text);font-size:14px;font-weight:900}
+.shop-menu-category-count{flex:0 0 auto;color:var(--muted);font-size:9px;font-weight:750}
+.shop-menu-items{padding:0 14px 5px}
+.shop-menu-item{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;min-height:43px;padding:9px 0;border-top:1px solid var(--border)}
+.shop-menu-item-copy{min-width:0}
+.shop-menu-item-name{display:block;color:var(--text);font-size:11px;font-weight:700;line-height:1.4}
+.shop-menu-item-note{display:block;margin-top:3px;color:var(--muted);font-size:9px;line-height:1.4}
+.shop-menu-price{flex:0 0 auto;padding:6px 9px;border-radius:999px;background:var(--pinksoft);color:var(--text);font-size:11px;font-weight:900;white-space:nowrap}
+.shop-menu-empty{margin-top:15px;padding:28px 16px;border:1px solid var(--border);border-radius:20px;background:var(--surface);text-align:center}
+.shop-menu-empty[hidden]{display:none}
+.shop-menu-empty span{display:block;margin-bottom:8px;font-size:28px}
+.shop-menu-empty strong{color:var(--text);font-size:12px}
+.shop-menu-empty p{margin:5px 0 0;color:var(--muted);font-size:10px}
+@media(min-width:761px){.shop-menu-results{column-count:2}}
+
 
 
 /* RETO BEARY DEL DÍA */
@@ -3521,6 +3550,12 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
       <div class="menu-icon">🗓️</div>
       <span class="menu-card-title">Calendario</span>
       <span class="menu-card-description">Cumpleaños y temporadas</span>
+    </button>
+
+    <button class="menu-card" type="button" onclick="openPage('shopMenu')">
+      <span class="menu-icon" aria-hidden="true">🍽️</span>
+      <span class="menu-card-title">Menú</span>
+      <span class="menu-card-description">Alimentos, pan y bebidas</span>
     </button>
 
     <button class="menu-card menu-card-wide" type="button" onclick="openPage('rules')">
@@ -4446,6 +4481,45 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
     <p>Prueba con otro nombre o ingrediente.</p>
   </div>
 
+</section>
+
+
+<!-- =====================================================
+     MENÚ DE BEARY'S
+===================================================== -->
+
+<section class="page" id="shopMenuPage">
+  <div class="inner-header">
+    <button class="back-button" type="button" onclick="goHome()" aria-label="Volver a inicio">←</button>
+    <div class="inner-title">
+      <h1>Menú Beary's 🥐</h1>
+      <p>Alimentos, panadería y bebidas</p>
+    </div>
+  </div>
+
+  <label class="shop-menu-search">
+    <span aria-hidden="true">⌕</span>
+    <input id="shopMenuSearch" type="search" placeholder="Buscar en el menú..." autocomplete="off" aria-label="Buscar productos del menú">
+  </label>
+
+  <div class="shop-menu-filters" role="group" aria-label="Filtrar menú">
+    <button type="button" class="shop-menu-filter active" data-shop-menu-category="all" aria-pressed="true">Todo</button>
+    <button type="button" class="shop-menu-filter" data-shop-menu-category="especial" aria-pressed="false">Especiales</button>
+    <button type="button" class="shop-menu-filter" data-shop-menu-category="alimentos" aria-pressed="false">Alimentos</button>
+    <button type="button" class="shop-menu-filter" data-shop-menu-category="panaderia" aria-pressed="false">Panadería</button>
+    <button type="button" class="shop-menu-filter" data-shop-menu-category="calienteCafe" aria-pressed="false">Calientes con café</button>
+    <button type="button" class="shop-menu-filter" data-shop-menu-category="calienteSinCafe" aria-pressed="false">Calientes sin café</button>
+    <button type="button" class="shop-menu-filter" data-shop-menu-category="friaCafe" aria-pressed="false">Frías con café</button>
+    <button type="button" class="shop-menu-filter" data-shop-menu-category="friaSinCafe" aria-pressed="false">Frías sin café</button>
+    <button type="button" class="shop-menu-filter" data-shop-menu-category="extras" aria-pressed="false">Extras</button>
+  </div>
+
+  <div id="shopMenuResults" class="shop-menu-results" aria-live="polite"></div>
+  <div id="shopMenuNoResults" class="shop-menu-empty" hidden>
+    <span aria-hidden="true">🔎</span>
+    <strong>No encontramos ese producto</strong>
+    <p>Prueba con otro nombre o categoría.</p>
+  </div>
 </section>
 
 
@@ -6450,6 +6524,7 @@ function updateNavigation(page){
     button.removeAttribute("aria-current");
   });
   if(page==="home")buttons[0].classList.add("active");
+  else if(page==="shopMenu")buttons[0].classList.add("active");
   else if(page==="activities")buttons[1].classList.add("active");
   else if(page==="inventory")buttons[2].classList.add("active");
   else if(page==="cleaning")buttons[3].classList.add("active");
@@ -8803,10 +8878,150 @@ function setupRecipeBook(){
   renderRecipes();
 }
 
+const shopMenuGroups=[
+  {id:"especial",title:"Especiales de la casa",icon:"🧸",products:[
+    {name:"Bebida Beary's",price:125,note:"Cualquier bebida caliente, fría o frozen de tu elección; incluye mini osito Beary de peluche."},
+    {name:"Beary Waffles",price:135},
+    {name:"Croissant Beary's",price:120},
+    {name:"Beary Malteada",price:170},
+    {name:"Rollo Beary's",price:75}
+  ]},
+  {id:"alimentos",title:"Alimentos",icon:"🍽️",products:[
+    {name:"Fruta del día",price:65},
+    {name:"Tamales Gourmet",price:50},
+    {name:"Beary Waffles",price:135},
+    {name:"Croissant Beary's",price:120},
+    {name:"Croissant Jamón de Pavo y Queso",price:115},
+    {name:"Chilaquiles Verdes o Rojos",price:140},
+    {name:"Chilaquiles con Pollo",price:160},
+    {name:"Chilaquiles con Huevo",price:150},
+    {name:"Chilaquiles con Cochinita",price:170},
+    {name:"Chapata de Jamón de Pavo",price:130},
+    {name:"Molletes",price:115},
+    {name:"Molletes con Jamón",price:125},
+    {name:"Molletes con Tocino",price:125},
+    {name:"Molletes con Huevo",price:125},
+    {name:"Molletes con Cochinita",price:155},
+    {name:"Helado Bearys (Chocolate o Vainilla)",price:110},
+    {name:"Affogato",price:120}
+  ]},
+  {id:"panaderia",title:"Panadería",icon:"🥐",products:[
+    {name:"Rollo Beary's",price:75},
+    {name:"Croissant Nutella",price:75},
+    {name:"Croissant de Almendras",price:75},
+    {name:"Croissant Dulce de Leche y Plátano",price:75},
+    {name:"Roll de Frutos Rojos",price:70},
+    {name:"Roll de Manzana",price:70},
+    {name:"Oreja",price:45},
+    {name:"Galleta",price:65},
+    {name:"Tarta",price:65},
+    {name:"Flan",price:60}
+  ]},
+  {id:"calienteCafe",title:"Bebidas calientes con café",icon:"☕",products:[
+    {name:"Espresso",price:45},
+    {name:"Espresso Cortado",price:50},
+    {name:"Americano",price:50},
+    {name:"Flat White",price:60},
+    {name:"Capuchino",price:65},
+    {name:"Latte",price:65},
+    {name:"Latte Cajeta",price:75},
+    {name:"Latte Caramelo",price:75},
+    {name:"Mocaccino",price:75},
+    {name:"Latte Nutella",price:85},
+    {name:"Cookie Butter Latte",price:88}
+  ]},
+  {id:"calienteSinCafe",title:"Bebidas calientes sin café",icon:"🍵",products:[
+    {name:"Té",price:60},
+    {name:"Taro",price:75},
+    {name:"Matcha",price:75},
+    {name:"Chai Mango",price:75},
+    {name:"Chai",price:75},
+    {name:"Chocolate",price:80}
+  ]},
+  {id:"friaCafe",title:"Bebidas frías con café",icon:"🧋",products:[
+    {name:"Frappuccino",price:85},
+    {name:"Latte Frío",price:80},
+    {name:"Latte Caramel o Cajeta Frío",price:85},
+    {name:"Latte Nutella Frío",price:88},
+    {name:"Cookie Butter Latte Frío",price:98},
+    {name:"Frappuccino Cajeta, Nutella o Caramelo",price:95}
+  ]},
+  {id:"friaSinCafe",title:"Bebidas frías sin café",icon:"🧊",products:[
+    {name:"Beary Malteada",price:170},
+    {name:"Frappe Fresa",price:85},
+    {name:"Frappe Maracuyá",price:85},
+    {name:"Frappe Mango",price:85},
+    {name:"Pink Lemonade",price:75},
+    {name:"Matcha",price:85},
+    {name:"Chai Mango",price:85},
+    {name:"Chai",price:85},
+    {name:"Taro",price:85},
+    {name:"Té Helado",price:70},
+    {name:"Refresco",price:47},
+    {name:"Agua Topochico",price:47},
+    {name:"Agua Santa María",price:47}
+  ]},
+  {id:"extras",title:"Extras",icon:"✨",products:[
+    {name:"Shot Espresso",price:15},
+    {name:"Shot Espresso Decaff",price:15},
+    {name:"Leche Coco",price:18},
+    {name:"Leche Soya",price:18},
+    {name:"Leche Avena",price:18},
+    {name:"Leche Almendra",price:18},
+    {name:"Vaso de Leche",price:50},
+    {name:"Pieza de Huevo",price:20},
+    {name:"Cajeta ó Nutella",price:30}
+  ]}
+];
+
+let activeShopMenuCategory="all";
+function renderShopMenu(){
+  const results=document.getElementById("shopMenuResults");
+  const search=document.getElementById("shopMenuSearch");
+  if(!results||!search)return;
+  const query=normalizeRecipeText(search.value.trim());
+  const markup=shopMenuGroups.map(group=>{
+    if(activeShopMenuCategory!=="all"&&group.id!==activeShopMenuCategory)return "";
+    const matches=group.products.filter(product=>normalizeRecipeText([group.title,product.name,product.note||""].join(" ")).includes(query));
+    if(!matches.length)return "";
+    const items=matches.map(product=>{
+      const note=product.note?'<span class="shop-menu-item-note">'+recipeText(product.note)+'</span>':"";
+      return '<div class="shop-menu-item"><div class="shop-menu-item-copy"><span class="shop-menu-item-name">'+recipeText(product.name)+'</span>'+note+'</div><span class="shop-menu-price">$'+product.price+'</span></div>';
+    }).join("");
+    const count=matches.length+" "+(matches.length===1?"producto":"productos");
+    return '<section class="shop-menu-category" data-shop-menu-group="'+recipeText(group.id)+'"><div class="shop-menu-category-heading"><h2>'+group.icon+" "+recipeText(group.title)+'</h2><span class="shop-menu-category-count">'+count+'</span></div><div class="shop-menu-items">'+items+'</div></section>';
+  }).join("");
+  results.innerHTML=markup;
+  document.getElementById("shopMenuNoResults").hidden=markup!=="";
+}
+function setShopMenuCategory(category,button){
+  activeShopMenuCategory=category;
+  document.querySelectorAll(".shop-menu-filter").forEach(filter=>{
+    const active=filter===button;
+    filter.classList.toggle("active",active);
+    filter.setAttribute("aria-pressed",String(active));
+  });
+  renderShopMenu();
+}
+function setupShopMenu(){
+  const search=document.getElementById("shopMenuSearch");
+  if(!search)return;
+  let searchTimer;
+  search.addEventListener("input",()=>{
+    clearTimeout(searchTimer);
+    searchTimer=setTimeout(renderShopMenu,70);
+  });
+  document.querySelectorAll(".shop-menu-filter").forEach(button=>{
+    button.addEventListener("click",()=>setShopMenuCategory(button.dataset.shopMenuCategory,button));
+  });
+  renderShopMenu();
+}
+
 
 function initializeApp(){
 
   setupRecipeBook();
+  setupShopMenu();
   initializeLiquidNavigation();
   updateDailyChallengeButton();
   startPhraseRotation();
@@ -9085,6 +9300,10 @@ html.dark{--label-accent:#f1dce6;--label-accent-solid:var(--pink);--label-on-pin
 @keyframes floatBearFast{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 @keyframes bearyCupBounce{0%{transform:scale(.82) rotate(-8deg)}58%{transform:scale(1.08) rotate(4deg)}100%{transform:scale(1) rotate(0)}}
 .page.active .hero,.page.active .menu-card,.page.active .phrase-card,.page.active .status-card,.page.active .inventory-hero,.page.active .inventory-area,.page.active .activity-card,.page.active .calendar-card,.page.active .calendar-legend,.page.active .calendar-editor-toggle,.page.active .recipe-intro,.page.active .recipe-searchbox,.page.active .recipe-filters,.page.active .recipe-category{animation:cardArrival .3s var(--motion-ease) both}
+.page.active .shop-menu-search,.page.active .shop-menu-filters,.page.active .shop-menu-category{animation:cardArrival .3s var(--motion-ease) both}
+.page.active .shop-menu-category:nth-child(2){animation-delay:.035s}
+.page.active .shop-menu-category:nth-child(3){animation-delay:.07s}
+.page.active .shop-menu-category:nth-child(4){animation-delay:.105s}
 .page.active .menu-card:nth-child(2){animation-delay:.035s}
 .page.active .menu-card:nth-child(3){animation-delay:.07s}
 .page.active .menu-card:nth-child(4){animation-delay:.105s}
