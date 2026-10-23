@@ -3406,7 +3406,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
 
       <div class="hero-place-description">
         <strong>Beary’s 🧸</strong>
-        Es el osito que cambió la miel por el café, es el anfitrión del lugar al cual le encanta cambiar de outfit cada temporada y tomarse fotos con sus invitados, disfruta escuchar pop en inglés.
+        Es el osito que cambió la miel por el café, es el anfitrión del lugar al cual le encanta cambiar de outfit cada temporada y tomarse fotos con sus invitados, también disfruta escuchar pop en inglés.
       </div>
 
     </div>
@@ -4170,7 +4170,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
       onclick="selectActivityType('inter')"
       aria-pressed="false"
     >
-      ☕ Inter
+      🌗 Inter
     </button>
 
     <button
@@ -4302,7 +4302,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
 
   <div id="interActivities" style="display:none">
     <div class="activity-card">
-      <div class="activity-title">☕ Funciones de Inter</div>
+      <div class="activity-title">🌗 Funciones de Inter</div>
       <p class="activity-group-note">Marca lo que ya quedó durante el turno. El avance se guarda por jornada y se comparte con el equipo.</p>
       <div class="closing-progress-panel">
         <div class="closing-progress-summary">
@@ -4703,7 +4703,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
       <span class="more-page-chevron" aria-hidden="true">›</span>
     </button>
     <button type="button" class="more-page-option" onclick="openPage('activities');selectActivityType('inter')">
-      <span class="more-page-option-icon" aria-hidden="true">☕</span>
+      <span class="more-page-option-icon" aria-hidden="true">🌗</span>
       <span class="more-page-option-copy"><b>Funciones de Inter</b><small>Checklist de tareas durante el turno</small></span>
       <span class="more-page-chevron" aria-hidden="true">›</span>
     </button>
@@ -7989,7 +7989,7 @@ function selectActivityType(type){
   const title=document.getElementById("homeActivityProgressTitle");
   const track=document.getElementById("homeActivityProgressTrack");
   const activityLabel=isOpening?"apertura":isClosing?"cierre":"Inter";
-  if(icon)icon.textContent=isOpening?"🌅":isClosing?"🌙":"☕";
+  if(icon)icon.textContent=isOpening?"🌅":isClosing?"🌙":"🌗";
   if(eyebrow)eyebrow.textContent="AVANCE DE "+activityLabel.toLocaleUpperCase("es-MX");
   if(title)title.textContent=isOpening?"Apertura de hoy":isClosing?"Cierre de hoy":"Funciones de Inter";
   if(track)track.setAttribute("aria-label","Avance del checklist de "+activityLabel+" de hoy");
@@ -9266,7 +9266,7 @@ if("serviceWorker" in navigator){
 (()=>{
   const checklistConfig={
     opening:{container:'openingActivities',title:'¡Apertura lista!',message:'Todo preparado para recibir el día. ¡Buen trabajo!',icon:'🌅'},
-    inter:{container:'interActivities',title:'¡Inter completado!',message:'Todo al día. Gracias por mantener el ritmo.',icon:'☕'},
+    inter:{container:'interActivities',title:'¡Inter completado!',message:'Todo al día. Gracias por mantener el ritmo.',icon:'🌗'},
     closing:{container:'closingActivities',title:'¡Cierre completado!',message:'Todo listo y en orden. ¡Excelente trabajo!',icon:'🌙'}
   };
   const celebrationColors=['#ff79ad','#f4c95d','#8dcbb2','#a8b8ff','#f49a68'];
