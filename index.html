@@ -9389,6 +9389,14 @@ button,.menu-card,.more-page-option,.recipe-card,.activity-tab,.nav-button,.cale
 @media(hover:none) and (prefers-reduced-motion:no-preference){
   body:not(.animations-off) button:not(:disabled):active,body:not(.animations-off) .menu-card:active,body:not(.animations-off) .recipe-card:active{transform:scale(.98)}
 }
+@keyframes pageInMobile{from{opacity:0;transform:translate3d(0,3px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+@keyframes cardArrivalMobile{0%{opacity:0;transform:translate3d(0,5px,0) scale(.998)}78%{opacity:1;transform:translate3d(0,-.25px,0) scale(1.001)}100%{opacity:1;transform:translate3d(0,0,0) scale(1)}}
+@keyframes navPopMobile{0%,100%{transform:translateY(0) scale(1)}62%{transform:translateY(-.7px) scale(1.025)}}
+@media(max-width:620px) and (prefers-reduced-motion:no-preference){
+  .page.active{animation:pageInMobile .25s ease-out both}
+  .page.active .hero,.page.active .menu-card,.page.active .phrase-card,.page.active .status-card,.page.active .inventory-hero,.page.active .inventory-area,.page.active .activity-card,.page.active .calendar-card,.page.active .calendar-legend,.page.active .calendar-editor-toggle,.page.active .recipe-intro,.page.active .recipe-searchbox,.page.active .recipe-filters,.page.active .recipe-category,.page.active .shop-menu-search,.page.active .shop-menu-filters,.page.active .shop-menu-category,.page.active .more-page-intro,.page.active .more-page-option,.inventory-order-panel,.home-challenge-card:not([hidden]),.checklist-complete-celebration{animation:cardArrivalMobile .29s cubic-bezier(.2,.7,.3,1) both}
+  .nav-button.just-selected .nav-icon{animation:navPopMobile .26s ease-out}
+}
 </style>
 </body>
 </html>
