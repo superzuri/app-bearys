@@ -5185,7 +5185,7 @@ function refreshSharedUIForKey(key){
     }
   }
   if(key==="bearyRestockOrder"&&appInitialized)renderInventoryOrder();
-  if(key.startsWith("bearyActivity_")&&appInitialized)loadActivities();
+  if(key.startsWith("bearyActivity_")&&appInitialized)refreshActivitiesFromSharedState();
   if(key==="bearyDeepCleaningAssignments_v1"&&appInitialized&&document.getElementById("cleaningPage")?.classList.contains("active"))renderDeepCleaning();
   if(key==="bearyBirthdays"&&typeof birthdays!=="undefined"){
     birthdays=(readStoredArray(key)||[]).filter(item=>item&&typeof item.name==="string"&&item.name.trim()&&isValidCalendarDate(item.date));
@@ -8043,6 +8043,27 @@ function loadActivities(){
 
 }
 
+function getActivityChecklistCompletionStates(){
+  const states={};
+  ["opening","inter","closing"].forEach(type=>{
+    const checks=Array.from(document.querySelectorAll('[data-activity^="'+type+'-"]')).filter(check=>!check.disabled);
+    states[type]=checks.length>0&&checks.every(check=>check.checked);
+  });
+  return states;
+}
+
+function refreshActivitiesFromSharedState(){
+  const previous=getActivityChecklistCompletionStates();
+  loadActivities();
+  const current=getActivityChecklistCompletionStates();
+  Object.keys(current).forEach(type=>{
+    if(previous[type]===current[type])return;
+    window.dispatchEvent(new CustomEvent("beary:activity-checklist-state",{
+      detail:{type,completed:current[type]}
+    }));
+  });
+}
+
 
 document
   .querySelectorAll(
@@ -9280,6 +9301,19 @@ if("serviceWorker" in navigator){
     else card.prepend(banner);
     window.setTimeout(()=>{if(banner.isConnected)banner.remove();},5200);
   }
+  function removeChecklistCelebration(type){
+    const config=checklistConfig[type];
+    const container=config&&document.getElementById(config.container);
+    const card=container&&container.querySelector('.activity-card');
+    const banner=card&&card.querySelector('.checklist-complete-celebration');
+    if(banner)banner.remove();
+  }
+  window.addEventListener('beary:activity-checklist-state',event=>{
+    const {type,completed}=event.detail||{};
+    if(!checklistConfig[type])return;
+    if(completed)celebrateChecklist(type);
+    else removeChecklistCelebration(type);
+  });
   document.addEventListener('change',event=>{
     const input=event.target;
     if(!(input instanceof HTMLInputElement)||!input.matches('input[type="checkbox"][data-activity]'))return;
@@ -9292,11 +9326,7 @@ if("serviceWorker" in navigator){
     }
     const type=input.dataset.activity.split('-')[0];
     if(!input.checked){
-      const config=checklistConfig[type];
-      const container=config&&document.getElementById(config.container);
-      const card=container&&container.querySelector('.activity-card');
-      const banner=card&&card.querySelector('.checklist-complete-celebration');
-      if(banner)banner.remove();
+      removeChecklistCelebration(type);
       return;
     }
     const checks=getChecklistChecks(type);
