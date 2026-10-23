@@ -64,11 +64,18 @@ html{
   min-height:100%;
   background:var(--bg);
   color-scheme:light;
+  scrollbar-color:var(--scrollbar-thumb) transparent;
+  scrollbar-width:thin;
   overflow-x:hidden;
   overflow-x:clip;
   -webkit-text-size-adjust:100%;
   touch-action:manipulation;
 }
+
+html::-webkit-scrollbar{width:8px;height:8px}
+html::-webkit-scrollbar-track{background:transparent}
+html::-webkit-scrollbar-thumb{border-radius:999px;background-color:var(--scrollbar-thumb)}
+html::-webkit-scrollbar-thumb:hover{background-color:var(--scrollbar-thumb-hover)}
 
 html.dark{
   background:#171216;
@@ -180,6 +187,8 @@ button:active{
 
   --pinksoft:#f9dce2;
   --border:#edc5cd;
+  --scrollbar-thumb:#e79ab5;
+  --scrollbar-thumb-hover:#d9779b;
 
   --shadow:
     0 14px 35px rgba(187,83,125,.13);
@@ -220,6 +229,8 @@ html.dark{
 
   --pinksoft:#422733;
   --border:#48323d;
+  --scrollbar-thumb:#a8637f;
+  --scrollbar-thumb-hover:#ff82b2;
 
   --shadow:
     0 16px 38px rgba(0,0,0,.30);
@@ -327,10 +338,14 @@ html.dark .topbar{
   background:var(--chrome-bg);
 
   border-bottom:
-    1px solid rgba(72,50,61,.8);
+    1px solid rgba(255,126,176,.22);
 
   box-shadow:none;
 }
+
+html.dark .brand-name{color:#fff5f8}
+html.dark .brand-subtitle{color:#ff579b}
+html.dark .brand-date{color:#f2e3ea}
 
 
 /* =========================================================
@@ -5159,9 +5174,14 @@ function emitSharedStorageEvent(key,oldValue,newValue){
 function refreshSharedUIForKey(key){
   if(key.startsWith("bearyInv_")&&typeof inventoryCache!=="undefined"){
     const product=typeof products!=="undefined"?products.find(item=>inventoryKey(item.nombre)===key):null;
-    if(product)inventoryCache.set(product.nombre,localStorage.getItem(key)??"");
+    if(product&&!pendingInventoryValues.has(product.nombre))inventoryCache.set(product.nombre,localStorage.getItem(key)??"");
     if(appInitialized&&document.getElementById("inventoryPage")?.classList.contains("active")){
-      buildInventory();updateInventoryStats();renderInventoryOrder();
+      const input=[...document.querySelectorAll("#inventoryAreas input.quantity")].find(field=>field.dataset.inventoryKey===key);
+      if(input&&product&&!(document.activeElement===input&&input.__inventoryDirty)){
+        input.value=inventoryCache.get(product.nombre)??"";
+        input.__updateInventoryTraffic?.();
+      }
+      updateInventoryStats();renderInventoryOrder();
     }
   }
   if(key==="bearyRestockOrder"&&appInitialized)renderInventoryOrder();
@@ -7083,6 +7103,8 @@ function inventoryKey(name){
 /* Caché en memoria: evita leer localStorage una y otra vez mientras se edita.
    La clave real de localStorage no cambia, así que esto conserva los datos existentes. */
 const inventoryCache = new Map();
+const pendingInventoryValues = new Map();
+const pendingInventoryTimers = new Map();
 
 function getQuantity(name){
 
@@ -7099,19 +7121,37 @@ function getQuantity(name){
 }
 
 
-function saveQuantity(name,value){
-
-  inventoryCache.set(name,value);
-
+function flushInventoryQuantity(name){
+  const value=pendingInventoryValues.get(name);
+  if(value===undefined)return;
+  pendingInventoryValues.delete(name);
+  const timer=pendingInventoryTimers.get(name);
+  if(timer)clearTimeout(timer);
+  pendingInventoryTimers.delete(name);
   const key=inventoryKey(name);
-
-  if(value===""){
-    localStorage.removeItem(key);
-  }else{
-    localStorage.setItem(key,value);
-  }
-
+  if(value==="")localStorage.removeItem(key);
+  else localStorage.setItem(key,value);
 }
+
+function flushPendingInventoryQuantities(){
+  [...pendingInventoryValues.keys()].forEach(flushInventoryQuantity);
+}
+
+function saveQuantity(name,value,immediate=false){
+  const normalizedValue=String(value??"");
+  inventoryCache.set(name,normalizedValue);
+  pendingInventoryValues.set(name,normalizedValue);
+  const previousTimer=pendingInventoryTimers.get(name);
+  if(previousTimer)clearTimeout(previousTimer);
+  pendingInventoryTimers.delete(name);
+  if(immediate){
+    flushInventoryQuantity(name);
+    return;
+  }
+  pendingInventoryTimers.set(name,setTimeout(()=>flushInventoryQuantity(name),280));
+}
+
+window.addEventListener("pagehide",flushPendingInventoryQuantities);
 
 /* Si otra pestaña/dispositivo del mismo origen modifica el inventario,
    mantenemos el caché sincronizado sin afectar la interfaz. */
@@ -7300,6 +7340,8 @@ function buildInventory(){
         input.className=
           "quantity";
 
+        input.dataset.inventoryKey=inventoryKey(name);
+
         input.type="number";
         input.inputMode="decimal";
         input.min="0";
@@ -7364,11 +7406,14 @@ function buildInventory(){
 
         }
 
+        input.__updateInventoryTraffic=updateTraffic;
+
 
         input.addEventListener(
           "input",
           ()=>{
 
+            input.__inventoryDirty=true;
             saveQuantity(
               name,
               input.value
@@ -7388,8 +7433,10 @@ function buildInventory(){
 
             saveQuantity(
               name,
-              input.value
+              input.value,
+              true
             );
+            input.__inventoryDirty=false;
 
             updateTraffic();
 
