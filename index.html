@@ -1488,6 +1488,12 @@ html.dark .menu-card:hover{
   overflow-wrap:anywhere;
 }
 
+.product-name-line{display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0}
+.inventory-history-link{flex:0 0 auto;padding:4px 6px;border-radius:8px;background:var(--pinksoft);color:var(--pink2);font-size:9px;font-weight:850;cursor:pointer}
+.inventory-history-link:focus-visible,.inventory-order-product-link:focus-visible,.inventory-product-return:focus-visible{outline:2px solid var(--pink2);outline-offset:2px}
+.inventory-product-return{display:block;width:100%;margin:8px 0;padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:var(--pinksoft);color:var(--pink2);font-size:10px;font-weight:850;text-align:left;cursor:pointer}
+.product-row.is-context-target{border-radius:12px;background:var(--pinksoft);box-shadow:inset 0 0 0 1px var(--pink)}
+
 .product-meta{
 
   margin-top:3px;
@@ -1630,7 +1636,9 @@ html.dark .menu-card:hover{
 .inventory-order-item{display:flex;align-items:center;gap:9px;padding:10px;border:1px solid var(--border);border-radius:13px;background:var(--bg)}
 .inventory-order-item input{width:19px;height:19px;flex:0 0 19px;accent-color:var(--pink)}
 .inventory-order-item span{flex:1;min-width:0;color:var(--text);font-size:10px;line-height:1.35}
-.inventory-order-item input:checked+span{color:var(--muted);text-decoration:line-through}
+.inventory-order-product-link{flex:1;min-width:0;padding:0;border:0;background:transparent;color:var(--text);font-size:10px;line-height:1.35;text-align:left;overflow-wrap:anywhere;cursor:pointer}
+.inventory-order-item input:checked+.inventory-order-product-link{color:var(--muted);text-decoration:line-through}
+.inventory-order-item input:disabled+.inventory-order-product-link{cursor:pointer}
 .inventory-order-item strong{flex:0 0 auto;color:var(--pink2);font-size:9px;white-space:nowrap}
 .inventory-order-empty{margin:10px 0;padding:13px;border-radius:13px;background:var(--pinksoft);color:var(--pink2);font-size:10px;font-weight:800;text-align:center}
 .inventory-order-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
@@ -3784,7 +3792,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
 
     <button
       class="back-button"
-      onclick="goHome()"
+      onclick="goBackFromPage('settings')"
     >
       ←
     </button>
@@ -4010,7 +4018,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
 
     <button
       class="back-button"
-      onclick="goHome()"
+      onclick="goBackFromInventory()"
     >
       ←
     </button>
@@ -4181,7 +4189,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
 
     <button
       class="back-button"
-      onclick="goHome()"
+      onclick="goBackFromPage('activities')"
     >
       ←
     </button>
@@ -4391,7 +4399,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
 
     <button
       class="back-button"
-      onclick="goHome()"
+      onclick="goBackFromPage('cleaning')"
     >
       ←
     </button>
@@ -4495,7 +4503,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
 
     <button
       class="back-button"
-      onclick="goHome()"
+      onclick="goBackFromPage('recipes')"
     >
       ←
     </button>
@@ -4554,9 +4562,9 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
 
 <section class="page" id="shopMenuPage">
   <div class="inner-header">
-    <button class="back-button" type="button" onclick="goHome()" aria-label="Volver a inicio">←</button>
+    <button class="back-button" type="button" onclick="goBackFromPage('shopMenu')" aria-label="Volver">←</button>
     <div class="inner-title">
-      <h1>Menú Beary's 🥐</h1>
+      <h1>Menú Beary's 🍽️</h1>
       <p>Alimentos, panadería y bebidas</p>
     </div>
   </div>
@@ -4592,7 +4600,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
 ===================================================== -->
 
 <section class="page" id="calendarPage">
- <div class="inner-header"><button class="back-button" onclick="goHome()">←</button><div class="inner-title"><h1>Calendario 🗓️</h1><p>Cumpleaños y temporadas de Beary's</p></div></div>
+ <div class="inner-header"><button class="back-button" onclick="goBackFromPage('calendar')" aria-label="Volver">←</button><div class="inner-title"><h1>Calendario 🗓️</h1><p>Cumpleaños y temporadas de Beary's</p></div></div>
 
  <div class="calendar-card">
   <div class="calendar-head"><button type="button" class="calendar-arrow" aria-label="Mes anterior" onclick="changeCalendarMonth(-1)">‹</button><div><b id="calendarMonthTitle">Mes</b><small id="calendarYearTitle">Año</small></div><button type="button" class="calendar-arrow" aria-label="Mes siguiente" onclick="changeCalendarMonth(1)">›</button></div>
@@ -4670,7 +4678,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
 
 
   <div class="activity-card">
-    <div class="activity-title">📖 Movimientos del equipo</div>
+    <div class="activity-title" id="historyActivityTitle">📖 Movimientos del equipo</div>
     <p class="activity-group-note">Cada movimiento conserva quién lo hizo. Busca un producto o tarea y filtra por área o persona.</p>
     <div class="history-tools">
       <label class="history-search"><span aria-hidden="true">🔎</span><input id="historySearch" type="search" placeholder="Buscar en el historial…" autocomplete="off" oninput="searchHistory(this.value)"></label>
@@ -4697,7 +4705,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
 
 <section class="page" id="rulesPage">
   <div class="inner-header">
-    <button class="back-button" type="button" onclick="goHome()" aria-label="Volver a inicio">←</button>
+    <button class="back-button" type="button" onclick="goBackFromPage('rules')" aria-label="Volver">←</button>
     <div class="inner-title">
       <h1>Reglamento 📋</h1>
       <p>Acuerdos para cuidar el servicio y al equipo</p>
@@ -4730,7 +4738,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
 
 <section class="page" id="morePage">
   <div class="inner-header">
-    <button class="back-button" type="button" onclick="goHome()" aria-label="Volver a inicio">←</button>
+    <button class="back-button" type="button" onclick="goBackFromPage('more')" aria-label="Volver a inicio">←</button>
     <div class="inner-title">
       <h1>Más opciones ✨</h1>
       <p>Herramientas para el equipo</p>
@@ -4751,9 +4759,14 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
       <span class="more-page-option-copy"><b>Limpieza</b><small>Limpieza profunda y asignaciones del equipo</small></span>
       <span class="more-page-chevron" aria-hidden="true">›</span>
     </button>
-    <button type="button" class="more-page-option" onclick="openPage('activities');selectActivityType('inter')">
-      <span class="more-page-option-icon" aria-hidden="true">🌗</span>
-      <span class="more-page-option-copy"><b>Funciones de Inter</b><small>Checklist de tareas durante el turno</small></span>
+    <button type="button" class="more-page-option" onclick="openPage('activities')">
+      <span class="more-page-option-icon" aria-hidden="true">✅</span>
+      <span class="more-page-option-copy"><b>Actividades</b><small>Apertura, Inter y cierre</small></span>
+      <span class="more-page-chevron" aria-hidden="true">›</span>
+    </button>
+    <button type="button" class="more-page-option" onclick="openPage('inventory')">
+      <span class="more-page-option-icon" aria-hidden="true">📦</span>
+      <span class="more-page-option-copy"><b>Inventario</b><small>Existencias y productos por surtir</small></span>
       <span class="more-page-chevron" aria-hidden="true">›</span>
     </button>
     <button type="button" class="more-page-option" onclick="openPage('rules')">
@@ -4764,6 +4777,11 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
     <button type="button" class="more-page-option" onclick="openPage('recipes')">
       <span class="more-page-option-icon" aria-hidden="true">☕</span>
       <span class="more-page-option-copy"><b>Recetario</b><small>Bebidas y preparación</small></span>
+      <span class="more-page-chevron" aria-hidden="true">›</span>
+    </button>
+    <button type="button" class="more-page-option" onclick="openPage('shopMenu')">
+      <span class="more-page-option-icon" aria-hidden="true">🍽️</span>
+      <span class="more-page-option-copy"><b>Menú Beary's</b><small>Alimentos, panadería y bebidas</small></span>
       <span class="more-page-chevron" aria-hidden="true">›</span>
     </button>
     <button type="button" class="more-page-option" onclick="openPage('calendar')">
@@ -4800,7 +4818,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
   <button
     class="nav-button active"
     aria-current="page"
-    onclick="goHome()"
+    onclick="switchSection('home')"
   >
 
     <span class="nav-icon">
@@ -4816,7 +4834,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
 
   <button
     class="nav-button"
-    onclick="openPage('activities')"
+    onclick="switchSection('activities')"
   >
 
     <span class="nav-icon">
@@ -4832,7 +4850,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
 
   <button
     class="nav-button"
-    onclick="openPage('inventory')"
+    onclick="switchSection('inventory')"
   >
 
     <span class="nav-icon">
@@ -4848,7 +4866,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
 
   <button
     class="nav-button"
-    onclick="openPage('cleaning')"
+    onclick="switchSection('cleaning')"
   >
 
     <span class="nav-icon">
@@ -4864,7 +4882,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
 
   <button
     class="nav-button"
-    onclick="openPage('more')"
+    onclick="switchSection('more')"
   >
 
     <span class="nav-icon">
@@ -5609,11 +5627,36 @@ function openMemberActivity(uid){
   openPage("history");
   showToast("Mostrando la actividad de un integrante del equipo");
 }
+let historyProductContextName="";
+function openInventoryProductHistory(name){
+  if(!name)return;
+  historyReturnPage="inventory";
+  historyReturnScrollPosition=captureHistoryReturnScroll();
+  historyProductContextName=String(name).trim();
+  historyPersonFilter="all";
+  historyCategoryFilter="inventory";
+  historySearchQuery=historyProductContextName.toLocaleLowerCase("es-MX");
+  const search=document.getElementById("historySearch");
+  if(search)search.value=historyProductContextName;
+  const personPicker=document.getElementById("historyPersonFilter");
+  if(personPicker)personPicker.value="all";
+  const inventoryFilter=document.querySelector('#historyFilters .history-filter[data-history-filter="inventory"]');
+  setHistoryFilter("inventory",inventoryFilter);
+  openPage("history");
+}
+function updateHistoryProductHeading(){
+  const heading=document.getElementById("historyActivityTitle");
+  if(heading)heading.textContent=historyProductContextName
+    ?"📦 Movimientos de "+historyProductContextName
+    :"📖 Movimientos del equipo";
+}
 function goBackFromHistory(){
   const returnPage=historyReturnPage;
   const returnPosition=historyReturnScrollPosition;
   historyReturnPage=null;
   historyReturnScrollPosition=null;
+  historyProductContextName="";
+  updateHistoryProductHeading();
   if(returnPage&&document.getElementById(returnPage+"Page")){
     historyPersonFilter="all";
     historyCategoryFilter="all";
@@ -5624,7 +5667,7 @@ function goBackFromHistory(){
     if(personPicker)personPicker.value="all";
     const allFilter=document.querySelector('#historyFilters .history-filter[data-history-filter="all"]');
     setHistoryFilter("all",allFilter);
-    openPage(returnPage);
+    openPage(returnPage,{direct:true});
     requestAnimationFrame(()=>{
       if(returnPosition?.container==="app"){
         const app=document.querySelector(".app");
@@ -5635,7 +5678,18 @@ function goBackFromHistory(){
     });
     return;
   }
-  goHome();
+  historyPersonFilter="all";
+  historyCategoryFilter="all";
+  historySearchQuery="";
+  historyProductContextName="";
+  updateHistoryProductHeading();
+  const search=document.getElementById("historySearch");
+  if(search)search.value="";
+  const personPicker=document.getElementById("historyPersonFilter");
+  if(personPicker)personPicker.value="all";
+  const allFilter=document.querySelector('#historyFilters .history-filter[data-history-filter="all"]');
+  setHistoryFilter("all",allFilter);
+  goBackFromPage("history");
 }
 async function sendTeamGreeting(uid,name){
   if(!activeTeamProfile?.uid||!uid||uid===activeTeamProfile.uid)return;
@@ -6697,6 +6751,16 @@ function hideCalendarDayDetails(){
  const panel=document.getElementById("calendarDayDetails");if(panel)panel.hidden=true;
  document.querySelector("#calendarGrid .calendar-day.selected")?.classList.remove("selected");
 }
+function openCalendarForDate(value){
+ let date=value instanceof Date?new Date(value):null;
+ if(!date&&isValidCalendarDate(value))date=parseLocalDate(String(value));
+ if(!date||Number.isNaN(date.getTime()))return;
+ const year=date.getFullYear(),month=date.getMonth(),day=date.getDate();
+ calendarDate=new Date(year,month,1);
+ selectedCalendarDateKey=dateKey(year,month,day);
+ openPage("calendar");
+ showCalendarDayDetails(year,month,day,false);
+}
 function changeCalendarMonth(delta){hideCalendarDayDetails();calendarDate=new Date(calendarDate.getFullYear(),calendarDate.getMonth()+delta,1);renderCalendar()}
 function addBirthday(){
  const name=document.getElementById("birthdayName").value.trim(),date=document.getElementById("birthdayDate").value;
@@ -6768,7 +6832,26 @@ function resetAppScroll(){
  window.scrollTo(0,0);
 }
 
-function openPage(page){
+const pageBackContexts=new Map();
+function pageNameFromElement(page){return page?.id?.replace(/Page$/,"")||""}
+function capturePageBackContext(pageElement){
+  const page=pageNameFromElement(pageElement);
+  const context={page,scroll:captureHistoryReturnScroll()};
+  if(page==="activities")context.activityType=activeActivityType;
+  if(page==="calendar"){
+    context.calendarDate=new Date(calendarDate);
+    context.selectedCalendarDateKey=selectedCalendarDateKey;
+  }
+  return context;
+}
+function restorePageScroll(position){
+  if(position?.container==="app"){
+    const app=document.querySelector(".app");
+    if(app)app.scrollTop=position.top||0;
+  }else window.scrollTo(0,position?.top||0);
+}
+
+function openPage(page,options={}){
 
   const target =
     document.getElementById(
@@ -6780,12 +6863,18 @@ function openPage(page){
   }
 
   const currentPage=document.querySelector(".page.active");
+  if(currentPage?.id==="historyPage"&&page!=="history"&&historyReturnPage==="inventory")cancelInventoryProductJump();
+  if(currentPage&&currentPage!==target&&!options.direct){
+    pageBackContexts.set(page,capturePageBackContext(currentPage));
+  }
   if(currentPage?.id==="historyPage"&&page!=="history"&&historyReturnPage){
     historyReturnPage=null;
     historyReturnScrollPosition=null;
     historyPersonFilter="all";
     historyCategoryFilter="all";
     historySearchQuery="";
+    historyProductContextName="";
+    updateHistoryProductHeading();
   }
   if(currentPage===target){
     updateNavigation(page);
@@ -6803,6 +6892,8 @@ function openPage(page){
 
   target.classList.add("active");
 
+  if(page==="history")updateHistoryProductHeading();
+
   if(page==="settings"){
     syncSettingsUI();
     loadRegisteredAccounts();
@@ -6813,7 +6904,7 @@ function openPage(page){
 
   updateNavigation(page);
 
-  if(page==="activities")refreshScheduledActivityView(true);
+  if(page==="activities")refreshScheduledActivityView(false);
 
   if(page==="cleaning")renderDeepCleaning();
 
@@ -6836,30 +6927,33 @@ function openPage(page){
 
 }
 
+function switchSection(page){
+  const currentPage=document.querySelector(".page.active");
+  if(currentPage?.id==="inventoryPage"&&inventoryOrderReturnState)cancelInventoryProductJump();
+  if(currentPage)pageBackContexts.delete(pageNameFromElement(currentPage));
+  pageBackContexts.delete(page);
+  openPage(page,{direct:true});
+}
 
-function goHome(){
-
-  const homePage=document.getElementById("homePage");
-  if(document.querySelector(".page.active")===homePage){
-    updateNavigation("home");
+function goBackFromPage(page){
+  const context=pageBackContexts.get(page);
+  pageBackContexts.delete(page);
+  if(context?.page&&document.getElementById(context.page+"Page")){
+    if(context.page==="calendar"&&context.calendarDate){
+      calendarDate=new Date(context.calendarDate);
+      selectedCalendarDateKey=context.selectedCalendarDateKey||null;
+    }
+    openPage(context.page,{direct:true});
+    if(context.page==="activities"&&context.activityType)selectActivityType(context.activityType);
+    requestAnimationFrame(()=>restorePageScroll(context.scroll));
     return;
   }
+  goHome();
+}
 
-  document
-    .querySelectorAll(".page")
-    .forEach(
-      p=>
-        p.classList.remove("active")
-    );
 
-  document
-    .getElementById("homePage")
-    .classList.add("active");
-
-  resetAppScroll();
-
-  updateNavigation("home");
-
+function goHome(){
+  switchSection("home");
 }
 
 
@@ -7023,11 +7117,11 @@ function slideLiquidNavTo(clientX){
 
 function selectLiquidNavButton(button){
   const index=liquidNavButtons.indexOf(button);
-  if(index===0)goHome();
-  else if(index===1)openPage("activities");
-  else if(index===2)openPage("inventory");
-  else if(index===3)openPage("cleaning");
-  else if(index===4)openPage("more");
+  if(index===0)switchSection("home");
+  else if(index===1)switchSection("activities");
+  else if(index===2)switchSection("inventory");
+  else if(index===3)switchSection("cleaning");
+  else if(index===4)switchSection("more");
 }
 
 function initializeLiquidNavigation(){
@@ -7753,6 +7847,17 @@ function buildInventory(){
         productName.textContent=
           name;
 
+        const nameLine=document.createElement("div");
+        nameLine.className="product-name-line";
+        const historyButton=document.createElement("button");
+        historyButton.type="button";
+        historyButton.className="inventory-history-link";
+        historyButton.textContent="📖";
+        historyButton.title="Ver movimientos de "+name;
+        historyButton.setAttribute("aria-label","Ver historial de "+name);
+        historyButton.addEventListener("click",()=>openInventoryProductHistory(name));
+        nameLine.append(productName,historyButton);
+
 
         const meta =
           document.createElement(
@@ -7768,7 +7873,7 @@ function buildInventory(){
 
 
         info.appendChild(
-          productName
+          nameLine
         );
 
         info.appendChild(
@@ -8097,15 +8202,20 @@ function renderInventoryOrder(){
     itemsBox.appendChild(empty);
   }else{
     order.items.forEach((item,index)=>{
-      const row=document.createElement("label");
+      const row=document.createElement("div");
       row.className="inventory-order-item";
       const checkbox=document.createElement("input");
       checkbox.type="checkbox";
       checkbox.checked=Boolean(item.received);
       checkbox.disabled=Boolean(order.finalized);
       checkbox.setAttribute("aria-label","Marcar como surtido: "+item.name);
-      const name=document.createElement("span");
+      const name=document.createElement("button");
+      name.type="button";
+      name.className="inventory-order-product-link";
       name.textContent=item.name;
+      name.title="Ver producto en el inventario";
+      name.setAttribute("aria-label","Ver producto "+item.name+" en el inventario");
+      name.addEventListener("click",()=>openInventoryProductFromOrder(item.name));
       const amount=document.createElement("strong");
       amount.textContent="Faltan: "+formatNumber(item.amount);
       checkbox.addEventListener("change",()=>{
@@ -8153,6 +8263,57 @@ function renderInventoryOrder(){
     copyPendingButton.disabled=pending.length===0;
     resumeButton.hidden=pending.length===0;
   }
+}
+
+let inventoryOrderReturnState=null;
+function openInventoryProductFromOrder(name){
+  if(inventoryOrderReturnState)returnToInventoryOrder();
+  const search=document.getElementById("inventorySearch");
+  const state={position:captureHistoryReturnScroll(),search:search?.value||"",row:null,button:null};
+  inventoryOrderReturnState=state;
+  if(search&&search.value.trim()){
+    search.value="";
+    buildInventory();
+  }
+  const key=inventoryKey(name);
+  const input=[...document.querySelectorAll("#inventoryAreas input.quantity")].find(field=>field.dataset.inventoryKey===key);
+  const row=input?.closest(".product-row");
+  if(!row){inventoryOrderReturnState=null;showToast("No se encontró el producto en el inventario.");return;}
+  const button=document.createElement("button");
+  button.type="button";
+  button.className="inventory-product-return";
+  button.textContent="← Volver a la lista de surtido";
+  button.addEventListener("click",returnToInventoryOrder);
+  row.parentElement.insertBefore(button,row);
+  row.classList.add("is-context-target");
+  state.row=row;
+  state.button=button;
+  requestAnimationFrame(()=>row.scrollIntoView({behavior:"smooth",block:"center"}));
+}
+function returnToInventoryOrder(){
+  const state=inventoryOrderReturnState;
+  if(!state)return;
+  inventoryOrderReturnState=null;
+  state.button?.remove();
+  state.row?.classList.remove("is-context-target");
+  const search=document.getElementById("inventorySearch");
+  if(search&&search.value!==state.search){search.value=state.search;buildInventory();}
+  updateInventoryStats();
+  renderInventoryOrder();
+  requestAnimationFrame(()=>restorePageScroll(state.position));
+}
+function goBackFromInventory(){
+  if(inventoryOrderReturnState){returnToInventoryOrder();return;}
+  goBackFromPage("inventory");
+}
+function cancelInventoryProductJump(){
+  const state=inventoryOrderReturnState;
+  if(!state)return;
+  inventoryOrderReturnState=null;
+  state.button?.remove();
+  state.row?.classList.remove("is-context-target");
+  const search=document.getElementById("inventorySearch");
+  if(search&&search.value!==state.search){search.value=state.search;buildInventory();}
 }
 
 function inventoryOrderText(items,title){
