@@ -9299,7 +9299,9 @@ if("serviceWorker" in navigator){
     const progress=card.querySelector('.closing-progress-panel');
     if(progress)progress.insertAdjacentElement('afterend',banner);
     else card.prepend(banner);
-    window.setTimeout(()=>{if(banner.isConnected)banner.remove();},5200);
+    // Keep the completion message visible until the checklist is reopened.
+    // Only remove the confetti nodes after their short animation has finished.
+    window.setTimeout(()=>banner.querySelectorAll('.checklist-confetti').forEach(bit=>bit.remove()),1800);
   }
   function removeChecklistCelebration(type){
     const config=checklistConfig[type];
