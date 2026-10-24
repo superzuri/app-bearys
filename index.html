@@ -5483,11 +5483,12 @@ function renderRegisteredAccounts(){
   }).join("");
 }
 function readTeamPresenceDocument(doc){
-  const data=doc.data()||{};
+  const data=doc.data({serverTimestamps:"estimate"})||{};
   let presence={};
   try{presence=JSON.parse(data.value||"{}");}catch(error){}
-  const updatedAt=data.updatedAt?.toMillis?.()||0;
-  if(!presence.uid||!updatedAt||data.deleted){teamPresenceBySession.delete(doc.id);return;}
+  const updatedAt=data.updatedAt?.toMillis?.()||(doc.metadata?.hasPendingWrites?Date.now():0);
+  if(!presence.uid||data.deleted){teamPresenceBySession.delete(doc.id);return;}
+  if(!updatedAt)return;
   teamPresenceBySession.set(doc.id,{uid:String(presence.uid),online:Boolean(presence.online),updatedAt});
 }
 function loadRegisteredAccounts(){
@@ -5533,7 +5534,10 @@ function loadRegisteredAccounts(){
       .startAt(TEAM_PRESENCE_PREFIX)
       .endAt(TEAM_PRESENCE_PREFIX+"\uf8ff");
     teamPresenceUnsubscribe=presenceQuery.onSnapshot(snapshot=>{
-      teamPresenceBySession.clear();
+      const snapshotKeys=new Set(snapshot.docs.map(doc=>doc.id));
+      [...teamPresenceBySession.keys()].forEach(key=>{
+        if(key.startsWith(TEAM_PRESENCE_PREFIX)&&!snapshotKeys.has(key))teamPresenceBySession.delete(key);
+      });
       snapshot.docs.forEach(readTeamPresenceDocument);
       renderRegisteredAccounts();
     },error=>{
