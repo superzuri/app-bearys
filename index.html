@@ -3982,6 +3982,14 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
 
     </div>
 
+    <button id="refreshAppButton" class="setting-row" type="button" onclick="window.location.reload()" aria-label="Refrescar la aplicación">
+      <span>
+        <b>🔄 Refrescar la app</b>
+        <small>Recarga Beary's para buscar la versión más reciente</small>
+      </span>
+      <span aria-hidden="true">↻</span>
+    </button>
+
     <button id="downloadCloudBackupButton" class="calendar-add-button" type="button" hidden onclick="downloadCloudLocalBackup()">Descargar respaldo local anterior</button>
 
   </div>
@@ -4641,7 +4649,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
 
     <button
       class="back-button"
-      onclick="goHome()"
+      onclick="goBackFromHistory()"
     >
       ←
     </button>
@@ -5582,14 +5590,52 @@ function loadRegisteredAccounts(){
   if(!teamPresenceRefreshTimer)teamPresenceRefreshTimer=window.setInterval(renderRegisteredAccounts,30000);
   renderRegisteredAccounts();
 }
+function captureHistoryReturnScroll(){
+  const app=document.querySelector(".app");
+  const mobileScroll=window.matchMedia("(max-width:760px), (hover:none) and (pointer:coarse)").matches;
+  return mobileScroll&&app&&getComputedStyle(app).overflowY==="auto"
+    ?{container:"app",top:app.scrollTop}
+    :{container:"window",top:window.scrollY};
+}
 function openMemberActivity(uid){
   if(!uid)return;
+  const currentPage=document.querySelector(".page.active");
+  historyReturnPage=currentPage?.id?.replace(/Page$/,"")||"settings";
+  historyReturnScrollPosition=captureHistoryReturnScroll();
   historyPersonFilter="uid:"+uid;
   historyCategoryFilter="all";
   const allFilter=document.querySelector('#historyFilters .history-filter[data-history-filter="all"]');
   setHistoryFilter("all",allFilter);
   openPage("history");
   showToast("Mostrando la actividad de un integrante del equipo");
+}
+function goBackFromHistory(){
+  const returnPage=historyReturnPage;
+  const returnPosition=historyReturnScrollPosition;
+  historyReturnPage=null;
+  historyReturnScrollPosition=null;
+  if(returnPage&&document.getElementById(returnPage+"Page")){
+    historyPersonFilter="all";
+    historyCategoryFilter="all";
+    historySearchQuery="";
+    const search=document.getElementById("historySearch");
+    if(search)search.value="";
+    const personPicker=document.getElementById("historyPersonFilter");
+    if(personPicker)personPicker.value="all";
+    const allFilter=document.querySelector('#historyFilters .history-filter[data-history-filter="all"]');
+    setHistoryFilter("all",allFilter);
+    openPage(returnPage);
+    requestAnimationFrame(()=>{
+      if(returnPosition?.container==="app"){
+        const app=document.querySelector(".app");
+        if(app)app.scrollTop=returnPosition.top;
+      }else{
+        window.scrollTo(0,returnPosition?.top||0);
+      }
+    });
+    return;
+  }
+  goHome();
 }
 async function sendTeamGreeting(uid,name){
   if(!activeTeamProfile?.uid||!uid||uid===activeTeamProfile.uid)return;
@@ -5820,6 +5866,8 @@ function historyRecordDate(record){
 let historyRecordsCache=[];
 let historyCategoryFilter="all";
 let historyPersonFilter="all";
+let historyReturnPage=null;
+let historyReturnScrollPosition=null;
 let historySearchQuery="";
 const historyKnownPeople=new Map();
 let historyPeopleDirectoryLoaded=false;
@@ -6732,6 +6780,13 @@ function openPage(page){
   }
 
   const currentPage=document.querySelector(".page.active");
+  if(currentPage?.id==="historyPage"&&page!=="history"&&historyReturnPage){
+    historyReturnPage=null;
+    historyReturnScrollPosition=null;
+    historyPersonFilter="all";
+    historyCategoryFilter="all";
+    historySearchQuery="";
+  }
   if(currentPage===target){
     updateNavigation(page);
     if(page==="settings")loadRegisteredAccounts();
