@@ -2009,10 +2009,17 @@ html.dark .menu-card:hover{
 .registered-accounts-list{display:grid;gap:7px}
 .registered-account-row{display:flex;align-items:center;gap:10px;padding:9px 10px;border:1px solid var(--border);border-radius:15px;background:var(--bg2)}
 .registered-account-avatar{display:grid;width:36px;height:36px;flex:0 0 36px;place-items:center;border-radius:13px;background:var(--pinksoft);color:var(--pink2);font-size:12px;font-weight:950}
+.registered-account-presence{width:10px;height:10px;flex:0 0 10px;border:2px solid var(--bg2);border-radius:50%;background:#92909a;box-shadow:0 0 0 1px rgba(120,115,125,.24)}
+.registered-account-presence.is-online{background:#38c982;box-shadow:0 0 0 1px rgba(56,201,130,.3),0 0 8px rgba(56,201,130,.32)}
 .registered-account-copy{min-width:0;flex:1}
 .registered-account-copy strong{display:block;overflow:hidden;color:var(--text);font-size:11px;font-weight:900;text-overflow:ellipsis;white-space:nowrap}
 .registered-account-copy small{display:block;margin-top:2px;color:var(--muted);font-size:9px}
 .registered-account-check{color:var(--pink2);font-size:15px;font-weight:950}
+.registered-account-actions{display:flex;flex:0 0 auto;gap:5px}
+.registered-account-activity,.registered-account-greeting{flex:0 0 auto;padding:7px 8px;border:1px solid var(--border);border-radius:11px;background:var(--pinksoft);color:var(--pink2);font-size:9px;font-weight:850;cursor:pointer}
+.registered-account-greeting{border-color:rgba(255,121,173,.25);background:var(--bg2)}
+.registered-account-greeting:disabled{opacity:.48;cursor:default}
+.registered-account-activity:focus-visible,.registered-account-greeting:focus-visible{outline:2px solid var(--pink2);outline-offset:2px}
 
 .setting-row{
 
@@ -3803,8 +3810,8 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
   </div>
 
   <div class="settings-card">
-    <div class="settings-title">👥 Cuentas registradas</div>
-    <p class="registered-accounts-status" id="registeredAccountsStatus" aria-live="polite">Los nombres de las cuentas autorizadas aparecerán aquí.</p>
+    <div class="settings-title">👥 Equipo conectado</div>
+    <p class="registered-accounts-status" id="registeredAccountsStatus" aria-live="polite">Aquí aparecerá quién está en línea. Puedes abrir la actividad de cada integrante.</p>
     <div class="registered-accounts-list" id="registeredAccountsList" role="list"></div>
   </div>
 
@@ -4990,6 +4997,10 @@ const INVENTORY_FOCUS_HEARTBEAT_MS=30000;
 const INVENTORY_FOCUS_STALE_MS=95000;
 const SHARED_WORKSPACE_MARKER="bearyWorkspaceInit_v1";
 const TEAM_DIRECTORY_PREFIX="bearyTeamDirectory_";
+const TEAM_PRESENCE_PREFIX="bearyPresence_";
+const TEAM_GREETING_PREFIX="bearyGreeting_";
+const TEAM_PRESENCE_HEARTBEAT_MS=120000;
+const TEAM_PRESENCE_STALE_MS=300000;
 const SHARED_EXACT_KEYS=new Set([
   "bearyRestockOrder","bearyBirthdays","bearySeasons","bearySeasonsSchema",
   "bearyDailyChallenge_v1","bearyDeepCleaningAssignments_v1"
@@ -5007,8 +5018,18 @@ let inventoryFocusSessionId="";
 let inventoryFocusStorageKey="";
 let inventoryFocusHeartbeatTimer=null;
 let inventoryFocusBlurTimer=null;
+let teamPresenceHeartbeatTimer=null;
+let teamPresenceRefreshTimer=null;
+let teamDirectoryUnsubscribe=null;
+let teamPresenceUnsubscribe=null;
+let teamGreetingUnsubscribe=null;
+let teamPresenceSessionId="";
+let registeredAccountsClickInstalled=false;
 const inventoryFocusPresenceBySession=new Map();
 const inventoryFocusExpiryTimers=new Map();
+const registeredAccountsByUid=new Map();
+const teamPresenceBySession=new Map();
+const teamGreetingLastSent=new Map();
 const pendingSharedWrites=new Map();
 const nativeStorageSet=Storage.prototype.setItem;
 const nativeStorageRemove=Storage.prototype.removeItem;
@@ -5432,32 +5453,119 @@ function accountInitials(name){
   const parts=String(name||"").trim().split(/\s+/).filter(Boolean).slice(0,2);
   return parts.map(part=>Array.from(part)[0]||"").join("").toLocaleUpperCase("es-MX")||"👤";
 }
-async function loadRegisteredAccounts(){
+function isTeamPresenceFresh(presence){
+  return Boolean(presence?.online&&Number.isFinite(presence.updatedAt)&&Date.now()-presence.updatedAt<TEAM_PRESENCE_STALE_MS);
+}
+function renderRegisteredAccounts(){
   const status=document.getElementById("registeredAccountsStatus");
   const list=document.getElementById("registeredAccountsList");
   if(!status||!list)return;
   if(!activeTeamProfile){status.textContent="Inicia sesión para consultar las cuentas del equipo.";list.innerHTML="";return;}
-  status.textContent="Cargando cuentas del equipo…";
-  list.innerHTML="";
-  try{
-    const snapshot=await firebaseDb.collection(SHARED_STATE_COLLECTION)
+  const accounts=[...registeredAccountsByUid.values()].sort((a,b)=>a.name.localeCompare(b.name,"es-MX"));
+  if(!accounts.length){status.textContent="Aún no hay nombres para mostrar. Cada integrante aparecerá cuando inicie sesión en esta versión.";list.innerHTML="";return;}
+  const onlineUids=new Set();
+  teamPresenceBySession.forEach(presence=>{if(isTeamPresenceFresh(presence))onlineUids.add(presence.uid);});
+  const onlineCount=accounts.filter(account=>onlineUids.has(account.uid)).length;
+  status.textContent=onlineCount+" en línea · "+(accounts.length-onlineCount)+" sin conexión. Abre la actividad de alguien para ver sus movimientos.";
+  list.innerHTML=accounts.map(account=>{
+    const online=onlineUids.has(account.uid);
+    const isCurrentUser=account.uid===activeTeamProfile.uid;
+    const state=online?(isCurrentUser?"En línea · tú":"En línea"):"Sin conexión";
+    const canGreet=online&&!isCurrentUser;
+    return '<div class="registered-account-row" role="listitem">'+
+      '<span class="registered-account-avatar" aria-hidden="true">'+escapeHistoryText(accountInitials(account.name))+'</span>'+
+      '<span class="registered-account-presence '+(online?"is-online":"")+'" role="img" aria-label="'+state+'" title="'+state+'"></span>'+
+      '<span class="registered-account-copy"><strong>'+escapeHistoryText(account.name)+'</strong><small>'+state+'</small></span>'+
+      '<span class="registered-account-actions">'+
+      '<button type="button" class="registered-account-greeting" data-member-uid="'+escapeHistoryText(account.uid)+'" data-member-name="'+escapeHistoryText(account.name)+'" aria-label="Mandar un saludo a '+escapeHistoryText(account.name)+'" '+(canGreet?"":"disabled title=\""+(isCurrentUser?"Esta es tu cuenta":"Disponible cuando esté en línea")+"\"")+' >👋</button>'+
+      '<button type="button" class="registered-account-activity" data-member-uid="'+escapeHistoryText(account.uid)+'" aria-label="Ver actividad de '+escapeHistoryText(account.name)+'">Actividad</button></span>'+
+      '</div>';
+  }).join("");
+}
+function readTeamPresenceDocument(doc){
+  const data=doc.data()||{};
+  let presence={};
+  try{presence=JSON.parse(data.value||"{}");}catch(error){}
+  const updatedAt=data.updatedAt?.toMillis?.()||0;
+  if(!presence.uid||!updatedAt||data.deleted){teamPresenceBySession.delete(doc.id);return;}
+  teamPresenceBySession.set(doc.id,{uid:String(presence.uid),online:Boolean(presence.online),updatedAt});
+}
+function loadRegisteredAccounts(){
+  const status=document.getElementById("registeredAccountsStatus");
+  const list=document.getElementById("registeredAccountsList");
+  if(!status||!list)return;
+  if(!activeTeamProfile){status.textContent="Inicia sesión para consultar las cuentas del equipo.";list.innerHTML="";return;}
+  if(!registeredAccountsClickInstalled){
+    list.addEventListener("click",event=>{
+      const greetingButton=event.target.closest(".registered-account-greeting");
+      if(greetingButton){sendTeamGreeting(greetingButton.dataset.memberUid,greetingButton.dataset.memberName);return;}
+      const button=event.target.closest(".registered-account-activity");
+      if(!button)return;
+      openMemberActivity(button.dataset.memberUid);
+    });
+    registeredAccountsClickInstalled=true;
+  }
+  status.textContent="Conectando con el equipo…";
+  if(!teamDirectoryUnsubscribe){
+    const directoryQuery=firebaseDb.collection(SHARED_STATE_COLLECTION)
       .orderBy(firebase.firestore.FieldPath.documentId())
       .startAt(TEAM_DIRECTORY_PREFIX)
-      .endAt(TEAM_DIRECTORY_PREFIX+"\uf8ff")
-      .get();
-    const accounts=snapshot.docs.map(doc=>{
-      const profile=doc.data()||{};
-      let directoryEntry={};
-      try{directoryEntry=JSON.parse(profile.value||"{}");}catch(error){}
-      return {name:String(directoryEntry.name||"").trim()};
-    }).filter(account=>account.name);
-    accounts.sort((a,b)=>a.name.localeCompare(b.name,"es-MX"));
-    if(!accounts.length){status.textContent="Aún no hay nombres para mostrar. Cada integrante aparecerá cuando inicie sesión en esta versión.";return;}
-    status.textContent=accounts.length+" "+(accounts.length===1?"integrante":"integrantes")+" · solo lectura";
-    list.innerHTML=accounts.map(account=>'<div class="registered-account-row" role="listitem"><span class="registered-account-avatar" aria-hidden="true">'+escapeHistoryText(accountInitials(account.name))+'</span><span class="registered-account-copy"><strong>'+escapeHistoryText(account.name)+'</strong><small>Cuenta del equipo</small></span><span class="registered-account-check" aria-hidden="true">✓</span></div>').join("");
+      .endAt(TEAM_DIRECTORY_PREFIX+"\uf8ff");
+    teamDirectoryUnsubscribe=directoryQuery.onSnapshot(snapshot=>{
+      registeredAccountsByUid.clear();
+      snapshot.docs.forEach(doc=>{
+        const profile=doc.data()||{};
+        let directoryEntry={};
+        try{directoryEntry=JSON.parse(profile.value||"{}");}catch(error){}
+        const uid=doc.id.slice(TEAM_DIRECTORY_PREFIX.length);
+        const name=String(directoryEntry.name||"").trim();
+        if(uid&&name)registeredAccountsByUid.set(uid,{uid,name});
+      });
+      renderRegisteredAccounts();
+    },error=>{
+      console.error("Registered accounts loading error",error);
+      status.textContent="No se pudo cargar la lista. Revisa los permisos de lectura de nombres en Firebase.";
+    });
+  }
+  if(!teamPresenceUnsubscribe){
+    const presenceQuery=firebaseDb.collection(SHARED_STATE_COLLECTION)
+      .orderBy(firebase.firestore.FieldPath.documentId())
+      .startAt(TEAM_PRESENCE_PREFIX)
+      .endAt(TEAM_PRESENCE_PREFIX+"\uf8ff");
+    teamPresenceUnsubscribe=presenceQuery.onSnapshot(snapshot=>{
+      teamPresenceBySession.clear();
+      snapshot.docs.forEach(readTeamPresenceDocument);
+      renderRegisteredAccounts();
+    },error=>{
+      console.error("Team presence loading error",error);
+      renderRegisteredAccounts();
+    });
+  }
+  if(!teamPresenceRefreshTimer)teamPresenceRefreshTimer=window.setInterval(renderRegisteredAccounts,30000);
+  renderRegisteredAccounts();
+}
+function openMemberActivity(uid){
+  if(!uid)return;
+  historyPersonFilter="uid:"+uid;
+  historyCategoryFilter="all";
+  const allFilter=document.querySelector('#historyFilters .history-filter[data-history-filter="all"]');
+  setHistoryFilter("all",allFilter);
+  openPage("history");
+  showToast("Mostrando la actividad de un integrante del equipo");
+}
+async function sendTeamGreeting(uid,name){
+  if(!activeTeamProfile?.uid||!uid||uid===activeTeamProfile.uid)return;
+  const lastSent=teamGreetingLastSent.get(uid)||0;
+  if(Date.now()-lastSent<15000){showToast("Espera un momento antes de mandar otro saludo 👋");return;}
+  const greetingRef=firebaseDb.collection(SHARED_STATE_COLLECTION).doc(TEAM_GREETING_PREFIX+uid+"_"+activeTeamProfile.uid);
+  const greeting={fromUid:activeTeamProfile.uid,fromName:activeTeamProfile.name,recipientUid:uid,sentAt:Date.now(),nonce:window.crypto?.randomUUID?.()||Math.random().toString(36).slice(2)};
+  try{
+    await greetingRef.set({value:JSON.stringify(greeting),deleted:false,updatedBy:activeTeamProfile.uid,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+    teamGreetingLastSent.set(uid,Date.now());
+    showToast("Le mandaste un saludo a "+name+" 👋");
   }catch(error){
-    console.error("Registered accounts loading error",error);
-    status.textContent="No se pudo cargar la lista. Revisa los permisos de lectura de nombres en Firebase.";
+    console.error("Could not send team greeting",error);
+    showToast("No se pudo mandar el saludo. Revisa la conexión.");
   }
 }
 async function publishRegisteredAccountName(){
@@ -5474,9 +5582,110 @@ async function publishRegisteredAccountName(){
     console.warn("Could not refresh the team name directory",error);
   }
 }
+function getTeamPresenceSessionId(){
+  if(teamPresenceSessionId)return teamPresenceSessionId;
+  const storageKey="bearyTeamPresenceSession_v1";
+  try{
+    teamPresenceSessionId=sessionStorage.getItem(storageKey)||"";
+    if(!teamPresenceSessionId){
+      teamPresenceSessionId=window.crypto?.randomUUID?.()||Date.now().toString(36)+Math.random().toString(36).slice(2);
+      sessionStorage.setItem(storageKey,teamPresenceSessionId);
+    }
+  }catch(error){teamPresenceSessionId=Date.now().toString(36)+Math.random().toString(36).slice(2);}
+  return teamPresenceSessionId;
+}
+function getTeamPresenceDocumentKey(){
+  return activeTeamProfile?.uid?TEAM_PRESENCE_PREFIX+activeTeamProfile.uid+"_"+getTeamPresenceSessionId():"";
+}
+async function publishTeamPresence(isOnline){
+  if(!activeTeamProfile?.uid||!sharedStateReady)return;
+  const profile={uid:activeTeamProfile.uid,online:Boolean(isOnline),sessionId:getTeamPresenceSessionId()};
+  const key=getTeamPresenceDocumentKey();
+  teamPresenceBySession.set(key,{uid:profile.uid,online:profile.online,updatedAt:Date.now()});
+  renderRegisteredAccounts();
+  try{
+    await firebaseDb.collection(SHARED_STATE_COLLECTION).doc(key).set({
+      value:JSON.stringify(profile),deleted:false,updatedBy:activeTeamProfile.uid,
+      updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+  }catch(error){
+    console.warn("Could not update team presence",error);
+  }
+}
+function startTeamPresence(){
+  if(teamPresenceHeartbeatTimer)clearInterval(teamPresenceHeartbeatTimer);
+  const isVisibleOnline=!document.hidden&&navigator.onLine!==false;
+  publishTeamPresence(isVisibleOnline);
+  if(!isVisibleOnline)return;
+  teamPresenceHeartbeatTimer=window.setInterval(()=>{
+    if(document.hidden||navigator.onLine===false){
+      clearInterval(teamPresenceHeartbeatTimer);
+      teamPresenceHeartbeatTimer=null;
+      publishTeamPresence(false);
+      return;
+    }
+    publishTeamPresence(true);
+  },TEAM_PRESENCE_HEARTBEAT_MS);
+}
+async function stopTeamPresence(){
+  if(teamPresenceHeartbeatTimer){clearInterval(teamPresenceHeartbeatTimer);teamPresenceHeartbeatTimer=null;}
+  await publishTeamPresence(false);
+}
+function stopRegisteredAccountListeners(){
+  if(teamDirectoryUnsubscribe){teamDirectoryUnsubscribe();teamDirectoryUnsubscribe=null;}
+  if(teamPresenceUnsubscribe){teamPresenceUnsubscribe();teamPresenceUnsubscribe=null;}
+  if(teamPresenceRefreshTimer){clearInterval(teamPresenceRefreshTimer);teamPresenceRefreshTimer=null;}
+  registeredAccountsByUid.clear();
+  teamPresenceBySession.clear();
+}
+function startTeamGreetingListener(){
+  if(teamGreetingUnsubscribe)teamGreetingUnsubscribe();
+  if(!activeTeamProfile?.uid)return;
+  const prefix=TEAM_GREETING_PREFIX+activeTeamProfile.uid+"_";
+  const greetingQuery=firebaseDb.collection(SHARED_STATE_COLLECTION)
+    .orderBy(firebase.firestore.FieldPath.documentId())
+    .startAt(prefix)
+    .endAt(prefix+"\uf8ff");
+  let firstSnapshot=true;
+  teamGreetingUnsubscribe=greetingQuery.onSnapshot(snapshot=>{
+    snapshot.docChanges().forEach(change=>{
+      if(firstSnapshot&&change.type!=="added")return;
+      const data=change.doc.data()||{};
+      let greeting={};
+      try{greeting=JSON.parse(data.value||"{}");}catch(error){}
+      const age=Date.now()-Number(greeting.sentAt||0);
+      if(greeting.fromUid===activeTeamProfile?.uid||!greeting.fromName||age<0||age>60000)return;
+      showToast(greeting.fromName+" te mandó un saludo 👋");
+    });
+    firstSnapshot=false;
+  },error=>console.warn("Team greeting listener error",error));
+}
+function stopTeamGreetingListener(){
+  if(teamGreetingUnsubscribe){teamGreetingUnsubscribe();teamGreetingUnsubscribe=null;}
+}
+document.addEventListener("visibilitychange",()=>{
+  if(!activeTeamProfile?.uid||!sharedStateReady)return;
+  if(document.hidden){
+    if(teamPresenceHeartbeatTimer){clearInterval(teamPresenceHeartbeatTimer);teamPresenceHeartbeatTimer=null;}
+    publishTeamPresence(false);
+  }else startTeamPresence();
+});
+window.addEventListener("online",()=>{
+  if(activeTeamProfile?.uid&&sharedStateReady&&!document.hidden)startTeamPresence();
+});
+window.addEventListener("offline",()=>{
+  if(!activeTeamProfile?.uid||!sharedStateReady)return;
+  if(teamPresenceHeartbeatTimer){clearInterval(teamPresenceHeartbeatTimer);teamPresenceHeartbeatTimer=null;}
+  publishTeamPresence(false);
+});
+window.addEventListener("pagehide",()=>{
+  if(teamPresenceHeartbeatTimer){clearInterval(teamPresenceHeartbeatTimer);teamPresenceHeartbeatTimer=null;}
+  if(activeTeamProfile?.uid&&sharedStateReady)publishTeamPresence(false);
+});
 async function activateFirebaseUser(user){
   updateBearysSplash("Verificando el acceso del equipo…",20);
   try{
+    if(activeTeamProfile?.uid&&activeTeamProfile.uid!==user.uid)await stopTeamPresence();
     firebaseSetupStage="verificar el perfil del equipo";
     updateBearysSplash("Confirmando tu acceso…",28);
     const memberSnapshot=await firebaseDb.collection(TEAM_MEMBER_COLLECTION).doc(user.uid).get();
@@ -5508,6 +5717,8 @@ async function activateFirebaseUser(user){
       renderDeepCleaning();renderCalendar();updateDailyChallengeButton();
     }
     startSharedStateListener();
+    startTeamPresence();
+    startTeamGreetingListener();
     firebaseSetupStage="";
     hideFirebaseGate();
     finishBearysSplash();
@@ -5530,10 +5741,13 @@ function initializeFirebaseAccess(){
   hideFirebaseGate();
   firebaseAuth.onAuthStateChanged(user=>{
     if(user){
-      if(activeTeamProfile?.uid&&activeTeamProfile.uid!==user.uid)clearInventoryFocusPresence();
+      if(activeTeamProfile?.uid&&activeTeamProfile.uid!==user.uid){clearInventoryFocusPresence();stopTeamPresence();stopRegisteredAccountListeners();stopTeamGreetingListener();}
       updateBearysSplash("Sesión encontrada…",16);activateFirebaseUser(user);return;
     }
+    if(activeTeamProfile?.uid)stopTeamPresence();
+    stopTeamGreetingListener();
     clearInventoryFocusPresence();
+    stopRegisteredAccountListeners();
     activeTeamProfile=null;
     sharedStateReady=false;
     if(sharedStateUnsubscribe){sharedStateUnsubscribe();sharedStateUnsubscribe=null;}
@@ -5547,7 +5761,7 @@ function initializeFirebaseAccess(){
 function signOutOfBearys(){
   if(!window.confirm("¿Cerrar sesión de Beary's en este dispositivo?"))return;
   gateErrorMessage="";
-  firebaseAuth.signOut().catch(()=>showToast("No se pudo cerrar sesión."));
+  stopTeamPresence().finally(()=>{stopTeamGreetingListener();firebaseAuth.signOut().catch(()=>showToast("No se pudo cerrar sesión."));});
 }
 function downloadCloudLocalBackup(){
   try{
