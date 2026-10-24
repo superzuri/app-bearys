@@ -3225,15 +3225,9 @@ input, textarea, select {
 
 <!-- Splash visible hasta que Firebase termine de validar y sincronizar el espacio. -->
 <div id="bearys-splash-screen" class="bearys-splash-theme" role="status" aria-live="polite" aria-label="Cargando Beary's">
-  <img class="bearys-splash-bear" src="./bearys-192.png" alt="" aria-hidden="true" width="192" height="192" decoding="async">
   <h1 class="bearys-splash-title">Beary´s Coffee Shop</h1>
   <p id="bearysSplashMessage" class="bearys-splash-message">Conectando con Beary's…</p>
   <div class="bearys-splash-track" role="progressbar" aria-label="Preparando la app" aria-valuemin="0" aria-valuemax="100" aria-valuenow="5"><span id="bearysSplashProgressBar" style="width:5%"></span></div>
-  <div class="bearys-splash-preview" aria-hidden="true">
-    <span class="bearys-splash-preview-heading"></span>
-    <div class="bearys-splash-preview-cards"><span><i></i><b></b></span><span><i></i><b></b></span></div>
-    <span class="bearys-splash-preview-line"></span>
-  </div>
   <p id="bearysSplashHint" class="bearys-splash-hint" hidden>Revisa tu conexión; puedes reintentar cuando vuelva internet.</p>
   <button id="bearysSplashRetry" class="bearys-splash-retry" type="button" onclick="location.reload()" hidden>Reintentar</button>
 </div>
@@ -3241,28 +3235,15 @@ input, textarea, select {
 .bearys-splash-theme{position:fixed;inset:0;z-index:100002;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:24px;background:var(--bg,#fff0f2);color:var(--text,#452c38);transition:opacity .24s ease,visibility .24s ease}
 html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#fff0f6)}
 .bearys-splash-theme.is-hidden{opacity:0;visibility:hidden;pointer-events:none}
-.bearys-splash-bear{display:block;width:92px;height:92px;object-fit:cover;border-radius:24%;animation:floatBearFast 1.8s ease-in-out infinite;margin-bottom:14px;box-shadow:0 10px 28px rgba(60,20,40,.16)}
 .bearys-splash-title{margin:0;font-family:Arial,sans-serif;font-size:23px;font-weight:900;color:inherit}
 .bearys-splash-message{min-height:20px;margin:14px 0 0;color:var(--muted,#856b79);font-size:13px;font-weight:700;text-align:center}
 .bearys-splash-track{width:min(220px,68vw);height:6px;overflow:hidden;margin-top:13px;border-radius:999px;background:var(--border,#edc5cd)}
 .bearys-splash-track span{display:block;height:100%;min-width:5%;border-radius:inherit;background:linear-gradient(90deg,var(--pink,#d77b9b),#ffb16e);transition:width .35s ease;position:relative;overflow:hidden}
 .bearys-splash-track span::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 15%,rgba(255,255,255,.62) 50%,transparent 85%);transform:translateX(-100%);animation:bearysSplashShine 1.25s ease-in-out infinite}
-.bearys-splash-preview{width:min(250px,76vw);display:grid;gap:8px;margin-top:16px;opacity:0;animation:bearysSkeletonReveal .24s ease .38s both}
-.bearys-splash-preview-heading{width:39%;height:7px;border-radius:99px;background:var(--muted,#856b79);opacity:.34}
-.bearys-splash-preview-cards{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.bearys-splash-preview-cards span{position:relative;display:flex;align-items:center;gap:7px;height:40px;overflow:hidden;padding:7px;border:1px solid var(--border,#edc5cd);border-radius:12px;background:var(--surface,#fff)}
-.bearys-splash-preview-cards i{width:18px;height:18px;flex:0 0 18px;border-radius:7px;background:var(--pinksoft,#f8dce5)}
-.bearys-splash-preview-cards b{position:relative;display:block;width:28px;height:4px;border-radius:99px;background:var(--border,#edc5cd)}
-.bearys-splash-preview-cards b::after{content:"";position:absolute;top:7px;left:0;width:65%;height:4px;border-radius:99px;background:var(--border,#edc5cd)}
-.bearys-splash-preview-cards span::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 15%,rgba(255,255,255,.44) 50%,transparent 85%);transform:translateX(-100%);animation:bearysSkeletonShimmer 1.35s ease-in-out .45s infinite}
-.bearys-splash-preview-line{width:67%;height:6px;border-radius:99px;background:var(--border,#edc5cd);opacity:.72}
 .bearys-splash-hint{margin:12px 0 0;color:var(--muted,#856b79);font-size:12px;text-align:center}
 .bearys-splash-retry{min-height:40px;margin-top:12px;padding:8px 16px;border:0;border-radius:12px;background:var(--pink,#d77b9b);color:#fff;font:inherit;font-weight:800}
-@keyframes floatBearFast{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 @keyframes bearysSplashShine{to{transform:translateX(110%)}}
-@keyframes bearysSkeletonReveal{to{opacity:.8}}
-@keyframes bearysSkeletonShimmer{to{transform:translateX(110%)}}
-@media(prefers-reduced-motion:reduce){.bearys-splash-bear,.bearys-splash-track span::after,.bearys-splash-preview-cards span::after{animation:none}.bearys-splash-preview{opacity:.8;animation:none}}
+@media(prefers-reduced-motion:reduce){.bearys-splash-track span::after{animation:none}}
 </style>
 <script>
 (()=>{
@@ -5201,7 +5182,13 @@ function refreshSharedUIForKey(key,changeEvent=null){
       updateInventoryStats();renderInventoryOrder();
     }
   }
-  if(key==="bearyRestockOrder"&&appInitialized)renderInventoryOrder();
+  if(key==="bearyRestockOrder"&&appInitialized){
+    const changedItems=changeEvent?getChangedInventoryOrderItemNames(changeEvent.oldValue,changeEvent.newValue):[];
+    renderInventoryOrder();
+    if(document.getElementById("inventoryPage")?.classList.contains("active")){
+      changedItems.forEach(flashInventoryOrderItemRow);
+    }
+  }
   if(key.startsWith("bearyActivity_")&&appInitialized)refreshActivitiesFromSharedState();
   if(key==="bearyDeepCleaningAssignments_v1"&&appInitialized&&document.getElementById("cleaningPage")?.classList.contains("active"))renderDeepCleaning();
   if(key==="bearyBirthdays"&&typeof birthdays!=="undefined"){
@@ -7123,6 +7110,33 @@ const inventoryCache = new Map();
 const pendingInventoryValues = new Map();
 const pendingInventoryTimers = new Map();
 const inventoryFlashTimers = new WeakMap();
+const inventoryOrderFlashTimers = new WeakMap();
+
+function getChangedInventoryOrderItemNames(oldValue,newValue){
+  let previousOrder=null,nextOrder=null;
+  try{previousOrder=JSON.parse(oldValue||"null");}catch(error){}
+  try{nextOrder=JSON.parse(newValue||"null");}catch(error){}
+  if(!Array.isArray(previousOrder?.items)||!Array.isArray(nextOrder?.items))return [];
+  const previousItems=new Map(previousOrder.items.filter(item=>item&&item.name).map(item=>[item.name,Boolean(item.received)]));
+  return nextOrder.items
+    .filter(item=>item&&item.name&&previousItems.has(item.name)&&previousItems.get(item.name)!==Boolean(item.received))
+    .map(item=>item.name);
+}
+
+function flashInventoryOrderItemRow(name){
+  const row=[...document.querySelectorAll("#inventoryOrderItems .inventory-order-item")]
+    .find(item=>item.dataset.inventoryOrderItem===name);
+  if(!row)return;
+  const previousTimer=inventoryOrderFlashTimers.get(row);
+  if(previousTimer)clearTimeout(previousTimer);
+  row.classList.remove("is-remote-updated");
+  void row.offsetWidth;
+  row.classList.add("is-remote-updated");
+  inventoryOrderFlashTimers.set(row,window.setTimeout(()=>{
+    row.classList.remove("is-remote-updated");
+    inventoryOrderFlashTimers.delete(row);
+  },1050));
+}
 
 function flashInventoryProductRow(row){
   if(!row)return;
@@ -7663,6 +7677,7 @@ function renderInventoryOrder(){
     order.items.forEach((item,index)=>{
       const row=document.createElement("label");
       row.className="inventory-order-item";
+      row.dataset.inventoryOrderItem=item.name;
       const checkbox=document.createElement("input");
       checkbox.type="checkbox";
       checkbox.checked=Boolean(item.received);
@@ -9428,7 +9443,6 @@ html:not(.dark) .brand-date{color:#805e6b}
 @keyframes phraseBearBob{0%,100%{transform:translate3d(0,0,0) rotate(0)}50%{transform:translate3d(0,-2px,0) rotate(1deg)}}
 @keyframes navPop{0%,100%{transform:translateY(0) scale(1)}52%{transform:translateY(-1px) scale(1.025)}}
 @keyframes copyBearBounce{from{transform:translateY(2px) rotate(-4deg)}to{transform:translateY(-8px) rotate(4deg)}}
-@keyframes floatBearFast{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 @keyframes bearyCupBounce{0%{transform:scale(.82) rotate(-8deg)}58%{transform:scale(1.08) rotate(4deg)}100%{transform:scale(1) rotate(0)}}
 .page.active .hero,.page.active .menu-card,.page.active .phrase-card,.page.active .status-card,.page.active .inventory-hero,.page.active .inventory-area,.page.active .activity-card,.page.active .calendar-card,.page.active .calendar-legend,.page.active .calendar-editor-toggle,.page.active .recipe-intro,.page.active .recipe-searchbox,.page.active .recipe-filters,.page.active .recipe-category{animation:cardArrival .28s var(--motion-ease) both}
 .page.active .shop-menu-search,.page.active .shop-menu-filters,.page.active .shop-menu-category{animation:cardArrival .28s var(--motion-ease) both}
@@ -9455,7 +9469,6 @@ html:not(.dark) .brand-date{color:#805e6b}
 .phrase-bear{animation-duration:5.6s}
 .hero-star{animation-duration:3.4s}
 .home-progress-card::after{animation-duration:3.2s}
-.bearys-splash-bear{animation-duration:2.4s}
 .bearys-splash-track span::after{animation-duration:1.7s}
 .tap-feedback{animation:buttonTap .18s var(--motion-ease)}
 button,.menu-card,.more-page-option,.recipe-card,.activity-tab,.nav-button,.calendar-day.has-events,.history-filter,.cleaning-filter-chip,.calendar-editor-toggle,.closing-reset-button,.cleaning-assignment-card{transition-timing-function:var(--motion-ease)}
@@ -9472,13 +9485,14 @@ button,.menu-card,.more-page-option,.recipe-card,.activity-tab,.nav-button,.cale
 @keyframes navPopMobile{0%,100%{transform:translateY(0) scale(1)}62%{transform:translateY(-.3px) scale(1.01)}}
 @keyframes inventoryRowRemoteUpdate{0%{background:rgba(255,121,173,.18);box-shadow:inset 0 0 0 1px rgba(255,121,173,.42)}55%{background:rgba(255,121,173,.07);box-shadow:inset 0 0 0 1px rgba(255,121,173,.16)}100%{background:transparent;box-shadow:inset 0 0 0 1px rgba(255,121,173,0)}}
 .product-row.is-remote-updated{border-radius:12px;animation:inventoryRowRemoteUpdate .95s ease-out both}
+.inventory-order-item.is-remote-updated{animation:inventoryRowRemoteUpdate .95s ease-out both}
 @media(max-width:620px) and (prefers-reduced-motion:no-preference){
   .page.active{animation:pageInMobile .2s var(--motion-ease) both}
   .page.active .hero,.page.active .menu-card,.page.active .phrase-card,.page.active .status-card,.page.active .inventory-hero,.page.active .inventory-area,.page.active .activity-card,.page.active .calendar-card,.page.active .calendar-legend,.page.active .calendar-editor-toggle,.page.active .recipe-intro,.page.active .recipe-searchbox,.page.active .recipe-filters,.page.active .recipe-category,.page.active .shop-menu-search,.page.active .shop-menu-filters,.page.active .shop-menu-category,.page.active .more-page-intro,.page.active .more-page-option,.inventory-order-panel,.home-challenge-card:not([hidden]),.checklist-complete-celebration{animation:cardArrivalMobile .22s var(--motion-ease) both}
   .nav-button.just-selected .nav-icon{animation:navPopMobile .18s ease-out}
 }
-body.animations-off .page.page.active.active,body.animations-off .page.page.active.active *,body.animations-off .nav-button.nav-button.just-selected.just-selected .nav-icon,body.animations-off .tap-feedback.tap-feedback,body.animations-off .product-row.product-row.is-remote-updated,body.animations-off .activity-item.activity-item.is-just-completed{animation:none!important;transition:none!important;scroll-behavior:auto!important}
-@media(prefers-reduced-motion:reduce){html body .page.page.active.active,html body .page.page.active.active *,html body .nav-button.nav-button.just-selected.just-selected .nav-icon,html body .tap-feedback.tap-feedback,html body .product-row.product-row.is-remote-updated,html body .activity-item.activity-item.is-just-completed{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+body.animations-off .page.page.active.active,body.animations-off .page.page.active.active *,body.animations-off .nav-button.nav-button.just-selected.just-selected .nav-icon,body.animations-off .tap-feedback.tap-feedback,body.animations-off .product-row.product-row.is-remote-updated,body.animations-off .inventory-order-item.inventory-order-item.is-remote-updated,body.animations-off .activity-item.activity-item.is-just-completed{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+@media(prefers-reduced-motion:reduce){html body .page.page.active.active,html body .page.page.active.active *,html body .nav-button.nav-button.just-selected.just-selected .nav-icon,html body .tap-feedback.tap-feedback,html body .product-row.product-row.is-remote-updated,html body .inventory-order-item.inventory-order-item.is-remote-updated,html body .activity-item.activity-item.is-just-completed{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
 </body>
 </html>
