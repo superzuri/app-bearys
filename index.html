@@ -1488,9 +1488,7 @@ html.dark .menu-card:hover{
   overflow-wrap:anywhere;
 }
 
-.product-name-line{display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0}
-.inventory-history-link{flex:0 0 auto;padding:4px 6px;border-radius:8px;background:var(--pinksoft);color:var(--pink2);font-size:9px;font-weight:850;cursor:pointer}
-.inventory-history-link:focus-visible,.inventory-order-product-link:focus-visible,.inventory-product-return:focus-visible{outline:2px solid var(--pink2);outline-offset:2px}
+.inventory-order-product-link:focus-visible,.inventory-product-return:focus-visible{outline:2px solid var(--pink2);outline-offset:2px}
 .inventory-product-return{display:block;width:100%;margin:8px 0;padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:var(--pinksoft);color:var(--pink2);font-size:10px;font-weight:850;text-align:left;cursor:pointer}
 .product-row.is-context-target{border-radius:12px;background:var(--pinksoft);box-shadow:inset 0 0 0 1px var(--pink)}
 
@@ -7847,16 +7845,6 @@ function buildInventory(){
         productName.textContent=
           name;
 
-        const nameLine=document.createElement("div");
-        nameLine.className="product-name-line";
-        const historyButton=document.createElement("button");
-        historyButton.type="button";
-        historyButton.className="inventory-history-link";
-        historyButton.textContent="📖";
-        historyButton.title="Ver movimientos de "+name;
-        historyButton.setAttribute("aria-label","Ver historial de "+name);
-        historyButton.addEventListener("click",()=>openInventoryProductHistory(name));
-        nameLine.append(productName,historyButton);
 
 
         const meta =
@@ -7873,7 +7861,7 @@ function buildInventory(){
 
 
         info.appendChild(
-          nameLine
+          productName
         );
 
         info.appendChild(
@@ -10062,6 +10050,8 @@ html:not(.dark) .brand-date{color:#805e6b}
 .page.active .more-page-option:nth-child(5){animation-delay:.14s}
 .page.active .more-page-option:nth-child(6){animation-delay:.175s}
 .page.active .more-page-option:nth-child(7){animation-delay:.21s}
+.page.active .more-page-option:nth-child(8){animation-delay:.245s}
+.page.active .more-page-option:nth-child(9){animation-delay:.28s}
 .inventory-order-panel{animation:cardArrival .28s var(--motion-ease) both}
 .inventory-confirm-dialog,.name-modal,.daily-challenge-modal{animation:modalIn .3s var(--motion-ease) both}
 .calendar-day-details:not([hidden]),.season-editor-panel:not([hidden]),.birthday-editor-panel:not([hidden]){animation:editorReveal .24s var(--motion-ease) both}
