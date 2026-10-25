@@ -3269,6 +3269,22 @@ html.dark .daily-challenge-success-art img{filter:url(#bearys-dark-logo-filter)}
 <link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/13.0.0/firebase-app-compat.js">
 <link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/13.0.0/firebase-auth-compat.js">
 <link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore-compat.js">
+<style id="bearys-ios-back-gesture-styles">
+@media (max-width:760px), (hover:none) and (pointer:coarse){
+  #mainContent{touch-action:pan-y pinch-zoom}
+  .bearys-ios-back-preview{position:fixed;z-index:1;overflow:hidden;pointer-events:none;contain:paint;background:var(--bg);will-change:transform}
+  .bearys-ios-back-preview-page{display:block!important;width:100%;min-height:100%;margin:0;animation:none!important;transform:translate3d(0,var(--bearys-back-scroll,0px),0)!important}
+  .bearys-ios-back-preview-page,.bearys-ios-back-preview-page *{animation:none!important;transition:none!important}
+  #mainContent.is-bearys-back-dragging,#mainContent.is-bearys-back-settling{position:relative;z-index:2;transform:translate3d(var(--bearys-back-x,0px),0,0)}
+  #mainContent.is-bearys-back-dragging{will-change:transform,border-radius,box-shadow;border-radius:18px 0 0 18px;background:var(--bg);box-shadow:-13px 0 32px rgba(49,24,38,.2);transition:none!important}
+  #mainContent.is-bearys-back-settling{transition:transform .3s cubic-bezier(.22,.78,.24,1),border-radius .3s ease,box-shadow .3s ease}
+  .bearys-ios-back-preview{transform:translate3d(var(--bearys-preview-x,-28px),0,0)}
+  .bearys-ios-back-preview.is-settling{transition:transform .3s cubic-bezier(.22,.78,.24,1)}
+}
+@media(prefers-reduced-motion:reduce){
+  #mainContent.is-bearys-back-settling,.bearys-ios-back-preview.is-settling{transition-duration:.01ms!important}
+}
+</style>
 </head>
 
 
@@ -10255,5 +10271,143 @@ button,.menu-card,.more-page-option,.recipe-card,.activity-tab,.nav-button,.cale
 body.animations-off .page.page.active.active,body.animations-off .page.page.active.active *,body.animations-off .nav-button.nav-button.just-selected.just-selected .nav-icon,body.animations-off .tap-feedback.tap-feedback,body.animations-off .product-row.product-row.is-remote-updated,body.animations-off .activity-item.activity-item.is-just-completed{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 @media(prefers-reduced-motion:reduce){html body .page.page.active.active,html body .page.page.active.active *,html body .nav-button.nav-button.just-selected.just-selected .nav-icon,html body .tap-feedback.tap-feedback,html body .product-row.product-row.is-remote-updated,html body .activity-item.activity-item.is-just-completed{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
+<script id="bearys-ios-back-gesture-script">
+(()=>{
+  const main=document.getElementById("mainContent");
+  if(!main)return;
+  const edgeWidth=24;
+  let gesture=null;
+  let clickSuppressUntil=0;
+  const isTouchLayout=()=>window.matchMedia("(max-width:760px), (hover:none) and (pointer:coarse)").matches;
+  const activePageName=()=>document.querySelector(".page.active")?.id?.replace(/Page$/,"")||"";
+  function getBackContext(page){
+    if(page==="history"&&historyReturnPage){
+      return {page:historyReturnPage,scroll:historyReturnScrollPosition};
+    }
+    if(page==="inventory"&&inventoryOrderReturnState){
+      return {page:"inventory",scroll:inventoryOrderReturnState.position};
+    }
+    return pageBackContexts.get(page)||{page:"home",scroll:{container:"window",top:0}};
+  }
+  function buildPreview(context){
+    const target=document.getElementById((context?.page||"home")+"Page");
+    if(!target)return null;
+    const mainRect=main.getBoundingClientRect();
+    const header=document.querySelector(".topbar");
+    const top=Math.max(0,header?.getBoundingClientRect().bottom||0);
+    const preview=document.createElement("div");
+    preview.className="bearys-ios-back-preview";
+    preview.setAttribute("aria-hidden","true");
+    preview.inert=true;
+    preview.style.left=`${mainRect.left}px`;
+    preview.style.top=`${top}px`;
+    preview.style.width=`${mainRect.width}px`;
+    preview.style.height=`${Math.max(0,window.innerHeight-top)}px`;
+    const clone=target.cloneNode(true);
+    clone.removeAttribute("id");
+    clone.classList.add("active","bearys-ios-back-preview-page");
+    clone.setAttribute("aria-hidden","true");
+    clone.querySelectorAll("[id]").forEach(node=>node.removeAttribute("id"));
+    const scrollTop=Number(context?.scroll?.top)||0;
+    clone.style.setProperty("--bearys-back-scroll",`${-scrollTop}px`);
+    preview.appendChild(clone);
+    document.body.appendChild(preview);
+    return preview;
+  }
+  function cleanGesture(){
+    if(!gesture)return;
+    main.classList.remove("is-bearys-back-dragging","is-bearys-back-settling");
+    main.style.removeProperty("--bearys-back-x");
+    gesture.preview?.remove();
+    gesture=null;
+  }
+  function finishBack(){
+    const page=activePageName();
+    if(page==="history")goBackFromHistory();
+    else if(page==="inventory")goBackFromInventory();
+    else if(page)goBackFromPage(page);
+  }
+  function settle(commit){
+    if(!gesture||gesture.mode!=="drag")return;
+    const current=gesture;
+    current.settling=true;
+    main.classList.remove("is-bearys-back-dragging");
+    main.classList.add("is-bearys-back-settling");
+    current.preview?.classList.add("is-settling");
+    main.style.setProperty("--bearys-back-x",commit?`${window.innerWidth}px`:"0px");
+    current.preview?.style.setProperty("--bearys-preview-x",commit?"0px":"-28px");
+    let finished=false;
+    const complete=()=>{
+      if(finished)return;
+      finished=true;
+      main.removeEventListener("transitionend",onTransitionEnd);
+      const shouldGoBack=commit;
+      cleanGesture();
+      if(shouldGoBack)finishBack();
+    };
+    current.complete=complete;
+    const onTransitionEnd=event=>{
+      if(event.target!==main||event.propertyName!=="transform")return;
+      main.removeEventListener("transitionend",onTransitionEnd);
+      complete();
+    };
+    main.addEventListener("transitionend",onTransitionEnd);
+    window.setTimeout(complete,360);
+  }
+  function startGesture(event){
+    if(!isTouchLayout()||gesture||event.isPrimary===false||event.pointerType==="mouse"||event.button!==0)return;
+    if(event.clientX>edgeWidth||event.clientX<0||activePageName()==="home")return;
+    if(event.target?.closest?.(".bottom-nav,[role=dialog],.name-overlay.show,.inventory-confirm-dialog,.daily-challenge-modal,button,a,input,textarea,select,[contenteditable='true']"))return;
+    gesture={pointerId:event.pointerId,startX:event.clientX,startY:event.clientY,lastX:event.clientX,lastY:event.clientY,startTime:performance.now(),lastTime:performance.now(),samples:[],mode:"pending",preview:null};
+  }
+  function moveGesture(event){
+    if(!gesture||gesture.pointerId!==event.pointerId||gesture.settling)return;
+    const dx=event.clientX-gesture.startX;
+    const dy=event.clientY-gesture.startY;
+    if(gesture.mode==="pending"){
+      if(Math.abs(dy)>10&&Math.abs(dy)>Math.abs(dx)*1.15){gesture=null;return;}
+      if(dx< -8){gesture=null;return;}
+      if(dx<=9||dx<=Math.abs(dy)*1.15)return;
+      gesture.mode="drag";
+      gesture.preview=buildPreview(getBackContext(activePageName()));
+      main.classList.add("is-bearys-back-dragging");
+    }
+    if(gesture.mode!=="drag")return;
+    if(event.cancelable)event.preventDefault();
+    const distance=Math.max(0,dx);
+    main.style.setProperty("--bearys-back-x",`${distance}px`);
+    if(gesture.preview)gesture.preview.style.setProperty("--bearys-preview-x",`${-28+distance*.28}px`);
+    const now=performance.now();
+    gesture.samples.push({x:event.clientX,time:now});
+    gesture.samples=gesture.samples.filter(sample=>now-sample.time<=120).slice(-6);
+    gesture.lastX=event.clientX;
+    gesture.lastY=event.clientY;
+    gesture.lastTime=now;
+  }
+  function endGesture(event){
+    if(!gesture||gesture.pointerId!==event.pointerId||gesture.settling)return;
+    if(gesture.mode!=="drag"){gesture=null;return;}
+    const dx=Math.max(0,event.clientX-gesture.startX);
+    const samples=gesture.samples;
+    const first=samples[0];
+    const last=samples[samples.length-1];
+    const velocity=first&&last&&last.time>first.time?(last.x-first.x)/(last.time-first.time):0;
+    const committed=dx>=Math.min(window.innerWidth*.32,160)||(dx>=44&&velocity>=.48);
+    if(committed)clickSuppressUntil=Date.now()+100;
+    settle(committed);
+  }
+  main.addEventListener("pointerdown",startGesture,{passive:true});
+  window.addEventListener("pointermove",moveGesture,{passive:false});
+  window.addEventListener("pointerup",endGesture,{passive:true});
+  window.addEventListener("pointercancel",event=>{
+    if(!gesture||gesture.pointerId!==event.pointerId)return;
+    if(gesture.mode==="drag")settle(false);
+    else gesture=null;
+  },{passive:true});
+  document.addEventListener("click",event=>{
+    if(Date.now()<clickSuppressUntil){event.preventDefault();event.stopPropagation();clickSuppressUntil=0;}
+  },true);
+})();
+</script>
 </body>
 </html>
