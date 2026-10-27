@@ -1,0 +1,19 @@
+// Integra este bloque dentro de service cloud.firestore / match /databases/{database}/documents.
+// Combínalo con tus reglas actuales; no reemplaces todo el archivo de reglas.
+match /pushSubscriptions/{deviceId} {
+  function validToken() {
+    return request.resource.data.token is string
+      && request.resource.data.token.size() > 0
+      && request.resource.data.token.size() <= 4096;
+  }
+  allow read: if request.auth != null && resource.data.uid == request.auth.uid;
+  allow create: if request.auth != null
+    && request.resource.data.uid == request.auth.uid
+    && request.resource.data.enabled == true
+    && validToken();
+  allow update: if request.auth != null
+    && resource.data.uid == request.auth.uid
+    && request.resource.data.uid == request.auth.uid
+    && validToken();
+  allow delete: if request.auth != null && resource.data.uid == request.auth.uid;
+}

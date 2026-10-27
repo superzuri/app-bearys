@@ -2011,6 +2011,11 @@ html.dark .menu-card:hover{
   font-weight:900;
 }
 
+.push-notifications-copy,.push-notifications-status{margin:0 0 9px;color:var(--muted);font-size:10px;line-height:1.5}
+.push-notifications-status{min-height:1.5em;margin-bottom:4px}
+.push-notifications-status.is-error{color:#b4234b}
+.push-notifications-button:disabled{opacity:.58;cursor:not-allowed}
+
 .registered-accounts-status{margin:0 0 9px;color:var(--muted);font-size:10px;line-height:1.45}
 .registered-accounts-list{display:grid;gap:7px}
 .registered-account-row{display:flex;align-items:center;gap:10px;padding:9px 10px;border:1px solid var(--border);border-radius:15px;background:var(--bg2)}
@@ -3901,6 +3906,15 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
     <div class="registered-accounts-list" id="registeredAccountsList" role="list"></div>
   </div>
 
+  <div class="settings-card" id="pushNotificationSettingsCard">
+    <div class="settings-title">🔔 Recordatorio diario</div>
+    <p class="push-notifications-copy">A la 1:50 p. m. te recordaremos enviar el pan. Actívalo en cada dispositivo donde quieras recibirlo.</p>
+    <p class="push-notifications-status" id="pushNotificationsStatus" aria-live="polite">Preparando notificaciones…</p>
+    <button id="pushNotificationsButton" class="setting-row push-notifications-button" type="button" onclick="toggleBearyPushNotifications()">
+      <span><b id="pushNotificationsButtonTitle">Activar recordatorio</b><small id="pushNotificationsButtonCopy">Notificación push en este dispositivo</small></span>
+      <span id="pushNotificationsButtonIcon" aria-hidden="true">→</span>
+    </button>
+  </div>
 
   <div class="settings-card">
 
@@ -5103,6 +5117,7 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
 <script src="https://www.gstatic.com/firebasejs/13.0.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/13.0.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/13.0.0/firebase-messaging-compat.js"></script>
 <script>
 
 /* =========================================================
@@ -5122,6 +5137,8 @@ const firebaseDb=firebase.firestore();
 const SHARED_STATE_COLLECTION="sharedState";
 const TEAM_MEMBER_COLLECTION="teamMembers";
 const ACTIVITY_HISTORY_COLLECTION="activityHistory";
+const PUSH_SUBSCRIPTIONS_COLLECTION="pushSubscriptions";
+const FCM_VAPID_KEY=""; // Pega aquí la clave pública Web Push de Firebase antes de activar el envío.
 const INVENTORY_FOCUS_PREFIX="bearyInv_focus_";
 const INVENTORY_FOCUS_HEARTBEAT_MS=30000;
 const INVENTORY_FOCUS_STALE_MS=95000;
@@ -5154,6 +5171,153 @@ let teamDirectoryUnsubscribe=null;
 let teamPresenceUnsubscribe=null;
 let teamGreetingUnsubscribe=null;
 let teamPresenceSessionId="";
+let bearyServiceWorkerRegistrationPromise=null;
+let bearyMessagingInstance=null;
+let bearyForegroundMessageListenerInstalled=false;
+let bearyPushEnabled=false;
+let bearyPushBusy=false;
+
+function isBearyIosDevice(){
+  return /iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+}
+function isBearyStandaloneApp(){
+  return Boolean(window.matchMedia?.("(display-mode: standalone)").matches||navigator.standalone===true);
+}
+function setBearyPushStatus(message,isError=false){
+  const node=document.getElementById("pushNotificationsStatus");
+  if(!node)return;
+  node.textContent=message;
+  node.classList.toggle("is-error",Boolean(isError));
+}
+function refreshBearyPushSettings(messageOverride="",isError=false){
+  const button=document.getElementById("pushNotificationsButton");
+  const title=document.getElementById("pushNotificationsButtonTitle");
+  const copy=document.getElementById("pushNotificationsButtonCopy");
+  const icon=document.getElementById("pushNotificationsButtonIcon");
+  let message=messageOverride;
+  let unavailable=false;
+  if(!message){
+    if(!window.isSecureContext){message="Las notificaciones necesitan que Beary’s esté publicada en un sitio seguro (HTTPS).";unavailable=true;}
+    else if(isBearyIosDevice()&&!isBearyStandaloneApp()){message="En iPhone, agrega Beary’s a la pantalla de inicio y ábrela desde su icono para recibir notificaciones.";unavailable=true;}
+    else if(!("Notification" in window)||!("serviceWorker" in navigator)||!("PushManager" in window)){message="Este navegador no admite notificaciones push para Beary’s.";unavailable=true;}
+    else if(!FCM_VAPID_KEY){message="Falta conectar la clave pública Web Push de Firebase para activar el recordatorio.";unavailable=true;}
+    else if(!activeTeamProfile?.uid){message="Inicia sesión con la cuenta del equipo para activar este dispositivo.";unavailable=true;}
+    else if(Notification.permission==="denied"){message="Las notificaciones están bloqueadas en el navegador. Permítelas en la configuración del sitio.";unavailable=true;}
+    else if(bearyPushEnabled)message="Listo: este dispositivo recibirá el recordatorio diario.";
+    else if(Notification.permission==="granted")message="El permiso ya está concedido. Activa el recordatorio para este dispositivo.";
+    else message="Activa el recordatorio en cada dispositivo donde quieras recibirlo.";
+  }
+  setBearyPushStatus(message,isError);
+  const permissionDenied=("Notification" in window)&&Notification.permission==="denied";
+  if(button)button.disabled=Boolean(bearyPushBusy||unavailable||(isError&&permissionDenied));
+  if(title)title.textContent=bearyPushEnabled?"Desactivar recordatorio":"Activar recordatorio";
+  if(copy)copy.textContent=bearyPushEnabled?"Dejar de recibirlo en este dispositivo":"Notificación push en este dispositivo";
+  if(icon)icon.textContent=bearyPushEnabled?"✓":"→";
+}
+function getBearyPushDeviceId(){
+  const key="bearyPushDeviceId_v1";
+  try{
+    let id=localStorage.getItem(key);
+    if(!id){id=window.crypto?.randomUUID?.()||Date.now().toString(36)+Math.random().toString(36).slice(2);localStorage.setItem(key,id);}
+    return id;
+  }catch(error){return window.crypto?.randomUUID?.()||Date.now().toString(36)+Math.random().toString(36).slice(2);}
+}
+function registerBearyServiceWorker(){
+  if(!("serviceWorker" in navigator))return Promise.reject(new Error("Este navegador no admite service workers."));
+  if(!bearyServiceWorkerRegistrationPromise){
+    bearyServiceWorkerRegistrationPromise=navigator.serviceWorker.register("./service-worker.js").catch(error=>{
+      bearyServiceWorkerRegistrationPromise=null;
+      throw error;
+    });
+  }
+  return bearyServiceWorkerRegistrationPromise;
+}
+async function getBearyMessaging(){
+  if(!("PushManager" in window)||!("Notification" in window))throw new Error("Este navegador no admite notificaciones push.");
+  if(typeof firebase.messaging?.isSupported==="function"&&!await firebase.messaging.isSupported())throw new Error("Firebase Messaging no está disponible en este navegador.");
+  if(!bearyMessagingInstance){
+    bearyMessagingInstance=firebase.messaging();
+    if(!bearyForegroundMessageListenerInstalled){
+      bearyMessagingInstance.onMessage(payload=>{
+        const body=payload?.data?.body||"¡Sorpresa! Ya son la 1:50 p. m.: toca enviar el pan 🍞🚀";
+        showToast("🔔 "+body);
+      });
+      bearyForegroundMessageListenerInstalled=true;
+    }
+  }
+  return bearyMessagingInstance;
+}
+function bearyPushDevicePlatform(){
+  if(isBearyIosDevice())return "ios";
+  if(/Android/i.test(navigator.userAgent))return "android";
+  return "web";
+}
+function getBearyPushSubscriptionRef(uid,deviceId=getBearyPushDeviceId()){
+  return firebaseDb.collection(PUSH_SUBSCRIPTIONS_COLLECTION).doc(uid+"_"+deviceId);
+}
+async function initializeBearyPushForUser(){
+  bearyPushEnabled=false;
+  if(!activeTeamProfile?.uid||!FCM_VAPID_KEY||!("Notification" in window)||Notification.permission!=="granted"){
+    refreshBearyPushSettings();
+    return;
+  }
+  try{
+    const registration=await registerBearyServiceWorker();
+    const messaging=await getBearyMessaging();
+    const token=await messaging.getToken({vapidKey:FCM_VAPID_KEY,serviceWorkerRegistration:registration});
+    if(!token){refreshBearyPushSettings("No se pudo obtener el registro de este dispositivo. Vuelve a activar el recordatorio.",true);return;}
+    const ref=getBearyPushSubscriptionRef(activeTeamProfile.uid);
+    const existing=await ref.get();
+    if(existing.exists&&existing.data()?.enabled===true){
+      await ref.set({uid:activeTeamProfile.uid,token,enabled:true,platform:bearyPushDevicePlatform(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+      bearyPushEnabled=true;
+    }
+    refreshBearyPushSettings();
+  }catch(error){
+    console.warn("Beary’s push subscription could not be refreshed.",error);
+    refreshBearyPushSettings("No se pudo comprobar el registro push. Revisa la configuración de Firebase e inténtalo desde aquí.",true);
+  }
+}
+async function toggleBearyPushNotifications(){
+  if(bearyPushBusy)return;
+  let failureMessage="";
+  bearyPushBusy=true;
+  refreshBearyPushSettings(bearyPushEnabled?"Desactivando el recordatorio…":"Preparando el recordatorio…");
+  try{
+    if(!activeTeamProfile?.uid)throw new Error("Inicia sesión con la cuenta del equipo.");
+    if(!window.isSecureContext)throw new Error("Abre Beary’s desde su sitio HTTPS para activar notificaciones.");
+    if(isBearyIosDevice()&&!isBearyStandaloneApp())throw new Error("En iPhone, agrega Beary’s a la pantalla de inicio y ábrela desde su icono.");
+    if(!FCM_VAPID_KEY)throw new Error("Falta configurar la clave pública Web Push de Firebase.");
+    if(!("Notification" in window)||!("PushManager" in window))throw new Error("Este navegador no admite notificaciones push.");
+    if(bearyPushEnabled){
+      const messaging=await getBearyMessaging();
+      const ref=getBearyPushSubscriptionRef(activeTeamProfile.uid);
+      await ref.delete();
+      await messaging.deleteToken().catch(error=>console.warn("Could not remove the local FCM token.",error));
+      bearyPushEnabled=false;
+      refreshBearyPushSettings("Recordatorio desactivado en este dispositivo.");
+      return;
+    }
+    let permission=Notification.permission;
+    if(permission==="default")permission=await Notification.requestPermission();
+    if(permission!=="granted")throw new Error(permission==="denied"?"Las notificaciones están bloqueadas. Permítelas en la configuración del sitio.":"No se concedió permiso para las notificaciones.");
+    const messaging=await getBearyMessaging();
+    const ref=getBearyPushSubscriptionRef(activeTeamProfile.uid);
+    const registration=await registerBearyServiceWorker();
+    const token=await messaging.getToken({vapidKey:FCM_VAPID_KEY,serviceWorkerRegistration:registration});
+    if(!token)throw new Error("Firebase no pudo registrar este dispositivo.");
+    await ref.set({uid:activeTeamProfile.uid,token,enabled:true,platform:bearyPushDevicePlatform(),createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+    bearyPushEnabled=true;
+    refreshBearyPushSettings("Listo: este dispositivo recibirá el recordatorio diario.");
+  }catch(error){
+    failureMessage=error?.message||"No se pudo activar el recordatorio. Inténtalo de nuevo.";
+    console.error("Could not update Beary’s push notifications.",error);
+  }finally{
+    bearyPushBusy=false;
+    if(failureMessage)refreshBearyPushSettings(failureMessage,true);
+    else refreshBearyPushSettings();
+  }
+}
 let registeredAccountsClickInstalled=false;
 const inventoryFocusPresenceBySession=new Map();
 const inventoryFocusExpiryTimers=new Map();
@@ -5932,6 +6096,8 @@ async function activateFirebaseUser(user){
     firebaseSetupStage="";
     hideFirebaseGate();
     finishBearysSplash();
+    refreshBearyPushSettings();
+    initializeBearyPushForUser();
     const loginButton=document.getElementById("firebaseLoginButton");
     if(loginButton)loginButton.disabled=false;
     if(document.getElementById("historyPage")?.classList.contains("active"))loadHistory();
@@ -5959,6 +6125,8 @@ function initializeFirebaseAccess(){
     clearInventoryFocusPresence();
     stopRegisteredAccountListeners();
     activeTeamProfile=null;
+    bearyPushEnabled=false;
+    refreshBearyPushSettings();
     sharedStateReady=false;
     if(sharedStateUnsubscribe){sharedStateUnsubscribe();sharedStateUnsubscribe=null;}
     if(historyUnsubscribe){historyUnsubscribe();historyUnsubscribe=null;}
@@ -9988,8 +10156,8 @@ initializeFirebaseAccess();
 <script>
 if("serviceWorker" in navigator){
   window.addEventListener("load",()=>{
-    navigator.serviceWorker.register("./service-worker.js").catch(error=>{
-      console.warn("Beary's PWA could not register its offline screen.",error);
+    registerBearyServiceWorker().catch(error=>{
+      console.warn("Beary's service worker could not be registered.",error);
     });
   });
 }
