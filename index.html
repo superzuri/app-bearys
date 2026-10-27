@@ -3983,6 +3983,14 @@ html.dark .bearys-splash-theme{background:var(--bg,#171216);color:var(--text,#ff
 
     </div>
 
+    <div class="setting-row">
+      <span>
+        <b>📳 Vibración</b>
+        <small>Confirmación suave en dispositivos compatibles</small>
+      </span>
+      <button class="mini-toggle" id="hapticsToggle" type="button" aria-pressed="true" aria-label="Desactivar vibración" onclick="toggleHaptics(event)">ON</button>
+    </div>
+
   </div>
 
 
@@ -6465,6 +6473,15 @@ function listenForSystemThemeChanges(){
    SETTINGS
 ========================================================= */
 
+function isBearyHapticsEnabled(){
+  try{return localStorage.getItem("bearyHaptics")!=="off"}catch(error){return false}
+}
+function triggerBearyHaptic(kind="task"){
+  if(!isBearyHapticsEnabled()||typeof navigator==="undefined"||typeof navigator.vibrate!=="function")return false;
+  const patterns={task:16,checklist:[18,50,28],challenge:[24,70,34],inventory:[18,55,26]};
+  try{return navigator.vibrate(patterns[kind]||patterns.task)}catch(error){return false}
+}
+
 function syncSettingsUI(){
 
   const name =
@@ -6563,6 +6580,15 @@ function syncSettingsUI(){
 
   }
 
+  const hapticsOn=isBearyHapticsEnabled();
+  const hapticsToggle=document.getElementById("hapticsToggle");
+  if(hapticsToggle){
+    hapticsToggle.textContent=hapticsOn?"ON":"OFF";
+    hapticsToggle.classList.toggle("off",!hapticsOn);
+    hapticsToggle.setAttribute("aria-pressed",String(hapticsOn));
+    hapticsToggle.setAttribute("aria-label",hapticsOn?"Desactivar vibración":"Activar vibración");
+  }
+
 }
 
 
@@ -6594,6 +6620,14 @@ function toggleAnimations(event){
 
 }
 
+
+function toggleHaptics(event){
+  if(event)event.stopPropagation();
+  const enabled=!isBearyHapticsEnabled();
+  try{localStorage.setItem("bearyHaptics",enabled?"on":"off")}catch(error){}
+  syncSettingsUI();
+  showToast(enabled?"📳 Vibración activada":"🔕 Vibración desactivada");
+}
 
 function clearLocalData(){
 
@@ -8453,11 +8487,13 @@ function generateInventoryList(){
 function finishInventoryOrder(){
   const order=readInventoryOrder();
   if(!order)return;
+  const alreadyFinalized=Boolean(order.finalized);
   order.finalized=true;
   order.updatedAt=new Date().toISOString();
   saveInventoryOrder(order);
   renderInventoryOrder();
   const pending=order.items.filter(item=>!item.received).length;
+  if(!alreadyFinalized&&order.items.length>0&&pending===0)triggerBearyHaptic("inventory");
   showToast(pending?"📌 Quedaron "+pending+" productos pendientes de surtir":"🎉 ¡Todo quedó surtido!");
 }
 
@@ -9083,6 +9119,7 @@ function completeDailyChallenge(){
   renderDailyChallengeCard(challenge,now);
   syncDailyChallengeModal(challenge,now);
   celebrateDailyChallenge();
+  triggerBearyHaptic("challenge");
   const heroButton=document.getElementById("heroStartButton");
   if(heroButton)heroButton.textContent="🎉 Reto conseguido";
   showToast("🎉 ¡Reto conseguido! Gran trabajo, equipo ☕");
@@ -9444,6 +9481,7 @@ async function setCleaningTaskComplete(id,completed){
   if(!target)return;
   target.completed=completed;
   target.completedAt=completed?new Date().toISOString():null;
+  if(completed)triggerBearyHaptic("task");
   const saved=saveDeepCleaningAssignments(assignments);
   renderCleaningAssignmentCards();
   if(!await saved)renderDeepCleaning();
@@ -10176,7 +10214,13 @@ if("serviceWorker" in navigator){
       return;
     }
     const checks=getChecklistChecks(type);
-    if(checks.length&&checks.every(check=>check.checked))celebrateChecklist(type);
+    const checklistComplete=checks.length>0&&checks.every(check=>check.checked);
+    if(checklistComplete){
+      celebrateChecklist(type);
+      triggerBearyHaptic("checklist");
+    }else{
+      triggerBearyHaptic("task");
+    }
   });
 })();
 </script>
