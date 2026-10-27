@@ -3275,6 +3275,7 @@ html.dark .daily-challenge-success-art img{filter:url(#bearys-dark-logo-filter)}
   .bearys-ios-back-preview{position:fixed;z-index:1;overflow:hidden;pointer-events:none;contain:paint;background:var(--bg);will-change:transform}
   .bearys-ios-back-preview-page{display:block!important;width:100%;min-height:100%;margin:0;animation:none!important;transform:translate3d(0,var(--bearys-back-scroll,0px),0)!important}
   .bearys-ios-back-preview-page,.bearys-ios-back-preview-page *{animation:none!important;transition:none!important}
+  .page.bearys-swipe-back-return,.page.bearys-swipe-back-return *{animation:none!important}
   #mainContent.is-bearys-back-dragging,#mainContent.is-bearys-back-settling{position:relative;z-index:2;transform:translate3d(var(--bearys-back-x,0px),0,0);background:var(--bg)}
   #mainContent.is-bearys-back-dragging{will-change:transform,border-radius,box-shadow;border-radius:18px 0 0 18px;box-shadow:-13px 0 32px rgba(49,24,38,.2);transition:none!important}
   #mainContent.is-bearys-back-settling{pointer-events:none;transition:transform .3s cubic-bezier(.22,.78,.24,1),border-radius .3s ease,box-shadow .3s ease}
@@ -5736,14 +5737,16 @@ function goBackFromHistory(){
     const allFilter=document.querySelector('#historyFilters .history-filter[data-history-filter="all"]');
     setHistoryFilter("all",allFilter);
     openPage(returnPage,{direct:true});
-    requestAnimationFrame(()=>{
+    const restoreReturnPosition=()=>{
       if(returnPosition?.container==="app"){
         const app=document.querySelector(".app");
         if(app)app.scrollTop=returnPosition.top;
       }else{
         window.scrollTo(0,returnPosition?.top||0);
       }
-    });
+    };
+    if(window.__bearysSwipeBackNavigation)restoreReturnPosition();
+    else requestAnimationFrame(restoreReturnPosition);
     return;
   }
   historyPersonFilter="all";
@@ -6960,6 +6963,10 @@ function openPage(page,options={}){
         p.classList.remove("active")
     );
 
+  document.querySelectorAll(".page.bearys-swipe-back-return").forEach(p=>p.classList.remove("bearys-swipe-back-return"));
+  if(window.__bearysSwipeBackNavigation){
+    target.classList.add("bearys-swipe-back-return");
+  }
 
   target.classList.add("active");
 
@@ -7017,7 +7024,8 @@ function goBackFromPage(page){
     }
     openPage(context.page,{direct:true});
     if(context.page==="activities"&&context.activityType)selectActivityType(context.activityType);
-    requestAnimationFrame(()=>restorePageScroll(context.scroll));
+    if(window.__bearysSwipeBackNavigation)restorePageScroll(context.scroll);
+    else requestAnimationFrame(()=>restorePageScroll(context.scroll));
     return;
   }
   goHome();
@@ -8362,7 +8370,8 @@ function returnToInventoryOrder(){
   if(search&&search.value!==state.search){search.value=state.search;buildInventory();}
   updateInventoryStats();
   renderInventoryOrder();
-  requestAnimationFrame(()=>restorePageScroll(state.position));
+  if(window.__bearysSwipeBackNavigation)restorePageScroll(state.position);
+  else requestAnimationFrame(()=>restorePageScroll(state.position));
 }
 function goBackFromInventory(){
   if(inventoryOrderReturnState){returnToInventoryOrder();return;}
@@ -10344,9 +10353,14 @@ body.animations-off .page.page.active.active,body.animations-off .page.page.acti
   }
   function finishBack(){
     const page=activePageName();
-    if(page==="history")goBackFromHistory();
-    else if(page==="inventory")goBackFromInventory();
-    else if(page)goBackFromPage(page);
+    window.__bearysSwipeBackNavigation=true;
+    try{
+      if(page==="history")goBackFromHistory();
+      else if(page==="inventory")goBackFromInventory();
+      else if(page)goBackFromPage(page);
+    }finally{
+      window.__bearysSwipeBackNavigation=false;
+    }
   }
   function settle(commit){
     if(!gesture||gesture.mode!=="drag")return;
