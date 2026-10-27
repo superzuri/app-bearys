@@ -1,0 +1,41 @@
+name: Enviar recordatorio del pan
+
+on:
+  schedule:
+    - cron: "50 13 * * *"
+      timezone: "America/Mexico_City"
+  workflow_dispatch:
+    inputs:
+      prueba:
+        description: Enviar una notificación de prueba a los dispositivos activados
+        required: true
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bearys-daily-bread-reminder
+  cancel-in-progress: false
+
+jobs:
+  send-reminder:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Obtener el repositorio
+        uses: actions/checkout@v4
+      - name: Preparar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Instalar dependencias
+        working-directory: push-notifications
+        run: npm install --omit=dev --no-audit --no-fund
+      - name: Enviar notificación
+        working-directory: push-notifications
+        env:
+          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+          BEARY_PUSH_TEST_MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.prueba }}
+        run: npm run send
