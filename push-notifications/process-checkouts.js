@@ -8,6 +8,7 @@ const SUBSCRIPTIONS = "pushSubscriptions";
 const REMINDER_RUNS = "checkoutReminderRuns";
 const CUTOFF_MINUTES = 22 * 60 + 10;
 const BATCH_SIZE = 500;
+const SENDING_LEASE_MS = 10 * 60 * 1000;
 
 function localParts(date) {
   const parts = new Intl.DateTimeFormat("en-CA", {
@@ -118,9 +119,31 @@ async function sendToSubscriptions(subscriptions, data, onDelivered) {
   return { successCount: successCount, failureCount: failureCount };
 }
 
+async function claimExitAlert(db, eventRef, today) {
+  return db.runTransaction(async function (transaction) {
+    const snapshot = await transaction.get(eventRef);
+    if (!snapshot.exists) return null;
+    const event = snapshot.data() || {};
+    if (event.notified !== false || event.dayKey !== today) return null;
+
+    if (event.notificationStatus === "sending") {
+      const leaseAt = event.notificationLeaseAt && typeof event.notificationLeaseAt.toDate === "function"
+        ? event.notificationLeaseAt.toDate().getTime()
+        : 0;
+      if (leaseAt && Date.now() - leaseAt < SENDING_LEASE_MS) return null;
+    }
+
+    transaction.update(eventRef, {
+      notificationStatus: "sending",
+      notificationLeaseAt: FieldValue.serverTimestamp(),
+      lastNotificationAttemptAt: FieldValue.serverTimestamp()
+    });
+    return event;
+  });
+}
+
 async function sendPendingExitAlerts(db, today, subscriptions) {
   const snapshot = await db.collection(CHECKOUTS).where("notified", "==", false).get();
-  const availableIds = new Set(subscriptions.map(function (subscription) { return subscription.id; }));
 
   for (const eventDoc of snapshot.docs) {
     const event = eventDoc.data() || {};
@@ -128,6 +151,7 @@ async function sendPendingExitAlerts(db, today, subscriptions) {
       await eventDoc.ref.update({
         notified: true,
         notificationStatus: "expired",
+        notificationLeaseAt: FieldValue.delete(),
         notifiedAt: FieldValue.serverTimestamp()
       });
       continue;
@@ -138,21 +162,34 @@ async function sendPendingExitAlerts(db, today, subscriptions) {
       await eventDoc.ref.update({
         notified: true,
         notificationStatus: "invalid-event",
+        notificationLeaseAt: FieldValue.delete(),
         notifiedAt: FieldValue.serverTimestamp()
       });
       continue;
     }
 
-    const sentIds = new Set(Array.isArray(event.notifiedSubscriptionIds) ? event.notifiedSubscriptionIds : []);
-    const pending = subscriptions.filter(function (subscription) { return !sentIds.has(subscription.id); });
+    if (!subscriptions.length) {
+      console.log("La salida " + eventDoc.id + " queda pendiente hasta que haya dispositivos suscritos.");
+      continue;
+    }
+
+    const claimedEvent = await claimExitAlert(db, eventDoc.ref, today);
+    if (!claimedEvent) continue;
+
+    const sentIds = new Set(Array.isArray(claimedEvent.notifiedSubscriptionIds)
+      ? claimedEvent.notifiedSubscriptionIds
+      : []);
+    const pending = subscriptions.filter(function (subscription) {
+      return !sentIds.has(subscription.id);
+    });
+
     if (!pending.length) {
-      if (subscriptions.length && subscriptions.every(function (subscription) { return sentIds.has(subscription.id); })) {
-        await eventDoc.ref.update({
-          notified: true,
-          notificationStatus: "sent",
-          notifiedAt: FieldValue.serverTimestamp()
-        });
-      }
+      await eventDoc.ref.update({
+        notified: true,
+        notificationStatus: "sent",
+        notificationLeaseAt: FieldValue.delete(),
+        notifiedAt: FieldValue.serverTimestamp()
+      });
       continue;
     }
 
@@ -170,16 +207,22 @@ async function sendPendingExitAlerts(db, today, subscriptions) {
       });
     });
 
-    const stillEnabledIds = new Set(subscriptions.map(function (subscription) { return subscription.id; }));
-    const allCurrentDevicesSent = Array.from(stillEnabledIds).every(function (id) { return sentIds.has(id); });
-    if (allCurrentDevicesSent && subscriptions.length) {
+    const allCurrentDevicesSent = subscriptions.every(function (subscription) {
+      return sentIds.has(subscription.id);
+    });
+    if (allCurrentDevicesSent) {
       await eventDoc.ref.update({
         notified: true,
         notificationStatus: result.failureCount ? "sent-with-some-errors" : "sent",
+        notificationLeaseAt: FieldValue.delete(),
         notifiedAt: FieldValue.serverTimestamp()
       });
-    } else if (!subscriptions.length && availableIds.size === 0) {
-      console.log("La salida " + eventDoc.id + " queda pendiente hasta que haya dispositivos suscritos.");
+    } else {
+      await eventDoc.ref.update({
+        notificationStatus: "retry-pending",
+        notificationLeaseAt: FieldValue.delete(),
+        lastNotificationAttemptAt: FieldValue.serverTimestamp()
+      });
     }
   }
 }
