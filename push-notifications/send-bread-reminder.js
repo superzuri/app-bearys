@@ -35,7 +35,7 @@ async function main() {
   const testMode = process.env.BEARY_PUSH_TEST_MODE === "true";
   const message = {
     data: {
-      title: "!Recordatorio de Beary¡ 🐻",
+      title: "¡Recordatorio de Beary! 🐻",
       body: "¡Ya toca enviar el pan chicuelos y chicuelas! 🍞✨",
       url: "./",
       tag: testMode ? "bearys-push-test" : "bearys-bread-reminder"
