@@ -1,4 +1,4 @@
-/* Registro de salida de Beary's. Cargar este archivo después del script principal de Firebase. */
+/* Registro y anulación segura de salida de Beary's. Cargar después del script principal de Firebase. */
 (function () {
   "use strict";
 
@@ -6,12 +6,15 @@
   const COLLECTION = "checkoutEvents";
   const STYLE_ID = "bearyCheckoutStyles";
   const CARD_ID = "bearyCheckoutCard";
-  const DIALOG_ID = "bearyCheckoutDialog";
   let boundUid = "";
   let boundDayKey = "";
   let stopSnapshot = null;
   let currentRef = null;
+  let currentEvent = null;
+  let eventExists = false;
   let busy = false;
+  let busyAction = "";
+  let cancellationNotice = false;
 
   function dateParts(date) {
     const parts = new Intl.DateTimeFormat("en-CA", {
@@ -39,148 +42,104 @@
     status.classList.toggle("is-error", Boolean(isError));
   }
 
-  function setDialogStatus(message, isError) {
-    const status = document.getElementById("bearyCheckoutDialogStatus");
-    if (!status) return;
-    status.textContent = message || "Al confirmar, avisaremos a todo el equipo que tenga las notificaciones activadas.";
-    status.classList.toggle("is-error", Boolean(isError));
-  }
+  function renderState() {
+    const button = document.getElementById("bearyCheckoutButton");
+    if (!button) return;
 
-  function resetDialogButtons() {
-    const confirmButton = document.getElementById("bearyCheckoutConfirm");
-    const cancelButton = document.getElementById("bearyCheckoutCancel");
-    if (confirmButton) {
-      confirmButton.disabled = false;
-      confirmButton.textContent = "Sí, registrar salida";
-    }
-    if (cancelButton) cancelButton.disabled = false;
-  }
-
-  function closeConfirmation() {
-    const dialog = document.getElementById(DIALOG_ID);
-    if (dialog && dialog.open) dialog.close();
-    setDialogStatus("", false);
-    resetDialogButtons();
-  }
-
-  function openConfirmation() {
-    if (busy) return;
-    const dialog = document.getElementById(DIALOG_ID);
-    if (!dialog) return;
-
-    setDialogStatus("", false);
-    resetDialogButtons();
-    if (typeof dialog.showModal === "function") {
-      if (!dialog.open) dialog.showModal();
+    if (!eventExists || !currentEvent) {
+      button.dataset.action = "register";
+      button.textContent = busy ? (busyAction === "cancel" ? "Anulando…" : "Guardando…") : "Registrar mi salida";
+      button.disabled = busy;
+      setStatus(cancellationNotice
+        ? "Salida anulada. Ya puedes registrarla de nuevo."
+        : "Al registrarla, avisaremos a todo el equipo.", false);
       return;
     }
 
-    if (window.confirm("¿Registrar tu salida y avisar a todo el equipo?")) {
-      registerCheckout();
+    const sentIds = Array.isArray(currentEvent.notifiedSubscriptionIds)
+      ? currentEvent.notifiedSubscriptionIds
+      : [];
+    if (currentEvent.notified === true) {
+      button.dataset.action = "none";
+      button.textContent = "Aviso enviado ✓";
+      button.disabled = true;
+      setStatus("El aviso ya se envió; no se puede retirar del teléfono.", false);
+    } else if (currentEvent.notificationStatus === "sending") {
+      button.dataset.action = "none";
+      button.textContent = busy ? "Anulando…" : "Aviso en proceso…";
+      button.disabled = true;
+      setStatus("El aviso está empezando a enviarse. Espera a que termine.", false);
+    } else if (sentIds.length > 0) {
+      button.dataset.action = "none";
+      button.textContent = "Aviso iniciado";
+      button.disabled = true;
+      setStatus("El aviso ya se envió a parte del equipo; no se puede anular para evitar duplicados.", false);
+    } else {
+      button.dataset.action = "cancel";
+      button.textContent = busy ? "Anulando…" : "Anular salida";
+      button.disabled = busy;
+      setStatus("El aviso sigue pendiente. Puedes anularla y registrarla de nuevo.", false);
     }
   }
 
-  function createStyles() {
-    if (document.getElementById(STYLE_ID)) return;
-    const style = document.createElement("style");
-    style.id = STYLE_ID;
-    style.textContent = [
-      ".beary-checkout-card{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:14px;margin:0 0 20px;padding:16px;border:1px solid rgba(255,121,173,.3);border-radius:22px;background:linear-gradient(125deg,var(--surface) 25%,var(--pinksoft) 100%);box-shadow:var(--shadow)}",
-      ".beary-checkout-copy{display:flex;align-items:center;gap:10px;min-width:0}",
-      ".beary-checkout-icon{display:grid;place-items:center;width:42px;height:42px;flex:0 0 42px;border-radius:15px;background:var(--pinksoft);font-size:21px}",
-      ".beary-checkout-copy-text{display:block;min-width:0}",
-      ".beary-checkout-eyebrow{display:block;margin-bottom:3px;color:var(--pink2);font-size:8px;font-weight:950;letter-spacing:.09em}",
-      ".beary-checkout-copy strong{display:block;color:var(--text);font-size:12px;font-weight:900;line-height:1.3}",
-      ".beary-checkout-status{display:block;margin-top:4px;color:var(--muted);font-size:9px;line-height:1.4}",
-      ".beary-checkout-status.is-error,.beary-checkout-dialog-status.is-error{color:#d64764}",
-      ".beary-checkout-button{display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:10px 15px;border:0;border-radius:14px;background:var(--pink);color:#fff;font-family:inherit;font-size:11px;font-weight:900;line-height:1.2;white-space:nowrap;cursor:pointer;box-shadow:0 6px 16px rgba(237,79,138,.16);transition:transform .18s ease,opacity .18s ease,box-shadow .18s ease}",
-      ".beary-checkout-button:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 9px 20px rgba(237,79,138,.23)}",
-      ".beary-checkout-button:active:not(:disabled){transform:scale(.98)}",
-      ".beary-checkout-button:disabled{opacity:.58;cursor:default;box-shadow:none}",
-      ".beary-checkout-button-arrow{font-size:15px;line-height:1}",
-      ".beary-checkout-dialog{width:min(420px,calc(100vw - 32px));max-width:calc(100vw - 32px);margin:auto;padding:22px;border:1px solid var(--border);border-radius:24px;background:var(--surface);color:var(--text);font-family:inherit;box-shadow:0 24px 80px rgba(22,10,18,.32)}",
-      ".beary-checkout-dialog::backdrop{background:rgba(18,10,15,.52);backdrop-filter:blur(4px)}",
-      ".beary-checkout-dialog[open]{animation:bearyCheckoutDialogIn .18s ease-out both}",
-      ".beary-checkout-dialog-icon{display:grid;place-items:center;width:46px;height:46px;margin-bottom:13px;border-radius:16px;background:var(--pinksoft);font-size:23px}",
-      ".beary-checkout-dialog h2{color:var(--text);font-size:18px;font-weight:950;line-height:1.25}",
-      ".beary-checkout-dialog-copy{margin-top:8px;color:var(--muted);font-size:12px;line-height:1.55}",
-      ".beary-checkout-dialog-status{min-height:17px;margin-top:9px;color:var(--muted);font-size:10px;line-height:1.4}",
-      ".beary-checkout-dialog-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:17px}",
-      ".beary-checkout-dialog-button{min-height:42px;padding:10px 13px;border:1px solid var(--border);border-radius:13px;background:var(--surface);color:var(--text);font-family:inherit;font-size:11px;font-weight:850;cursor:pointer;transition:transform .18s ease,opacity .18s ease}",
-      ".beary-checkout-dialog-button:active:not(:disabled){transform:scale(.98)}",
-      ".beary-checkout-dialog-button:disabled{opacity:.58;cursor:default}",
-      ".beary-checkout-dialog-button-primary{border-color:transparent;background:var(--pink);color:#fff}",
-      "@keyframes bearyCheckoutDialogIn{from{opacity:0;transform:translateY(5px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}",
-      "@media(max-width:420px){.beary-checkout-card{grid-template-columns:minmax(0,1fr);gap:12px}.beary-checkout-button{width:100%}.beary-checkout-dialog{padding:19px}.beary-checkout-dialog-actions{flex-direction:column-reverse}.beary-checkout-dialog-button{width:100%}}",
-      "@media(orientation:landscape) and (min-width:900px){#homePage > .beary-checkout-card{grid-column:2;grid-row:3;margin-top:0}}",
-      "@media(prefers-reduced-motion:reduce){.beary-checkout-button,.beary-checkout-dialog-button{transition:none}.beary-checkout-dialog[open]{animation:none}}"
-    ].join("");
-    document.head.appendChild(style);
-  }
-
-  function createDialog() {
-    if (document.getElementById(DIALOG_ID)) return document.getElementById(DIALOG_ID);
-    const dialog = document.createElement("dialog");
-    dialog.className = "beary-checkout-dialog";
-    dialog.id = DIALOG_ID;
-    dialog.setAttribute("aria-labelledby", "bearyCheckoutDialogTitle");
-    dialog.innerHTML =
-      '<div class="beary-checkout-dialog-icon" aria-hidden="true">👋</div>' +
-      '<h2 id="bearyCheckoutDialogTitle">¿Registrar tu salida?</h2>' +
-      '<p class="beary-checkout-dialog-copy">Guardaremos tu salida de hoy y enviaremos un aviso al equipo.</p>' +
-      '<p class="beary-checkout-dialog-status" id="bearyCheckoutDialogStatus" aria-live="polite">Al confirmar, avisaremos a todo el equipo que tenga las notificaciones activadas.</p>' +
-      '<div class="beary-checkout-dialog-actions">' +
-        '<button class="beary-checkout-dialog-button" id="bearyCheckoutCancel" type="button" autofocus>Cancelar</button>' +
-        '<button class="beary-checkout-dialog-button beary-checkout-dialog-button-primary" id="bearyCheckoutConfirm" type="button">Sí, registrar salida</button>' +
-      '</div>';
-    document.body.appendChild(dialog);
-
-    document.getElementById("bearyCheckoutCancel").addEventListener("click", closeConfirmation);
-    document.getElementById("bearyCheckoutConfirm").addEventListener("click", registerCheckout);
-    dialog.addEventListener("click", function (event) {
-      if (event.target === dialog) closeConfirmation();
-    });
-    dialog.addEventListener("close", function () {
-      setDialogStatus("", false);
-      resetDialogButtons();
-      const button = document.getElementById("bearyCheckoutButton");
-      if (button && !button.disabled) {
-        try { button.focus({ preventScroll: true }); } catch (error) { button.focus(); }
-      }
-    });
-    return dialog;
+  function restoreActionButton() {
+    const button = document.getElementById("bearyCheckoutButton");
+    if (!button) return;
+    const sentIds = currentEvent && Array.isArray(currentEvent.notifiedSubscriptionIds)
+      ? currentEvent.notifiedSubscriptionIds
+      : [];
+    if (!eventExists || !currentEvent) {
+      button.dataset.action = "register";
+      button.textContent = "Registrar mi salida";
+      button.disabled = false;
+    } else if (currentEvent.notified === true || currentEvent.notificationStatus === "sending" || sentIds.length > 0) {
+      button.dataset.action = "none";
+      button.textContent = currentEvent.notified === true ? "Aviso enviado ✓" : "Aviso en proceso…";
+      button.disabled = true;
+    } else {
+      button.dataset.action = "cancel";
+      button.textContent = "Anular salida";
+      button.disabled = false;
+    }
   }
 
   function createCard() {
+    if (document.getElementById(CARD_ID)) return document.getElementById(CARD_ID);
     const host = document.querySelector("#homePage .home-progress-card");
     if (!host) return null;
 
-    createStyles();
-    createDialog();
-
-    let card = document.getElementById(CARD_ID);
-    if (!card) {
-      card = document.createElement("section");
-      card.className = "beary-checkout-card";
-      card.id = CARD_ID;
-      card.setAttribute("aria-labelledby", "bearyCheckoutHeading");
-      card.innerHTML =
-        '<div class="beary-checkout-copy">' +
-          '<span class="beary-checkout-icon" aria-hidden="true">👋</span>' +
-          '<span class="beary-checkout-copy-text">' +
-            '<span class="beary-checkout-eyebrow">MI TURNO</span>' +
-            '<strong id="bearyCheckoutHeading">¿Ya terminaste tu turno?</strong>' +
-            '<small class="beary-checkout-status" id="bearyCheckoutStatus" aria-live="polite">Inicia sesión para registrar tu salida.</small>' +
-          '</span>' +
-        '</div>' +
-        '<button class="beary-checkout-button" id="bearyCheckoutButton" type="button" disabled>' +
-          '<span>Registrar mi salida</span><span class="beary-checkout-button-arrow" aria-hidden="true">→</span>' +
-        '</button>';
-      host.insertAdjacentElement("afterend", card);
-      document.getElementById("bearyCheckoutButton").addEventListener("click", openConfirmation);
-    } else if (card.previousElementSibling !== host) {
-      host.insertAdjacentElement("afterend", card);
+    if (!document.getElementById(STYLE_ID)) {
+      const style = document.createElement("style");
+      style.id = STYLE_ID;
+      style.textContent = [
+        ".beary-checkout{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:13px;padding-top:12px;border-top:1px solid var(--border);}",
+        ".beary-checkout-copy{display:flex;align-items:center;gap:9px;min-width:0;}",
+        ".beary-checkout-icon{display:grid;place-items:center;width:36px;height:36px;flex:0 0 36px;border-radius:12px;background:var(--pinksoft);font-size:18px;}",
+        ".beary-checkout-copy strong{display:block;color:var(--text);font-size:11px;font-weight:900;}",
+        ".beary-checkout-copy small{display:block;margin-top:3px;color:var(--muted);font-size:9px;line-height:1.35;}",
+        ".beary-checkout-status.is-error{color:#d64764;}",
+        ".beary-checkout-button{position:relative;z-index:2;flex:0 0 auto;min-height:38px;padding:9px 12px;border:0;border-radius:12px;background:var(--pink);color:#fff;font-family:inherit;font-size:10px;font-weight:800;line-height:1.2;cursor:pointer;transition:transform .18s ease,opacity .18s ease;}",
+        ".beary-checkout-button[data-action=cancel]{background:transparent;color:var(--pink);border:1px solid var(--pink);}",
+        ".beary-checkout-button:active:not(:disabled){transform:scale(.97);}",
+        ".beary-checkout-button:disabled{opacity:.56;cursor:default;}",
+        "@media(max-width:390px){.beary-checkout{align-items:stretch;flex-direction:column}.beary-checkout-button{width:100%}}",
+        "@media(prefers-reduced-motion:reduce){.beary-checkout-button{transition:none}}"
+      ].join("");
+      document.head.appendChild(style);
     }
+
+    const card = document.createElement("div");
+    card.className = "beary-checkout";
+    card.id = CARD_ID;
+    card.innerHTML =
+      '<div class="beary-checkout-copy">' +
+        '<span class="beary-checkout-icon" aria-hidden="true">👋</span>' +
+        '<span><strong>¿Ya terminaste tu turno?</strong>' +
+        '<small class="beary-checkout-status" id="bearyCheckoutStatus" aria-live="polite">Inicia sesión para registrar tu salida.</small></span>' +
+      '</div>' +
+      '<button class="beary-checkout-button" id="bearyCheckoutButton" type="button" data-action="register" disabled>Registrar mi salida</button>';
+    host.appendChild(card);
+    document.getElementById("bearyCheckoutButton").addEventListener("click", handleCheckoutAction);
     return card;
   }
 
@@ -188,6 +147,8 @@
     if (typeof stopSnapshot === "function") stopSnapshot();
     stopSnapshot = null;
     currentRef = null;
+    currentEvent = null;
+    eventExists = false;
     boundUid = "";
     boundDayKey = "";
   }
@@ -199,8 +160,10 @@
 
     if (typeof activeTeamProfile === "undefined" || !activeTeamProfile || !activeTeamProfile.uid) {
       stopBinding();
+      cancellationNotice = false;
       button.disabled = true;
-      button.innerHTML = '<span>Registrar mi salida</span><span class="beary-checkout-button-arrow" aria-hidden="true">→</span>';
+      button.dataset.action = "register";
+      button.textContent = "Registrar mi salida";
       setStatus("Inicia sesión para registrar tu salida.", false);
       return;
     }
@@ -215,64 +178,56 @@
     if (boundUid === uid && boundDayKey === dayKey && currentRef) return;
 
     stopBinding();
+    cancellationNotice = false;
     boundUid = uid;
     boundDayKey = dayKey;
     const checkoutId = dayKey + "_" + uid;
     currentRef = firebaseDb.collection(COLLECTION).doc(checkoutId);
     button.disabled = true;
-    button.innerHTML = '<span>Registrar mi salida</span><span class="beary-checkout-button-arrow" aria-hidden="true">→</span>';
+    button.textContent = "Cargando…";
     setStatus("Consultando el registro de hoy…", false);
 
     stopSnapshot = currentRef.onSnapshot(function (snapshot) {
-      const currentButton = document.getElementById("bearyCheckoutButton");
-      if (!currentButton) return;
-      if (snapshot.exists) {
-        currentButton.disabled = true;
-        currentButton.innerHTML = "<span>Salida registrada ✓</span>";
-        setStatus("El aviso al equipo está en proceso.", false);
-      } else {
-        currentButton.disabled = false;
-        currentButton.innerHTML = '<span>Registrar mi salida</span><span class="beary-checkout-button-arrow" aria-hidden="true">→</span>';
-        setStatus("Al registrarla, avisaremos a todo el equipo.", false);
-      }
+      eventExists = snapshot.exists;
+      currentEvent = snapshot.exists ? snapshot.data() : null;
+      renderState();
     }, function (error) {
       console.error("No se pudo consultar la salida de hoy", error);
-      const currentButton = document.getElementById("bearyCheckoutButton");
-      if (currentButton) currentButton.disabled = true;
+      button.disabled = true;
       setStatus("No se pudo consultar el registro. Revisa las reglas de Firestore.", true);
     });
   }
 
+  async function handleCheckoutAction() {
+    const button = document.getElementById("bearyCheckoutButton");
+    if (!button || busy || button.disabled) return;
+    if (button.dataset.action === "cancel") return cancelCheckout();
+    if (button.dataset.action === "register") return registerCheckout();
+  }
+
   async function registerCheckout() {
     const button = document.getElementById("bearyCheckoutButton");
-    const confirmButton = document.getElementById("bearyCheckoutConfirm");
-    const cancelButton = document.getElementById("bearyCheckoutCancel");
     if (busy || !button || button.disabled) return;
     if (!navigator.onLine) {
       setStatus("Necesitas conexión para registrar la salida.", true);
-      setDialogStatus("Necesitas conexión para registrar la salida.", true);
       return;
     }
     if (typeof activeTeamProfile === "undefined" || !activeTeamProfile || !activeTeamProfile.uid || !sharedStateReady) {
       setStatus("Inicia sesión y espera a que cargue el espacio del equipo.", true);
-      setDialogStatus("Inicia sesión y espera a que cargue el espacio del equipo.", true);
       return;
     }
 
     busy = true;
+    busyAction = "register";
+    cancellationNotice = false;
     button.disabled = true;
-    button.innerHTML = "<span>Guardando…</span>";
-    if (confirmButton) {
-      confirmButton.disabled = true;
-      confirmButton.textContent = "Guardando…";
-    }
-    if (cancelButton) cancelButton.disabled = true;
+    button.textContent = "Guardando…";
     setStatus("Registrando tu salida…", false);
-    setDialogStatus("Registrando tu salida…", false);
     const profile = activeTeamProfile;
     const dayKey = mexicoDayKey(new Date());
     const checkoutId = dayKey + "_" + profile.uid;
     const eventRef = firebaseDb.collection(COLLECTION).doc(checkoutId);
+    let failed = false;
 
     try {
       const created = await firebaseDb.runTransaction(async function (transaction) {
@@ -288,28 +243,87 @@
         return true;
       });
       if (!created) {
+        const existing = await eventRef.get();
+        eventExists = existing.exists;
+        currentEvent = existing.exists ? existing.data() : null;
         setStatus("Tu salida ya estaba registrada hoy.", false);
-        closeConfirmation();
-        bindCurrentDay();
       } else {
-        button.disabled = true;
-        button.innerHTML = "<span>Salida registrada ✓</span>";
-        setStatus("¡Listo! Avisaremos al equipo en unos minutos.", false);
-        closeConfirmation();
+        eventExists = true;
+        currentEvent = { actorUid: profile.uid, notified: false };
+        setStatus("¡Listo! Avisaremos a todo el equipo en unos minutos.", false);
       }
     } catch (error) {
+      failed = true;
       console.error("No se pudo registrar la salida", error);
-      button.disabled = false;
-      button.innerHTML = '<span>Registrar mi salida</span><span class="beary-checkout-button-arrow" aria-hidden="true">→</span>';
       const code = String(error && error.code || "");
-      const message = code.indexOf("permission-denied") >= 0
+      setStatus(code.indexOf("permission-denied") >= 0
         ? "Firestore todavía no permite registrar salidas. Revisa la regla de salida."
-        : "No se pudo guardar. Revisa tu conexión e inténtalo otra vez.";
-      setStatus(message, true);
-      setDialogStatus(message, true);
-      resetDialogButtons();
+        : "No se pudo guardar. Revisa tu conexión e inténtalo otra vez.", true);
     } finally {
       busy = false;
+      busyAction = "";
+      if (!failed) renderState();
+      else restoreActionButton();
+
+    }
+  }
+
+  async function cancelCheckout() {
+    const button = document.getElementById("bearyCheckoutButton");
+    if (busy || !button || button.disabled || !currentRef || !activeTeamProfile) return;
+    if (!navigator.onLine) {
+      setStatus("Necesitas conexión para anular la salida.", true);
+      return;
+    }
+    const eventRef = currentRef;
+    const profileUid = activeTeamProfile.uid;
+    const confirmed = window.confirm(
+      "¿Anular tu salida de hoy? Si el aviso ya empezó a enviarse, no se podrá retirar. " +
+      "Si se anula a tiempo, podrás registrarla otra vez."
+    );
+    if (!confirmed) return;
+
+    busy = true;
+    busyAction = "cancel";
+    button.disabled = true;
+    button.textContent = "Anulando…";
+    setStatus("Anulando el registro…", false);
+    let failed = false;
+    try {
+      const deleted = await firebaseDb.runTransaction(async function (transaction) {
+        const snapshot = await transaction.get(eventRef);
+        if (!snapshot.exists) return false;
+        const event = snapshot.data() || {};
+        const deliveredIds = Array.isArray(event.notifiedSubscriptionIds)
+          ? event.notifiedSubscriptionIds
+          : [];
+        if (event.actorUid !== profileUid || event.notified !== false ||
+            event.notificationStatus === "sending" || deliveredIds.length > 0) return false;
+        transaction.delete(eventRef);
+        return true;
+      });
+      if (deleted) {
+        eventExists = false;
+        currentEvent = null;
+        cancellationNotice = true;
+        setStatus("Salida anulada. Ya puedes registrarla de nuevo.", false);
+      } else {
+        failed = true;
+        setStatus("No se anuló: el aviso ya empezó a enviarse o el registro ya no está.", true);
+      }
+    } catch (error) {
+      failed = true;
+      console.error("No se pudo anular la salida", error);
+      const code = String(error && error.code || "");
+      setStatus(code.indexOf("permission-denied") >= 0
+        ? "No se puede anular: el aviso ya empezó a enviarse o ya se mandó a algún dispositivo."
+        : "No se pudo anular. Revisa tu conexión e inténtalo otra vez.", true);
+    } finally {
+      busy = false;
+      busyAction = "";
+      if (!failed) renderState();
+      else restoreActionButton();
+
     }
   }
 
