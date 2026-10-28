@@ -2,6 +2,9 @@
   "name": "bearys-push-reminders",
   "private": true,
   "engines": { "node": ">=20 <23" },
-  "scripts": { "send": "node send-bread-reminder.js" },
+  "scripts": {
+    "send": "node send-bread-reminder.js",
+    "process-checkouts": "node process-checkouts.js"
+  },
   "dependencies": { "firebase-admin": "^13.0.0" }
 }
